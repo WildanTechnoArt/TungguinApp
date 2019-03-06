@@ -16,7 +16,7 @@ import io.reactivex.subscribers.ResourceSubscriber
 import retrofit2.HttpException
 import java.io.IOException
 
-//Digunakan untuk menjembatani Model dengan View pada Fragment
+// Digunakan untuk menjembatani Model dengan View pada Fragment
 class DashboardPresenter(private val view: DashboardView.View,
                          private val profile: ProfileRepositoryImpl,
                          private val scheduler: SchedulerProvider) : DashboardView.Presenter{
