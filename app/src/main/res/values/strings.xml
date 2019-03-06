@@ -1,0 +1,86 @@
+<resources>
+    <string name="app_name">TungguinApp</string>
+    <string name="logo_full">logo_full</string>
+    <string name="tungguin">Tungguin</string>
+    <string name="txt1">Dengan masuk dan mendaftar, kamu penyetujui Ketentuan Layanan dan Kebijakan Privasi.</string>
+    <string name="masuk">Masuk</string>
+    <string name="daftar">Daftar</string>
+    <string name="txt2">Butuh desain apa saja, sekarang? TUNGGUIN aja!</string>
+    <string name="txt3">Selamat Datang di TUNGGUIN!</string>
+    <string name="kota">Kota</string>
+    <string name="provinsi">Provinsi</string>
+    <string name="retype_password">Retype Password</string>
+    <string name="password">Password</string>
+    <string name="email">Alamat Email</string>
+    <string name="nama">Nama Lengkap</string>
+    <string name="nomor_whatsapp">Nomor WhatsApp</string>
+    <string name="logoemail">logoEmail</string>
+    <string name="logopass">logoPass</string>
+    <string name="cari_desain">Cari desain</string>
+    <string name="gambar">gambar</string>
+    <string name="welcome">Selamat datang</string>
+    <string name="intro">Mau desain apa sekarang?</string>
+    <string name="tungguin_pay">Tungguin Pay</string>
+    <string name="saldo">Rp. ........</string>
+    <string name="top_up">Top Up</string>
+    <string name="reward">Reward</string>
+    <string name="profil">Profil</string>
+    <string name="menu1">Order</string>
+    <string name="menu2">Chat</string>
+    <string name="menu3">Reward</string>
+    <string name="menu4">Promo</string>
+    <string name="menu5">Histori Order</string>
+    <string name="menu6">Garansi</string>
+    <string name="menu7">Help</string>
+    <string name="point">......</string>
+    <string name="inputNama">Masukan Nama</string>
+    <string name="inputEmail">Email</string>
+    <string name="inputNomor">Masukan Nomor Telepon</string>
+    <string name="logout">Logout</string>
+    <string name="edit_profil">Edit Profil</string>
+    <string name="lupa_password">Lupa password?</string>
+    <string name="ubah_password">Ubah password</string>
+    <string name="ubah_pass">Ubah Password</string>
+    <string name="close">Close</string>
+    <string name="newPassText">MASUKAN PASSWORD BARU</string>
+    <string name="password_baru">Password baru</string>
+    <string name="password_sekarang">Password sekarang</string>
+    <string name="confPass">Masukan sekali lagi</string>
+    <string name="simpan">Simpan</string>
+    <string name="history">Histori</string>
+    <string name="kirim">Kirim</string>
+    <string name="email2">Masukan Alamat Email</string>
+    <string name="enter_amount">ENTER AMOUNT</string>
+    <string name="zero">0</string>
+    <string name="_25_000">25.000</string>
+    <string name="_50_000">50.000</string>
+    <string name="_75_000">75.000</string>
+    <string name="_100_000">100.000</string>
+    <string name="_200_000">200.000</string>
+    <string name="_300_000">300.000</string>
+    <string name="_500_000">500.000</string>
+    <string name="_750_000">750.000</string>
+    <string name="_1_000_000">1.000.000</string>
+    <string name="jumlah_top_up">Jumlah Top Up</string>
+    <string name="lorem_ipsum">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed sit amet nibh ex. Phasellus
+        congue, justo id convallis congue, dui est dignissim velit, at tristique nibh magna non enim. Sed placerat
+        sapien imperdiet ligula tincidunt, in venenatis mi blandit. Nulla facilisi. Quisque pellentesque tellus et dolor
+        tempus, et tincidunt dolor mattis. Quisque quis tempor turpis, sed ultricies augue. Nunc pulvinar aliquam enim,
+        sit amet ultrices nisl vulputate eu. Fusce ligula massa, venenatis sed posuere vitae, varius sed felis. Duis
+        euismod laoreet lectus quis pellentesque.
+    </string>
+    <string name="rp_0">Rp0</string>
+    <string name="saldo_e_wallet">Saldo e-Wallet Anda:</string>
+    <string name="formatterdId">TopUp from TGTOPUP-30</string>
+    <string name="formattedStatus">Menunggu Pembayaran</string>
+    <string name="idrp_20_000">Rp 20.000,-</string>
+    <string name="farmatteedDate">Date: 27 Feb 2019 20:30</string>
+    <string name="formattedEx">Ex: 28 Feb 2019 02:30</string>
+    <string name="deposit">deposit</string>
+    <string name="date2">28 Feb 2019 05:04</string>
+    <string name="data_not_found">Desain tidak ditemukan!</string>
+    <item name="visible" type="id"/>
+    <item name="masked" type="id"/>
+    <item name="path_password_eye_mask_visible" type="id"/>
+    <item name="path_password_eye_mask_strike_through" type="id"/>
+</resources>
