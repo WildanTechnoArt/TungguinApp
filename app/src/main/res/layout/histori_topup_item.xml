@@ -3,7 +3,8 @@
         xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" android:id="@+id/itemTopup"
+        android:layout_height="wrap_content"
+        android:id="@+id/itemTopup"
         android:background="@drawable/item_selector_button">
 
     <View
@@ -19,7 +20,7 @@
             android:layout_marginEnd="16dp"/>
 
     <TextView
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:id="@+id/listFormattedID"
             app:layout_constraintStart_toStartOf="parent"
@@ -27,7 +28,11 @@
             app:layout_constraintTop_toTopOf="parent"
             android:layout_marginTop="8dp"
             android:textStyle="bold"
-            android:text="@string/formatterdId" android:textSize="13sp"/>
+            android:text="@string/formatterdId"
+            android:textSize="13sp"
+            android:layout_marginEnd="8dp"
+            app:layout_constraintEnd_toStartOf="@+id/listFormattedStatus"
+            android:layout_marginRight="8dp"/>
 
     <TextView
             android:text="@string/formattedStatus"
@@ -43,7 +48,9 @@
             android:paddingTop="4dp"
             android:paddingBottom="4dp"
             android:paddingEnd="9dp"
-            android:paddingStart="9dp" android:textSize="13sp"/>
+            android:paddingStart="9dp"
+            android:textSize="13sp"
+            android:layout_marginRight="8dp"/>
 
     <TextView
             android:text="@string/idrp_20_000"
@@ -56,7 +63,8 @@
             app:layout_constraintTop_toBottomOf="@+id/listFormattedStatus"
             android:textColor="#000000"
             android:textStyle="bold"
-            android:textSize="13sp"/>
+            android:textSize="13sp"
+            android:layout_marginRight="8dp"/>
 
     <TextView
             android:text="@string/farmatteedDate"
@@ -66,7 +74,9 @@
             app:layout_constraintStart_toStartOf="parent"
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
-            app:layout_constraintTop_toBottomOf="@+id/listFormattedID" android:textSize="13sp"/>
+            app:layout_constraintTop_toBottomOf="@+id/listFormattedID"
+            android:textSize="13sp"
+            android:layout_marginLeft="8dp"/>
 
     <TextView
             android:layout_width="wrap_content"
@@ -76,6 +86,8 @@
             app:layout_constraintStart_toStartOf="parent"
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
-            app:layout_constraintTop_toBottomOf="@+id/listType" android:textSize="13sp"/>
+            app:layout_constraintTop_toBottomOf="@+id/listType"
+            android:textSize="13sp"
+            android:layout_marginLeft="8dp"/>
 
 </android.support.constraint.ConstraintLayout>

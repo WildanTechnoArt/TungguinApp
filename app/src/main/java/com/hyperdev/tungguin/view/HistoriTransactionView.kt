@@ -1,18 +1,20 @@
 package com.hyperdev.tungguin.view
 
-import android.content.Context
 import com.hyperdev.tungguin.model.transactionhistory.ListTransaction
+import com.hyperdev.tungguin.model.transactionhistory.TransactionHistory
 
 class HistoriTransactionView {
 
     interface View{
         fun showTransactionHistory(dataTransaction: List<ListTransaction>)
+        fun showTransaction(transaction: TransactionHistory)
         fun displayProgress()
+        fun onSuccess()
         fun hideProgress()
     }
 
     interface Presenter{
-        fun getTransactionHistory(context: Context, token: String, page: Int)
+        fun getTransactionHistory(token: String, page: Int)
         fun onDestroy()
     }
 }

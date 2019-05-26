@@ -9,10 +9,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ProgressBar
+import android.widget.TextView
 import com.hyperdev.tungguin.R
 import com.hyperdev.tungguin.adapter.TopUpRecyclerAdapter
 import com.hyperdev.tungguin.database.SharedPrefManager
 import com.hyperdev.tungguin.model.topuphistori.ListTopUp
+import com.hyperdev.tungguin.model.topuphistori.TopUpData
 import com.hyperdev.tungguin.network.BaseApiService
 import com.hyperdev.tungguin.network.NetworkUtil
 import com.hyperdev.tungguin.presenter.TopUpHistoriPresenter
@@ -29,10 +31,13 @@ class TopUpHisFragment : Fragment(), HistoriTopUpView.View{
     private lateinit var token: String
     private lateinit var recycler : RecyclerView
     private lateinit var progressBar : ProgressBar
+    private lateinit var txtImgNotFound : TextView
     private lateinit var baseApiService: BaseApiService
     private val TAG = javaClass.simpleName
     private var adapter by Delegates.notNull<TopUpRecyclerAdapter>()
     private var page by Delegates.notNull<Int>()
+    private lateinit var nextPageURL: String
+    private var isLoading by Delegates.notNull<Boolean>()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_top_up_his, container, false)
@@ -41,6 +46,7 @@ class TopUpHisFragment : Fragment(), HistoriTopUpView.View{
 
         recycler = view.findViewById(R.id.recyclerTopupList)
         progressBar = view.findViewById(R.id.progressBar)
+        txtImgNotFound = view.findViewById(R.id.txt_img_not_found)
 
         loadData()
 
@@ -54,7 +60,7 @@ class TopUpHisFragment : Fragment(), HistoriTopUpView.View{
     private fun loadData(){
         token = SharedPrefManager.getInstance(context!!).token.toString()
 
-        baseApiService = NetworkUtil.getClient()!!
+        baseApiService = NetworkUtil.getClient(context!!)!!
             .create(BaseApiService::class.java)
 
         val layout = LinearLayoutManager(context)
@@ -63,10 +69,10 @@ class TopUpHisFragment : Fragment(), HistoriTopUpView.View{
 
         val request = TopUpHIstoryRepositoryImpl(baseApiService)
         val scheduler = AppSchedulerProvider()
-        presenter = TopUpHistoriPresenter(this, request, scheduler)
+        presenter = TopUpHistoriPresenter(this, context!!,request, scheduler)
         adapter = TopUpRecyclerAdapter(context, listTopUp as ArrayList<ListTopUp>)
 
-        presenter.getTopUpHistory(context!!, "Bearer $token", page = page)
+        presenter.getTopUpHistory("Bearer $token", page = page)
     }
 
     private fun initListener() {
@@ -79,16 +85,27 @@ class TopUpHisFragment : Fragment(), HistoriTopUpView.View{
                 Log.d(TAG, "countItem: $countItem")
                 Log.d(TAG, "lastVisiblePosition: $lastVisiblePosition")
                 Log.d(TAG, "isLastPosition: $isLastPosition")
-                if (isLastPosition) {
+                if (!isLoading && isLastPosition && nextPageURL != "null") {
                     page = page.plus(1)
-                    presenter.getTopUpHistory(context!!, "Bearer $token", page = page)
+                    presenter.getTopUpHistory("Bearer $token", page = page)
+                    recycler.post { recycler.smoothScrollToPosition(adapter.itemCount - 1) }
                 }
             }
         })
     }
 
+    override fun showTopUp(topup: TopUpData) {
+        nextPageURL = topup.nextPageUrl.toString()
+    }
+
+    override fun onSuccess() {
+        progressBar.visibility = View.GONE
+        isLoading = false
+    }
+
     override fun displayProgress() {
         progressBar.visibility = View.VISIBLE
+        isLoading = true
     }
 
     override fun hideProgress() {
@@ -103,5 +120,18 @@ class TopUpHisFragment : Fragment(), HistoriTopUpView.View{
         }else{
             adapter.refreshAdapter(data)
         }
+
+        if(adapter.itemCount.toString() != "0"){
+            txtImgNotFound.visibility = View.GONE
+            recycler.visibility = View.VISIBLE
+        }else{
+            txtImgNotFound.visibility = View.VISIBLE
+            recycler.visibility = View.GONE
+        }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        presenter.onDestroy()
     }
 }

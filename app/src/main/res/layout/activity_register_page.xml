@@ -17,8 +17,8 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            android:layout_marginBottom="8dp"
-            android:visibility="gone"/>
+            android:visibility="visible"
+            app:layout_constraintBottom_toBottomOf="parent"/>
 
     <ScrollView
             android:layout_width="match_parent"
@@ -27,9 +27,9 @@
             app:layout_constraintEnd_toEndOf="parent"
             android:layout_marginEnd="4dp"
             android:layout_marginStart="4dp"
-            android:layout_marginBottom="8dp"
-            android:visibility="visible"
-            android:id="@+id/scroll">
+            android:visibility="gone"
+            android:id="@+id/scroll" app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
 
         <LinearLayout
                 android:layout_width="match_parent"

@@ -36,7 +36,7 @@ class ResetPassActivity : AppCompatActivity() {
         supportActionBar?.setHomeButtonEnabled(true)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
-        baseApiService = NetworkUtil.getClient()!!.create(BaseApiService::class.java)
+        baseApiService = NetworkUtil.getClient(this@ResetPassActivity)!!.create(BaseApiService::class.java)
 
         btnResetPass.setOnClickListener {
             emailUser = email.text.toString()

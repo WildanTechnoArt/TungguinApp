@@ -78,7 +78,8 @@
                 android:textColor="#FFFFFF"
                 android:elevation="6dp"
                 tools:targetApi="lollipop"
-                android:background="@drawable/register_round_button"/>
+                android:background="@drawable/primary_round_button" android:textStyle="bold"
+                android:textAllCaps="true"/>
 
     </LinearLayout>
     <ProgressBar

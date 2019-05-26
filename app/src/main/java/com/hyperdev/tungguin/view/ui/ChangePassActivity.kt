@@ -43,7 +43,7 @@ class ChangePassActivity : AppCompatActivity() {
         supportActionBar?.setHomeButtonEnabled(true)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
-        baseApiService = NetworkUtil.getClient()!!
+        baseApiService = NetworkUtil.getClient(this@ChangePassActivity)!!
             .create(BaseApiService::class.java)
 
         getToken = SharedPrefManager.getInstance(this@ChangePassActivity).token.toString()
@@ -85,8 +85,8 @@ class ChangePassActivity : AppCompatActivity() {
     }
 
     private fun savePassResponse(newPass: String, cPass: String){
-        baseApiService.updatePassword("Bearer $getToken", getName, getEmail, getPhone,
-            getProvince, getCity, newPass, cPass)
+        baseApiService.updatePassword("Bearer $getToken", "application/json",
+            getName, getEmail, getPhone, getProvince, getCity, newPass, cPass)
             .enqueue(object : Callback<ProfileResponse>{
                 override fun onFailure(call: Call<ProfileResponse>, t: Throwable) {
                     Log.e("ChangePassActivity.kt", "onFailure ERROR -> "+ t.message)

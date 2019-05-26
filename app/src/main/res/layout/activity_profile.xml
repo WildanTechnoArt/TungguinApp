@@ -264,9 +264,9 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:id="@+id/btnEditProfil"
-                    android:background="@drawable/login_round_button"
+                    android:background="@drawable/primary_round_button"
                     android:textColor="#FFFFFF"
-                    android:textAllCaps="true"
+                    android:textAllCaps="false"
                     android:elevation="6dp"
                     tools:targetApi="lollipop"
                     android:layout_marginTop="16dp"
@@ -274,7 +274,7 @@
                     app:layout_constraintStart_toStartOf="parent"
                     android:layout_marginStart="24dp"
                     app:layout_constraintEnd_toStartOf="@+id/btnEditPass"
-                    android:layout_marginEnd="8dp"/>
+                    android:layout_marginEnd="8dp" android:textStyle="bold"/>
             <Button
                     android:text="@string/ubah_pass"
                     android:layout_width="0dp"
@@ -285,9 +285,9 @@
                     app:layout_constraintStart_toEndOf="@+id/btnEditProfil"
                     android:layout_marginTop="16dp"
                     app:layout_constraintTop_toBottomOf="@+id/profile_card"
-                    android:background="@drawable/login_round_button"
+                    android:background="@drawable/primary_round_button"
                     android:textColor="#FFFFFF"
-                    android:layout_marginStart="8dp"/>
+                    android:layout_marginStart="8dp" android:textStyle="bold" android:textAllCaps="false"/>
         </android.support.constraint.ConstraintLayout>
     </android.support.v4.widget.SwipeRefreshLayout>
 

@@ -76,15 +76,15 @@ class HistoryActivity : AppCompatActivity(), BalanceView.View {
         val networkInfo = connectivity.activeNetworkInfo
 
         if (networkInfo != null && networkInfo.isConnected) {
-            baseApiService = NetworkUtil.getClient()!!
+            baseApiService = NetworkUtil.getClient(this@HistoryActivity)!!
                 .create(BaseApiService::class.java)
 
             getToken = SharedPrefManager.getInstance(this@HistoryActivity).token.toString()
 
             val request = TransactionHistoryRepositoryImpl(baseApiService)
             val scheduler = AppSchedulerProvider()
-            presenter = HistoryPresenter(this, request, scheduler)
-            presenter.getUserBalance(this@HistoryActivity, "Bearer $getToken")
+            presenter = HistoryPresenter(this, this@HistoryActivity, request, scheduler)
+            presenter.getUserBalance("Bearer $getToken")
 
             //Memanggil dan Memasukan Value pada Class PagerAdapter(FragmentManager dan JumlahTab)
             val pageAdapter = supportFragmentManager?.let {

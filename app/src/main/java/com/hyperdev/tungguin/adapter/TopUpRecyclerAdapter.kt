@@ -15,6 +15,7 @@ import com.hyperdev.tungguin.BuildConfig
 import com.hyperdev.tungguin.R
 import com.hyperdev.tungguin.model.topuphistori.ListTopUp
 import com.midtrans.sdk.corekit.core.MidtransSDK
+import com.midtrans.sdk.corekit.core.UIKitCustomSetting
 import com.midtrans.sdk.corekit.core.themes.CustomColorTheme
 import com.midtrans.sdk.corekit.models.snap.TransactionResult
 import com.midtrans.sdk.uikit.SdkUIFlowBuilder
@@ -65,7 +66,14 @@ class TopUpRecyclerAdapter(private var context: Context?, private var topupList:
         holder.getListItemView.setOnClickListener {
             @Suppress("SENSELESS_COMPARISON")
             if(getMidtransToken != null){
+
                 midtransInitialotation()
+
+                // Skip Customer Detail
+                val uiKitCustomSetting: UIKitCustomSetting = MidtransSDK.getInstance().uiKitCustomSetting
+                uiKitCustomSetting.isSkipCustomerDetailsPages = true
+                MidtransSDK.getInstance().uiKitCustomSetting = uiKitCustomSetting
+
                 MidtransSDK.getInstance().startPaymentUiFlow(context, getMidtransToken.toString())
             }
         }

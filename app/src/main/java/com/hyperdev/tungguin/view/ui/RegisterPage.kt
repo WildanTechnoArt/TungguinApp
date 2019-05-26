@@ -59,7 +59,7 @@ class RegisterPage : AppCompatActivity(), RegisterView.View {
         cityList.add("Pilih Kota...")
         cityIdList.add("null")
 
-        baseApiService = NetworkUtil.getClient()!!
+        baseApiService = NetworkUtil.getClient(this@RegisterPage)!!
             .create(BaseApiService::class.java)
 
         val request = RegisterRepositoryImpl(baseApiService)
@@ -235,6 +235,7 @@ class RegisterPage : AppCompatActivity(), RegisterView.View {
     override fun hideProgress() {
         shadow.visibility = View.GONE
         progressBar.visibility = View.GONE
+        scroll.visibility = View.VISIBLE
         btnRegister.isEnabled = true
         firstName.isEnabled = true
         nomor.isEnabled = true

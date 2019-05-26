@@ -6,6 +6,6 @@ import com.hyperdev.tungguin.network.BaseApiService
 import io.reactivex.Flowable
 
 class TopUpHIstoryRepositoryImpl (private val baseApiService: BaseApiService): TopUpHIstoryRepository {
-    override fun getTopUpHistory(authHeader: String, page: Int): Flowable<HistoriTopUpResponse> = baseApiService.getTopUpHistory(authHeader, page)
-    override fun getProfile(token: String): Flowable<ProfileResponse> = baseApiService.getProfile(token)
+    override fun getTopUpHistory(authHeader: String, accept: String, page: Int): Flowable<HistoriTopUpResponse> = baseApiService.getTopUpHistory(authHeader, accept, page)
+    override fun getProfile(token: String, accept: String): Flowable<ProfileResponse> = baseApiService.getProfile(token, accept)
 }

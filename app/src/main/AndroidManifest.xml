@@ -6,16 +6,53 @@
     <uses-permission android:name="android.permission.INTERNET"/>
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.VIBRATE" />
 
     <application
             android:allowBackup="true"
-            android:icon="@mipmap/ic_launcher"
+            android:icon="@mipmap/ic_launcher_tungguin"
             android:label="@string/app_name"
-            android:roundIcon="@mipmap/ic_launcher_round"
+            android:largeHeap="true"
+            android:roundIcon="@mipmap/ic_launcher_tungguin_round"
             android:supportsRtl="true"
             android:theme="@style/AppTheme"
             tools:ignore="AllowBackup,GoogleAppIndexingWarning"
             tools:replace="android:allowBackup">
+
+        <activity android:name=".view.ui.TestimoniActivity">
+
+            <meta-data
+                    android:name="android.support.PARENT_ACTIVITY"
+                    android:value="com.hyperdev.tungguin.view.ui.DetailOrderActivity" />
+
+            <intent-filter>
+                <action android:name="com.hyperdev.tungguin_ORDER_FINISH"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+            </intent-filter>
+
+        </activity>
+        <activity android:name=".view.ui.ChatActivity">
+            <meta-data
+                    android:name="android.support.PARENT_ACTIVITY"
+                    android:value="com.hyperdev.tungguin.view.ui.DetailOrderActivity" />
+        </activity>
+        <activity android:name=".view.ui.SearchDesignerActivity">
+            <meta-data
+                    android:name="android.support.PARENT_ACTIVITY"
+                    android:value="com.hyperdev.tungguin.view.ui.Dashboard" />
+        </activity>
+        <activity android:name=".view.ui.HistoriOrderActivity">
+            <meta-data
+                    android:name="android.support.PARENT_ACTIVITY"
+                    android:value="com.hyperdev.tungguin.view.ui.Dashboard" />
+        </activity>
+        <activity android:name=".view.ui.DetailOrderActivity">
+            <meta-data
+                    android:name="android.support.PARENT_ACTIVITY"
+                    android:value="com.hyperdev.tungguin.view.ui.Dashboard" />
+        </activity>
         <activity android:name=".view.ui.SplashScreen">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
@@ -23,6 +60,32 @@
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
+
+        <meta-data
+                android:name="com.google.firebase.messaging.default_notification_icon"
+                android:resource="@drawable/ic_notification"/>
+        <meta-data
+                android:name="com.google.firebase.messaging.default_notification_color"
+                android:resource="@color/colorAccent"/>
+
+        <provider
+                android:name="android.support.v4.content.FileProvider"
+                android:authorities="${applicationId}.file_provider"
+                android:exported="false"
+                android:grantUriPermissions="true">
+            <meta-data
+                    android:name="android.support.FILE_PROVIDER_PATHS"
+                    android:resource="@xml/file_provider_paths"/>
+        </provider>
+
+        <service
+                android:name=".fcm.MyFirebaseMessagingService"
+                android:permission="true">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT"/>
+            </intent-filter>
+        </service>
+
         <activity android:name=".view.ui.MainPage">
         </activity>
         <activity android:name=".view.ui.LoginPage">
@@ -30,6 +93,9 @@
         <activity android:name=".view.ui.RegisterPage">
         </activity>
         <activity android:name=".view.ui.Dashboard">
+            <meta-data
+                    android:name="android.support.PARENT_ACTIVITY"
+                    android:value="com.hyperdev.tungguin.view.ui.LoginPage" />
         </activity>
         <activity android:name=".view.ui.ProfileActivity">
         </activity>
@@ -40,6 +106,21 @@
         <activity android:name=".view.ui.TopUpActivity">
         </activity>
         <activity android:name=".view.ui.HistoryActivity">
+            <meta-data
+                    android:name="android.support.PARENT_ACTIVITY"
+                    android:value="com.hyperdev.tungguin.view.ui.Dashboard" />
+        </activity>
+        <activity android:name=".view.ui.ContactUsActivity">
+        </activity>
+        <activity android:name=".view.ui.OrderWithSliderActivity">
+        </activity>
+        <activity android:name=".view.ui.DetailProductActivity">
+        </activity>
+        <activity android:name=".view.ui.OrderDesignActivity">
+        </activity>
+        <activity android:name=".view.ui.KatalogDesainActivity">
+        </activity>
+        <activity android:name=".view.ui.CartActivity">
         </activity>
     </application>
 

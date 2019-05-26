@@ -27,6 +27,7 @@ import com.hyperdev.tungguin.utils.AppSchedulerProvider
 import com.hyperdev.tungguin.view.TopUpView
 import com.midtrans.sdk.corekit.core.MidtransSDK
 import com.midtrans.sdk.corekit.core.TransactionRequest
+import com.midtrans.sdk.corekit.core.UIKitCustomSetting
 import kotlinx.android.synthetic.main.activity_top_up.*
 import java.text.NumberFormat
 import com.midtrans.sdk.corekit.core.themes.CustomColorTheme
@@ -38,7 +39,7 @@ import retrofit2.Callback
 import retrofit2.Response
 import java.io.IOException
 
-class TopUpActivity : AppCompatActivity(), TopUpView.View {
+class TopUpActivity : AppCompatActivity(), TopUpView.View{
 
     //Deklarasi Variable
     private lateinit var baseApiService: BaseApiService
@@ -61,7 +62,7 @@ class TopUpActivity : AppCompatActivity(), TopUpView.View {
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         swipeRefresh.setOnRefreshListener {
-            topupPresenter.getUserAmount(this@TopUpActivity, "Bearer $getToken")
+            topupPresenter.getUserAmount("Bearer $getToken")
         }
 
         midtransInitialotation()
@@ -100,7 +101,7 @@ class TopUpActivity : AppCompatActivity(), TopUpView.View {
         val networkInfo = connectivity.activeNetworkInfo
 
         if (networkInfo != null && networkInfo.isConnected) {
-            baseApiService = NetworkUtil.getClient()!!
+            baseApiService = NetworkUtil.getClient(this@TopUpActivity)!!
                 .create(BaseApiService::class.java)
 
             getToken = SharedPrefManager.getInstance(this@TopUpActivity).token.toString()
@@ -108,8 +109,8 @@ class TopUpActivity : AppCompatActivity(), TopUpView.View {
 
             val request = ProfileRepositoryImpl(baseApiService)
             val scheduler = AppSchedulerProvider()
-            topupPresenter = TopUpPresenter(this, request, scheduler)
-            topupPresenter.getUserAmount(this@TopUpActivity, "Bearer $getToken")
+            topupPresenter = TopUpPresenter(this, this@TopUpActivity, request, scheduler)
+            topupPresenter.getUserAmount("Bearer $getToken")
         } else {
             swipeRefresh.isRefreshing = false
             Snackbar.make(topupLayout, "Tidak terhubung dengan internet !", Snackbar.LENGTH_LONG).show()
@@ -119,7 +120,7 @@ class TopUpActivity : AppCompatActivity(), TopUpView.View {
     private fun topupWallet(){
         try{
             swipeRefresh.isRefreshing = true
-            baseApiService.topUpMoney("Bearer $getToken", topupAmount.toString())
+            baseApiService.topUpMoney("Bearer $getToken", "application/json", topupAmount.toString())
                 .enqueue(object : Callback<TopUpResponse> {
 
                     override fun onFailure(call: Call<TopUpResponse>, t: Throwable) {
@@ -139,6 +140,13 @@ class TopUpActivity : AppCompatActivity(), TopUpView.View {
                                 if(message != null){
                                     Toast.makeText(this@TopUpActivity, message.toString(), Toast.LENGTH_SHORT).show()
                                 }
+
+                                // Skip Customer Detail
+                                val uiKitCustomSetting: UIKitCustomSetting = MidtransSDK.getInstance().uiKitCustomSetting
+                                uiKitCustomSetting.isSkipCustomerDetailsPages = true
+                                MidtransSDK.getInstance().uiKitCustomSetting = uiKitCustomSetting
+
+                                // Start Payment
                                 transactionRequest(transId, topupAmount)
                                 MidtransSDK.getInstance().startPaymentUiFlow(this@TopUpActivity, midtransToken)
                                 swipeRefresh.isRefreshing = false
@@ -187,7 +195,8 @@ class TopUpActivity : AppCompatActivity(), TopUpView.View {
                             ).show()
                             finish()
                         }
-                        TransactionResult.STATUS_PENDING -> (this@TopUpActivity as Activity).finish()
+                        TransactionResult.STATUS_PENDING -> { (this@TopUpActivity as Activity).finish()
+                             }
                         TransactionResult.STATUS_FAILED -> Toast.makeText(
                             this@TopUpActivity,
                             "Transaction Failed",

@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">TungguinApp</string>
+    <string name="app_name">Tungguin</string>
     <string name="logo_full">logo_full</string>
     <string name="tungguin">Tungguin</string>
     <string name="txt1">Dengan masuk dan mendaftar, kamu penyetujui Ketentuan Layanan dan Kebijakan Privasi.</string>
@@ -28,7 +28,7 @@
     <string name="menu1">Order</string>
     <string name="menu2">Chat</string>
     <string name="menu3">Reward</string>
-    <string name="menu4">Promo</string>
+    <string name="menu4">Katalog Desain</string>
     <string name="menu5">Histori Order</string>
     <string name="menu6">Garansi</string>
     <string name="menu7">Help</string>
@@ -79,6 +79,17 @@
     <string name="deposit">deposit</string>
     <string name="date2">28 Feb 2019 05:04</string>
     <string name="data_not_found">Desain tidak ditemukan!</string>
+    <string name="product">Spanduk Sekolah</string>
+    <string name="srcDesain">Mau desain apa sekarang?</string>
+    <string name="txtSrc2">Desain tidak ditemukan</string>
+    <string name="txtSrc3">Tidak menemukan desain yang anda cari?</string>
+    <string name="tctSrc4">Ajukan DISINI!</string>
+    <string name="titleContact">Mau request apa?</string>
+    <string name="content">Silakan tulis permintaan mu disini</string>
+    <string name="src_design">Cari desain</string>
+    <string name="wildan">Hei Wildan</string>
+    <string name="productNameExample">SPANDUK KULINER</string>
+    <string name="txt_data_not_found">TIdak Ada Data</string>
     <item name="visible" type="id"/>
     <item name="masked" type="id"/>
     <item name="path_password_eye_mask_visible" type="id"/>

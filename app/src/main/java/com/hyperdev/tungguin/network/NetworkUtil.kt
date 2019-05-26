@@ -1,6 +1,8 @@
 package com.hyperdev.tungguin.network
 
+import android.content.Context
 import com.hyperdev.tungguin.BuildConfig
+import com.readystatesoftware.chuck.ChuckInterceptor
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
@@ -12,13 +14,16 @@ class NetworkUtil {
 
     companion object {
         private var retrofit: Retrofit? = null
-        fun getClient(): Retrofit? {
-            val interceptor = HttpLoggingInterceptor()
-            interceptor.level = HttpLoggingInterceptor.Level.BODY
-            val client = OkHttpClient.Builder()
-                .addInterceptor(interceptor)
-                .readTimeout(10, TimeUnit.SECONDS)
+        fun getClient(context: Context): Retrofit? {
+            val logging = HttpLoggingInterceptor()
+            logging.level = HttpLoggingInterceptor.Level.BODY
+
+            val clientTest = OkHttpClient.Builder()
+                .addInterceptor(ChuckInterceptor(context))
+                .addInterceptor(logging)
                 .connectTimeout(30, TimeUnit.SECONDS)
+                .readTimeout(30, TimeUnit.SECONDS)
+                .writeTimeout(30, TimeUnit.SECONDS)
                 .build()
 
             if(retrofit == null){
@@ -26,7 +31,7 @@ class NetworkUtil {
                     .baseUrl(BuildConfig.BASE_URL +"/api/")
                     .addConverterFactory(GsonConverterFactory.create())
                     .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
-                    .client(client)
+                    .client(clientTest)
                     .build()
             }
             return retrofit

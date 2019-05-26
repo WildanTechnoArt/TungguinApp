@@ -1,6 +1,5 @@
 package com.hyperdev.tungguin.view
 
-import android.content.Context
 import com.hyperdev.tungguin.model.profile.DataUser
 
 class TopUpView {
@@ -12,7 +11,7 @@ class TopUpView {
     }
 
     interface Presenter{
-        fun getUserAmount(context: Context, token: String)
+        fun getUserAmount(token: String)
         fun onDestroy()
     }
 }

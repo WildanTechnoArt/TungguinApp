@@ -8,6 +8,9 @@ import com.hyperdev.tungguin.R
 
 class SplashScreen : AppCompatActivity() {
 
+    private lateinit var getTypeAction: String
+    private lateinit var getTypeId: String
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_splash_screen)
@@ -22,9 +25,58 @@ class SplashScreen : AppCompatActivity() {
                 }catch (ex: InterruptedException){
                     ex.printStackTrace()
                 }finally {
-                    //Setelah 2 detik berakhir maka akan masuk pada halaman Login
-                    startActivity(Intent(this@SplashScreen, MainPage::class.java))
-                    finish()
+
+                    if(intent.extras != null){
+                        getTypeAction = intent?.extras?.get("type").toString()
+                        getTypeId = intent?.extras?.get("type_id").toString()
+                        when(getTypeAction){
+                            "top_up_success" -> {
+                                startActivity(Intent(this@SplashScreen, HistoryActivity::class.java))
+                                finish()
+                            }
+                            "top_up_expired" -> {
+                                startActivity(Intent(this@SplashScreen, HistoryActivity::class.java))
+                                finish()
+                            }
+                            "order_finish" -> {
+                                val intent = Intent(this@SplashScreen, TestimoniActivity::class.java)
+                                intent.putExtra("sendOrderID", getTypeId)
+                                startActivity(intent)
+                                finish()
+                            }
+                            "payment_order_success" -> {
+                                val intent = Intent(this@SplashScreen, DetailOrderActivity::class.java)
+                                intent.putExtra("sendOrderID", getTypeId)
+                                startActivity(intent)
+                                finish()
+                            }
+                            "payment_order_expired" -> {
+                                val intent = Intent(this@SplashScreen, DetailOrderActivity::class.java)
+                                intent.putExtra("sendOrderID", getTypeId)
+                                startActivity(intent)
+                                finish()
+                            }
+                            "new_order_message" -> {
+                                val intent = Intent(this@SplashScreen, ChatActivity::class.java)
+                                intent.putExtra("sendOrderID", getTypeId)
+                                startActivity(intent)
+                                finish()
+                            }
+                            "designerFound" -> {
+                                val intent = Intent(this@SplashScreen, DetailOrderActivity::class.java)
+                                intent.putExtra("sendOrderID", getTypeId)
+                                startActivity(intent)
+                                finish()
+                            }
+                            else -> {
+                                startActivity(Intent(this@SplashScreen, MainPage::class.java))
+                                finish()
+                            }
+                        }
+                    }else{
+                        startActivity(Intent(this@SplashScreen, MainPage::class.java))
+                        finish()
+                    }
                 }
             }
         }

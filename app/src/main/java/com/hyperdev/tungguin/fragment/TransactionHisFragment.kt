@@ -9,10 +9,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ProgressBar
+import android.widget.TextView
 import com.hyperdev.tungguin.R
 import com.hyperdev.tungguin.adapter.TransactionRecyclerAdapter
 import com.hyperdev.tungguin.database.SharedPrefManager
 import com.hyperdev.tungguin.model.transactionhistory.ListTransaction
+import com.hyperdev.tungguin.model.transactionhistory.TransactionHistory
 import com.hyperdev.tungguin.network.BaseApiService
 import com.hyperdev.tungguin.network.NetworkUtil
 import com.hyperdev.tungguin.presenter.TransactionHistoriPresenter
@@ -29,16 +31,20 @@ class TransactionHisFragment : Fragment(), HistoriTransactionView.View {
     private lateinit var token: String
     private lateinit var recycler : RecyclerView
     private lateinit var progressBar : ProgressBar
+    private lateinit var txtImgNotFound : TextView
     private lateinit var baseApiService: BaseApiService
     private val TAG = javaClass.simpleName
     private var adapter by Delegates.notNull<TransactionRecyclerAdapter>()
     private var page by Delegates.notNull<Int>()
+    private lateinit var nextPageURL: String
+    private var isLoading by Delegates.notNull<Boolean>()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_transaction_his, container, false)
 
         recycler = view.findViewById(R.id.recyclerTransactionList)
         progressBar = view.findViewById(R.id.progressBar)
+        txtImgNotFound = view.findViewById(R.id.txt_img_not_found)
 
         page = 1
 
@@ -54,7 +60,7 @@ class TransactionHisFragment : Fragment(), HistoriTransactionView.View {
     private fun loadData(){
         token = SharedPrefManager.getInstance(context!!).token.toString()
 
-        baseApiService = NetworkUtil.getClient()!!
+        baseApiService = NetworkUtil.getClient(context!!)!!
             .create(BaseApiService::class.java)
 
         val layout = LinearLayoutManager(context)
@@ -63,10 +69,10 @@ class TransactionHisFragment : Fragment(), HistoriTransactionView.View {
 
         val request = TransactionHistoryRepositoryImpl(baseApiService)
         val scheduler = AppSchedulerProvider()
-        presenter = TransactionHistoriPresenter(this, request, scheduler)
+        presenter = TransactionHistoriPresenter(this, context!!, request, scheduler)
         adapter = TransactionRecyclerAdapter(listTransaction as ArrayList<ListTransaction>)
 
-        presenter.getTransactionHistory(context!!, "Bearer $token", page = page)
+        presenter.getTransactionHistory("Bearer $token", page = page)
     }
 
     private fun initListener() {
@@ -79,16 +85,26 @@ class TransactionHisFragment : Fragment(), HistoriTransactionView.View {
                 Log.d(TAG, "countItem: $countItem")
                 Log.d(TAG, "lastVisiblePosition: $lastVisiblePosition")
                 Log.d(TAG, "isLastPosition: $isLastPosition")
-                if (isLastPosition) {
+                if (!isLoading && isLastPosition && nextPageURL != "null") {
                     page = page.plus(1)
-                    presenter.getTransactionHistory(context!!, "Bearer $token", page = page)
+                    presenter.getTransactionHistory("Bearer $token", page = page)
                 }
             }
         })
     }
 
+    override fun showTransaction(transaction: TransactionHistory) {
+        nextPageURL = transaction.nextPageUrl.toString()
+    }
+
+    override fun onSuccess() {
+        progressBar.visibility = View.GONE
+        isLoading = false
+    }
+
     override fun displayProgress() {
         progressBar.visibility = View.VISIBLE
+        isLoading = true
     }
 
     override fun hideProgress() {
@@ -103,5 +119,18 @@ class TransactionHisFragment : Fragment(), HistoriTransactionView.View {
         }else{
             adapter.refreshAdapter(dataTransaction)
         }
+
+        if(adapter.itemCount.toString() != "0"){
+            txtImgNotFound.visibility = View.GONE
+            recycler.visibility = View.VISIBLE
+        }else{
+            txtImgNotFound.visibility = View.VISIBLE
+            recycler.visibility = View.GONE
+        }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        presenter.onDestroy()
     }
 }

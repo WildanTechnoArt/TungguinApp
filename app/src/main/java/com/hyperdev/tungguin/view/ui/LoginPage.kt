@@ -38,7 +38,7 @@ class LoginPage : AppCompatActivity() {
         setContentView(R.layout.activity_login_page)
         requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
 
-        baseApiService = NetworkUtil.getClient()!!
+        baseApiService = NetworkUtil.getClient(this@LoginPage)!!
             .create(BaseApiService::class.java)
 
         btnLogin.setOnClickListener {

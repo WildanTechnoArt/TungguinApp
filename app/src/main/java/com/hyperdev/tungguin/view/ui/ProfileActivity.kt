@@ -111,7 +111,7 @@ class ProfileActivity : AppCompatActivity(), ProfileView.View {
 
         if (networkInfo != null && networkInfo.isConnected) {
 
-            baseApiService = NetworkUtil.getClient()!!
+            baseApiService = NetworkUtil.getClient(this@ProfileActivity)!!
                 .create(BaseApiService::class.java)
 
             getToken = SharedPrefManager.getInstance(this@ProfileActivity).token.toString()
@@ -184,7 +184,8 @@ class ProfileActivity : AppCompatActivity(), ProfileView.View {
     }
 
     private fun editRequest(name: String, email: String, number: String, province: String, city: String){
-        baseApiService.updateProfile("Bearer $getToken", name, email, number, province, city)
+        baseApiService.updateProfile("Bearer $getToken", "application/json", name,
+            email, number, province, city)
             .enqueue(object : Callback<ProfileResponse> {
 
                 override fun onFailure(call: Call<ProfileResponse>, t: Throwable) {
@@ -287,5 +288,10 @@ class ProfileActivity : AppCompatActivity(), ProfileView.View {
     override fun onSupportNavigateUp(): Boolean {
         onBackPressed()
         return true
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        presenter.onDestroy()
     }
 }

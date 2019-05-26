@@ -1,6 +1,5 @@
 package com.hyperdev.tungguin.view
 
-import android.content.Context
 import com.hyperdev.tungguin.model.transactionhistory.DataTransaction
 
 class BalanceView {
@@ -12,7 +11,7 @@ class BalanceView {
     }
 
     interface Presenter{
-        fun getUserBalance(context: Context, token: String)
+        fun getUserBalance(token: String)
         fun onDestroy()
     }
 }
