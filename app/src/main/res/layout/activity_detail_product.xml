@@ -1,14 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout
+<androidx.constraintlayout.widget.ConstraintLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:tools="http://schemas.android.com/tools"
         xmlns:app="http://schemas.android.com/apk/res-auto"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context=".view.ui.DetailProductActivity" android:background="#FFFFFF"
-        android:id="@+id/detail_product_layout">
+        tools:context=".ui.activity.DetailProductActivity"
+        android:background="#FFFFFF"
+>
 
-    <android.support.design.widget.AppBarLayout
+    <com.google.android.material.appbar.AppBarLayout
             android:id="@+id/appbar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -18,7 +19,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 
-        <android.support.v7.widget.Toolbar
+        <androidx.appcompat.widget.Toolbar
                 android:id="@+id/toolbar"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
@@ -28,16 +29,17 @@
                 app:title="Detail Product"
                 tools:targetApi="lollipop"/>
 
-    </android.support.design.widget.AppBarLayout>
+    </com.google.android.material.appbar.AppBarLayout>
 
-    <android.support.v4.widget.SwipeRefreshLayout
-            android:id="@+id/refreshLayput"
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+            android:id="@+id/swipe_refresh"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             app:layout_constraintBottom_toBottomOf="parent" app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/appbar" android:layout_marginStart="14dp"
-            android:layout_marginTop="14dp" android:layout_marginEnd="14dp" android:layout_marginBottom="14dp">
+            android:layout_marginTop="14dp" android:layout_marginEnd="14dp" android:layout_marginBottom="14dp"
+    >
 
         <ScrollView
                 android:layout_width="match_parent"
@@ -46,15 +48,12 @@
                 app:layout_constraintTop_toBottomOf="@+id/appbar"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                android:id="@+id/scrollView"
-                android:visibility="visible"
         >
 
             <LinearLayout
                     android:orientation="vertical"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:id="@+id/verticalLayout"
                     app:layout_constraintTop_toBottomOf="@+id/appbar"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -64,13 +63,13 @@
                         android:text="@string/productNameExample"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:id="@+id/productName"
+                        android:id="@+id/tv_product_name"
                         android:textStyle="bold"
                         android:textColor="#000000"
                         android:textSize="15sp"/>
 
                 <com.synnapps.carouselview.CarouselView
-                        android:id="@+id/imageSlider"
+                        android:id="@+id/img_slider_product"
                         android:layout_width="match_parent"
                         android:layout_height="200dp"
                         app:fillColor="#FFFFFFFF"
@@ -79,7 +78,23 @@
                         app:slideInterval="3000"
                         app:strokeColor="#FF777777"
                         app:strokeWidth="1dp"
-                        android:layout_marginTop="8dp"/>
+                        android:layout_marginTop="8dp">
+                </com.synnapps.carouselview.CarouselView>
+
+                <TextView
+                        android:text="Gambar hanya contoh / ilustrasi"
+                        android:layout_width="match_parent"
+                        android:gravity="center"
+                        android:textStyle="italic" android:layout_marginTop="8dp" android:layout_height="wrap_content"/>
+                <TextView
+                        android:text="Deskripsi"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textColor="#000000"
+                        android:textStyle="bold"
+                        android:textSize="15sp"
+                        android:layout_marginTop="8dp"
+                        tools:ignore="HardcodedText" android:id="@+id/tv_description"/>
 
                 <View
                         android:id="@+id/view"
@@ -87,18 +102,6 @@
                         android:layout_height="1dp"
                         android:layout_marginTop="8dp"
                         android:background="#FFB7B7B7"/>
-
-                <TextView
-                        android:text="Deskripsi"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:id="@+id/txtDesk"
-                        android:textColor="#000000"
-                        android:textStyle="bold"
-                        android:textSize="15sp"
-                        android:layout_marginTop="8dp"
-                        tools:ignore="HardcodedText"/>
-
                 <WebView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -130,6 +133,6 @@
             </LinearLayout>
         </ScrollView>
 
-    </android.support.v4.widget.SwipeRefreshLayout>
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
-</android.support.constraint.ConstraintLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

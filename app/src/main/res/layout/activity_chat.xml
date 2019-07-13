@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout
+<androidx.constraintlayout.widget.ConstraintLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
         xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context=".view.ui.ChatActivity"
+        tools:context=".ui.activity.ChatActivity"
         android:background="#FFFFFF"
         android:id="@+id/chat_layout">
 
-    <android.support.design.widget.AppBarLayout
+    <com.google.android.material.appbar.AppBarLayout
             android:id="@+id/appBarLayout"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -20,7 +20,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 
-        <android.support.v7.widget.Toolbar
+        <androidx.appcompat.widget.Toolbar
                 android:id="@+id/toolbar"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
@@ -33,7 +33,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="?attr/actionBarSize">
 
-                <android.support.v7.widget.LinearLayoutCompat
+                <androidx.appcompat.widget.LinearLayoutCompat
                         android:id="@+id/linearLayoutCompat"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
@@ -61,30 +61,27 @@
                             android:textStyle="bold"
                             tools:ignore="HardcodedText"/>
 
-                </android.support.v7.widget.LinearLayoutCompat>
+                </androidx.appcompat.widget.LinearLayoutCompat>
 
                 <de.hdodenhof.circleimageview.CircleImageView
                         android:id="@+id/photo"
                         android:layout_width="40dp"
                         android:layout_height="match_parent"
                         android:layout_alignParentEnd="true"
-                        android:layout_alignParentLeft="false"
-                        android:layout_alignParentRight="true"
                         android:layout_alignParentStart="false"
                         android:layout_marginEnd="12dp"
-                        android:layout_marginRight="12dp"
                         android:src="@drawable/circle_profil"
                         app:civ_border_color="#fff"
                         app:civ_border_width="2dp"/>
 
             </RelativeLayout>
 
-        </android.support.v7.widget.Toolbar>
+        </androidx.appcompat.widget.Toolbar>
 
-    </android.support.design.widget.AppBarLayout>
+    </com.google.android.material.appbar.AppBarLayout>
 
-    <android.support.v4.widget.SwipeRefreshLayout
-            android:id="@+id/refreshLayput"
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+            android:id="@+id/swipe_refresh"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             app:layout_constraintBottom_toTopOf="@+id/line"
@@ -102,7 +99,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
 
-            <android.support.v7.widget.RecyclerView
+            <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/list_chat"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
@@ -111,10 +108,10 @@
                     android:stackFromBottom="false"
                     tools:layout_editor_absoluteX="314dp"
                     tools:layout_editor_absoluteY="481dp">
-            </android.support.v7.widget.RecyclerView>
+            </androidx.recyclerview.widget.RecyclerView>
 
         </RelativeLayout>
-    </android.support.v4.widget.SwipeRefreshLayout>
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
     <View
             android:id="@+id/line"
@@ -177,4 +174,4 @@
 
     </LinearLayout>
 
-</android.support.constraint.ConstraintLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

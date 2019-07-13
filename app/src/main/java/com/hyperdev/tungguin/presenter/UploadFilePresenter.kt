@@ -6,14 +6,16 @@ import com.hyperdev.tungguin.utils.SchedulerProvider
 import com.miguelbcr.ui.rx_paparazzo2.RxPaparazzo
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
-import com.hyperdev.tungguin.view.UploadImageView
+import com.hyperdev.tungguin.ui.view.UploadImageView
 
-class UploadFilePresenter(private val view: UploadImageView.View,
-                          private val scheduler: SchedulerProvider) : UploadImageView.Presenter{
+class UploadFilePresenter(
+    private val view: UploadImageView.View,
+    private val scheduler: SchedulerProvider
+) : UploadImageView.Presenter {
 
     private val compositeDisposable = CompositeDisposable()
 
-    override fun takePhotoGallery(activity: Activity){
+    override fun takePhotoGallery(activity: Activity) {
         view.showProgressFile()
         compositeDisposable.add(
             RxPaparazzo.multiple(activity)

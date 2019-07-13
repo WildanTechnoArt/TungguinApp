@@ -1,25 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              xmlns:tools="http://schemas.android.com/tools" android:orientation="vertical"
-              android:layout_width="match_parent"
-              android:layout_height="wrap_content"
-              android:padding="4dp" android:layout_marginBottom="8dp">
+<LinearLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:padding="4dp"
+        android:orientation="vertical">
 
     <TextView
-            android:text="Desain Populer"
+            android:id="@+id/tv_label_desain"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/label_desain"
+            android:layout_marginTop="4dp"
+            android:layout_marginStart="4dp"
+            android:text="-"
             android:textSize="17sp"
             android:textStyle="bold"
             android:textColor="#000000"
-            tools:ignore="HardcodedText" android:layout_marginTop="4dp" android:layout_marginStart="4dp"/>
+            tools:ignore="HardcodedText"/>
 
-    <android.support.v7.widget.RecyclerView
+    <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_katalog_item"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:id="@+id/desain_item_view"
-            android:layout_marginTop="8dp"/>
+            android:layout_marginTop="8dp"
+            android:orientation="horizontal"/>
 
 </LinearLayout>

@@ -11,12 +11,12 @@ import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
 import com.hyperdev.tungguin.R
 import com.hyperdev.tungguin.database.SharedPrefManager
-import com.hyperdev.tungguin.view.ui.HistoryActivity
+import com.hyperdev.tungguin.ui.activity.HistoryActivity
 import android.os.Build
-import android.support.v4.app.NotificationCompat
-import com.hyperdev.tungguin.view.ui.ChatActivity
-import com.hyperdev.tungguin.view.ui.DetailOrderActivity
-import com.hyperdev.tungguin.view.ui.TestimoniActivity
+import androidx.core.app.NotificationCompat
+import com.hyperdev.tungguin.ui.activity.ChatActivity
+import com.hyperdev.tungguin.ui.activity.DetailOrderActivity
+import com.hyperdev.tungguin.ui.activity.TestimoniActivity
 
 class MyFirebaseMessagingService : FirebaseMessagingService() {
 
@@ -29,7 +29,7 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
         val title = remoteMessage?.notification?.title.toString()
         val message = remoteMessage?.notification?.body.toString()
 
-        when(type){
+        when (type) {
             "top_up_success" -> {
                 val intent = Intent(this, HistoryActivity::class.java)
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
@@ -73,10 +73,11 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
         }
     }
 
-    private fun notificationProperties(title: String, message: String, intent: Intent){
+    private fun notificationProperties(title: String, message: String, intent: Intent) {
 
         val pendingIntent = PendingIntent.getActivity(
-            this, 0, intent, PendingIntent.FLAG_ONE_SHOT)
+            this, 0, intent, PendingIntent.FLAG_ONE_SHOT
+        )
         val channelId = "Default"
         val builder = NotificationCompat.Builder(this, channelId)
             .setSmallIcon(R.drawable.ic_notification)

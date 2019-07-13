@@ -2,27 +2,27 @@ package com.hyperdev.tungguin.adapter
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import com.hyperdev.tungguin.R
+import com.hyperdev.tungguin.model.katalogdesain.Item
 import com.hyperdev.tungguin.model.katalogdesain.KatalogItem
 import kotlin.properties.Delegates
 
-class KatalogDesainAdapter(private val katalogList: ArrayList<KatalogItem>, private var context: Context?)
-    :RecyclerView.Adapter<KatalogDesainAdapter.ViewHolder>(){
+class KatalogDesainAdapter(private val katalogList: ArrayList<KatalogItem>, private var context: Context?) :
+    RecyclerView.Adapter<KatalogDesainAdapter.ViewHolder>() {
 
-    private var listItem: MutableList<KatalogItem> = mutableListOf()
     private var adapter by Delegates.notNull<KatalogItemListAdapter>()
 
     inner class ViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
 
-        // Deklarasi View
-        val getKatalogName: TextView = view.findViewById(R.id.label_desain)
-        val getItemKatalog: RecyclerView = view.findViewById(R.id.desain_item_view)
+        val getKatalogName: TextView = view.findViewById(R.id.tv_label_desain)
+        val getItemKatalog: RecyclerView = view.findViewById(R.id.rv_katalog_item)
+
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, p1: Int): ViewHolder {
@@ -35,13 +35,15 @@ class KatalogDesainAdapter(private val katalogList: ArrayList<KatalogItem>, priv
     @SuppressLint("SetTextI18n")
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
 
-        listItem.addAll(katalogList)
-
         holder.getKatalogName.text = katalogList[position].label.toString()
 
-        adapter = KatalogItemListAdapter(listItem as ArrayList<KatalogItem>, context, position)
+        adapter = KatalogItemListAdapter(katalogList[position].items as ArrayList<Item>, context)
 
-        val layout = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+        val layout = LinearLayoutManager(
+            holder.getItemKatalog.context,
+            LinearLayoutManager.HORIZONTAL,
+            false
+        )
         holder.getItemKatalog.layoutManager = layout
         holder.getItemKatalog.setHasFixedSize(true)
         holder.getItemKatalog.adapter = adapter

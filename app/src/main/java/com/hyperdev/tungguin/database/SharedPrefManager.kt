@@ -61,13 +61,6 @@ class SharedPrefManager private constructor(context: Context) {
         return editor.commit()
     }
 
-    fun deleteDesigner(): Boolean {
-        val preferences = mContext.getSharedPreferences(DESIGNER_ID, Context.MODE_PRIVATE)
-        val editor = preferences.edit()
-        editor.clear()
-        return editor.commit()
-    }
-
     //Method untuk meyimpan Token pada SharedPreference
     fun storeToken(token: String): Boolean {
         val preferences = mContext.getSharedPreferences(TOKEN_USER, Context.MODE_PRIVATE)

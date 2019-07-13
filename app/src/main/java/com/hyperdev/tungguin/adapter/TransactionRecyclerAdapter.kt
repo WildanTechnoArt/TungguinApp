@@ -1,16 +1,16 @@
 package com.hyperdev.tungguin.adapter
 
 import android.annotation.SuppressLint
-import android.support.v7.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import com.hyperdev.tungguin.R
-import com.hyperdev.tungguin.model.transactionhistory.ListTransaction
+import com.hyperdev.tungguin.model.transaction.ListTransaction
 
-class TransactionRecyclerAdapter(private val transactionList: ArrayList<ListTransaction>)
-    :RecyclerView.Adapter<TransactionRecyclerAdapter.ViewHolder>(){
+class TransactionRecyclerAdapter(private val transactionList: ArrayList<ListTransaction>) :
+    RecyclerView.Adapter<TransactionRecyclerAdapter.ViewHolder>() {
 
     inner class ViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
 
@@ -43,9 +43,9 @@ class TransactionRecyclerAdapter(private val transactionList: ArrayList<ListTran
 
         //set data dari ListTopUp pada View
         holder.getListFormattedID.text = getFormattedID
-        if(getListFormattedType == "deposit"){
+        if (getListFormattedType == "deposit") {
             holder.getListFormattedAmount.text = "+ $getFormattedAmount"
-        }else if(getListFormattedType == "withdraw"){
+        } else if (getListFormattedType == "withdraw") {
             holder.getListFormattedAmount.text = "- $getFormattedAmount"
         }
         holder.getListFormattedDate.text = getFormattedDate

@@ -1,9 +1,9 @@
 package com.hyperdev.tungguin.fragment
 
 import android.os.Bundle
-import android.support.v4.app.Fragment
-import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
+import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -13,25 +13,25 @@ import android.widget.TextView
 import com.hyperdev.tungguin.R
 import com.hyperdev.tungguin.adapter.TopUpRecyclerAdapter
 import com.hyperdev.tungguin.database.SharedPrefManager
-import com.hyperdev.tungguin.model.topuphistori.ListTopUp
-import com.hyperdev.tungguin.model.topuphistori.TopUpData
+import com.hyperdev.tungguin.model.transaction.ListTopUp
+import com.hyperdev.tungguin.model.transaction.TopUpData
 import com.hyperdev.tungguin.network.BaseApiService
-import com.hyperdev.tungguin.network.NetworkUtil
+import com.hyperdev.tungguin.network.NetworkClient
 import com.hyperdev.tungguin.presenter.TopUpHistoriPresenter
-import com.hyperdev.tungguin.repository.TopUpHIstoryRepositoryImpl
+import com.hyperdev.tungguin.repository.transaction.TransactionRepositoryImp
 import com.hyperdev.tungguin.utils.AppSchedulerProvider
-import com.hyperdev.tungguin.view.HistoriTopUpView
+import com.hyperdev.tungguin.ui.view.HistoriTopUpView
 import kotlin.properties.Delegates
 
-class TopUpHisFragment : Fragment(), HistoriTopUpView.View{
+class TopUpHisFragment : Fragment(), HistoriTopUpView.View {
 
     //Deklarasi Variable
     private var listTopUp: MutableList<ListTopUp> = mutableListOf()
     private lateinit var presenter: HistoriTopUpView.Presenter
     private lateinit var token: String
-    private lateinit var recycler : RecyclerView
-    private lateinit var progressBar : ProgressBar
-    private lateinit var txtImgNotFound : TextView
+    private lateinit var recycler: RecyclerView
+    private lateinit var progressBar: ProgressBar
+    private lateinit var txtImgNotFound: TextView
     private lateinit var baseApiService: BaseApiService
     private val TAG = javaClass.simpleName
     private var adapter by Delegates.notNull<TopUpRecyclerAdapter>()
@@ -45,7 +45,7 @@ class TopUpHisFragment : Fragment(), HistoriTopUpView.View{
         page = 1
 
         recycler = view.findViewById(R.id.recyclerTopupList)
-        progressBar = view.findViewById(R.id.progressBar)
+        progressBar = view.findViewById(R.id.progress_bar)
         txtImgNotFound = view.findViewById(R.id.txt_img_not_found)
 
         loadData()
@@ -57,19 +57,19 @@ class TopUpHisFragment : Fragment(), HistoriTopUpView.View{
         return view
     }
 
-    private fun loadData(){
+    private fun loadData() {
         token = SharedPrefManager.getInstance(context!!).token.toString()
 
-        baseApiService = NetworkUtil.getClient(context!!)!!
+        baseApiService = NetworkClient.getClient(context!!)!!
             .create(BaseApiService::class.java)
 
         val layout = LinearLayoutManager(context)
         recycler.layoutManager = layout
         recycler.setHasFixedSize(true)
 
-        val request = TopUpHIstoryRepositoryImpl(baseApiService)
+        val request = TransactionRepositoryImp(baseApiService)
         val scheduler = AppSchedulerProvider()
-        presenter = TopUpHistoriPresenter(this, context!!,request, scheduler)
+        presenter = TopUpHistoriPresenter(this, context!!, request, scheduler)
         adapter = TopUpRecyclerAdapter(context, listTopUp as ArrayList<ListTopUp>)
 
         presenter.getTopUpHistory("Bearer $token", page = page)
@@ -113,18 +113,18 @@ class TopUpHisFragment : Fragment(), HistoriTopUpView.View{
     }
 
     override fun showTopUpHistory(data: List<ListTopUp>) {
-        if(page == 1){
+        if (page == 1) {
             listTopUp.clear()
             listTopUp.addAll(data)
             adapter.notifyDataSetChanged()
-        }else{
+        } else {
             adapter.refreshAdapter(data)
         }
 
-        if(adapter.itemCount.toString() != "0"){
+        if (adapter.itemCount.toString() != "0") {
             txtImgNotFound.visibility = View.GONE
             recycler.visibility = View.VISIBLE
-        }else{
+        } else {
             txtImgNotFound.visibility = View.VISIBLE
             recycler.visibility = View.GONE
         }

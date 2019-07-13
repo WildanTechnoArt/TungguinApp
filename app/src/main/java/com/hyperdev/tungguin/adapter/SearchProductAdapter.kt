@@ -4,21 +4,27 @@ import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
-import android.support.constraint.ConstraintLayout
-import android.support.v7.widget.RecyclerView
+import android.graphics.drawable.Drawable
+import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import android.widget.ProgressBar
 import android.widget.TextView
-import com.bumptech.glide.request.RequestOptions
+import com.bumptech.glide.load.DataSource
+import com.bumptech.glide.load.engine.GlideException
+import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions.withCrossFade
+import com.bumptech.glide.request.RequestListener
+import com.bumptech.glide.request.target.Target
 import com.hyperdev.tungguin.GlideApp
 import com.hyperdev.tungguin.R
-import com.hyperdev.tungguin.model.searchproduct.DesignItem
-import com.hyperdev.tungguin.view.ui.DetailProductActivity
+import com.hyperdev.tungguin.model.searchproduct.SearchItem
+import com.hyperdev.tungguin.ui.activity.DetailProductActivity
 
-class SearchProductAdapter(private val productList: ArrayList<DesignItem>, private var context: Context?)
-    :RecyclerView.Adapter<SearchProductAdapter.ViewHolder>(){
+class SearchProductAdapter(private var context: Context?, private val productList: ArrayList<SearchItem>) :
+    RecyclerView.Adapter<SearchProductAdapter.ViewHolder>() {
 
     inner class ViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
 
@@ -26,17 +32,18 @@ class SearchProductAdapter(private val productList: ArrayList<DesignItem>, priva
         val getDesignName: TextView = view.findViewById(R.id.design_name)
         val getBalanceProduct: TextView = view.findViewById(R.id.balance_design)
         val getImageProduct: ImageView = view.findViewById(R.id.image_product)
-        val getItemSelector: ConstraintLayout = view.findViewById(R.id.itemTopup)
+        val getItemSelector: ConstraintLayout = view.findViewById(R.id.item_layout)
+        val progressbar: ProgressBar = view.findViewById(R.id.progress_bar)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, p1: Int): ViewHolder {
-        val v = LayoutInflater.from(parent.context).inflate(R.layout.search_design_item, parent, false)
+        val v = LayoutInflater.from(parent.context).inflate(R.layout.item_product_list, parent, false)
         return ViewHolder(v)
     }
 
     override fun getItemCount(): Int = productList.size
 
-    fun refreshAdapter(productList: List<DesignItem>) {
+    fun refreshAdapter(productList: List<SearchItem>) {
         this.productList.addAll(productList)
         notifyItemRangeChanged(0, this.productList.size)
     }
@@ -53,7 +60,31 @@ class SearchProductAdapter(private val productList: ArrayList<DesignItem>, priva
         holder.getBalanceProduct.text = getAmountProduct
         GlideApp.with(holder.view.context)
             .load(getImageProduct)
-            .apply(RequestOptions().placeholder(R.drawable.ic_hourglass_empty_black_24dp))
+            .override(110,90)
+            .transition(withCrossFade())
+            .listener(object : RequestListener<Drawable>{
+                override fun onLoadFailed(
+                    e: GlideException?,
+                    model: Any?,
+                    target: Target<Drawable>?,
+                    isFirstResource: Boolean
+                ): Boolean {
+                    holder.progressbar.visibility = View.GONE
+                    return false
+                }
+
+                override fun onResourceReady(
+                    resource: Drawable?,
+                    model: Any?,
+                    target: Target<Drawable>?,
+                    dataSource: DataSource?,
+                    isFirstResource: Boolean
+                ): Boolean {
+                    holder.progressbar.visibility = View.GONE
+                    return false
+                }
+
+            })
             .into(holder.getImageProduct)
 
         holder.getItemSelector.setOnClickListener {

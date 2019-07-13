@@ -1,7 +1,7 @@
 package com.hyperdev.tungguin.adapter
 
-import android.support.v7.widget.CardView
-import android.support.v7.widget.RecyclerView
+import androidx.cardview.widget.CardView
+import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -9,10 +9,10 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import com.hyperdev.tungguin.R
 import com.hyperdev.tungguin.model.detailproduct.PriceList
-import com.hyperdev.tungguin.view.PriceListView
+import com.hyperdev.tungguin.ui.view.PriceListView
 
-class PriceListAdapter(private val priceList: ArrayList<PriceList>, private val priceListView: PriceListView)
-    :RecyclerView.Adapter<PriceListAdapter.ViewHolder>(){
+class PriceListAdapter(private val priceList: ArrayList<PriceList>, private val priceListView: PriceListView) :
+    RecyclerView.Adapter<PriceListAdapter.ViewHolder>() {
 
     private var selected: ArrayList<Int> = arrayListOf()
 
@@ -34,10 +34,9 @@ class PriceListAdapter(private val priceList: ArrayList<PriceList>, private val 
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
 
-        if(!selected.contains(position)){
+        if (!selected.contains(position)) {
             holder.getDesainLayout.setBackgroundResource(R.drawable.menu_round_button)
-        }
-        else{
+        } else {
             holder.getDesainLayout.setBackgroundResource(R.drawable.menu_round_no_hover)
         }
 
@@ -54,9 +53,9 @@ class PriceListAdapter(private val priceList: ArrayList<PriceList>, private val 
 
             holder.getDesainLayout.setBackgroundResource(R.drawable.menu_round_no_hover)
 
-            if(selected.isEmpty()){
+            if (selected.isEmpty()) {
                 selected.add(position)
-            }else{
+            } else {
                 val oldPosition: Int = selected[0]
                 selected.clear()
                 selected.add(position)

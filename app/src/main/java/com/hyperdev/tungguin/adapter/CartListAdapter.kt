@@ -1,30 +1,29 @@
 package com.hyperdev.tungguin.adapter
 
 import android.annotation.SuppressLint
-import android.support.v7.app.AlertDialog
-import android.support.v7.widget.RecyclerView
+import androidx.appcompat.app.AlertDialog
+import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageButton
 import android.widget.TextView
 import com.hyperdev.tungguin.R
-import com.hyperdev.tungguin.model.cart.Item
-import com.hyperdev.tungguin.model.deletecart.DeleteCartResponse
-import com.hyperdev.tungguin.repository.DeleteCartRepositoryImpl
+import com.hyperdev.tungguin.model.cart.CartItem
+import com.hyperdev.tungguin.model.cart.DeleteCartResponse
+import com.hyperdev.tungguin.repository.cart.CartRepositoryImp
 import com.hyperdev.tungguin.utils.SchedulerProvider
-import com.hyperdev.tungguin.view.CartListView
-import com.hyperdev.tungguin.view.DeleteCartView
+import com.hyperdev.tungguin.ui.view.MyCartView
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.subscribers.ResourceSubscriber
 
-
-class CartListAdapter(private val cartList: ArrayList<Item>, private val cartListView: CartListView,
-                      private val view: DeleteCartView.View,
-                      private val cart: DeleteCartRepositoryImpl,
-                      private val scheduler: SchedulerProvider, private val token: String
-)
-    :RecyclerView.Adapter<CartListAdapter.ViewHolder>(){
+class CartListAdapter(
+    private val cartList: ArrayList<CartItem>,
+    private val view: MyCartView.View,
+    private val cart: CartRepositoryImp,
+    private val scheduler: SchedulerProvider,
+    private val token: String
+) : RecyclerView.Adapter<CartListAdapter.ViewHolder>() {
 
     inner class ViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
 
@@ -55,21 +54,26 @@ class CartListAdapter(private val cartList: ArrayList<Item>, private val cartLis
         holder.getCartNumber.text = getNumberCart
         holder.getCartPrice.text = getPriceCart
 
-        cartListView.shaowItemCount(getItemCount)
+        view.showItemCount(getItemCount)
 
         holder.getDeleteItem.setOnClickListener {
             val message: AlertDialog.Builder = AlertDialog.Builder(it.context)
                 .setMessage("Anda yakin ingin menghapusnya?")
                 .setPositiveButton("Ya") { _, _ ->
-                    view.displayProgressDelete()
+                    view.showProgressBar()
 
-                    cart.getCartDelete(token, "application/json", getId)
+                    cart.deleteCartItem(token, "application/json", getId)
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribeOn(scheduler.io())
-                        .subscribeWith(object : ResourceSubscriber<DeleteCartResponse>(){
+                        .subscribeWith(object : ResourceSubscriber<DeleteCartResponse>() {
                             override fun onComplete() {
-                                view.hideProgressDelete()
-                                view.onSuccess()
+                                view.onSuccessDeleteItem()
+
+                                if (cartList.size < 1) {
+                                    view.showItemCount("0")
+                                } else {
+                                    view.showItemCount(getItemCount)
+                                }
                             }
 
                             override fun onNext(t: DeleteCartResponse) {
@@ -78,7 +82,7 @@ class CartListAdapter(private val cartList: ArrayList<Item>, private val cartLis
 
                             override fun onError(e: Throwable) {
                                 e.printStackTrace()
-                                view.hideProgressDelete()
+                                view.hideProgressBar()
                             }
                         })
                 }
@@ -90,7 +94,7 @@ class CartListAdapter(private val cartList: ArrayList<Item>, private val cartLis
         }
     }
 
-    private fun onDeleteData(position: Int?){
+    private fun onDeleteData(position: Int?) {
         cartList.removeAt(position!!)
         notifyItemRemoved(position)
         notifyItemRangeChanged(position, cartList.size)

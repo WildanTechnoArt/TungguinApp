@@ -167,7 +167,7 @@
                                 <PersistentState>
                                   <option name="values">
                                     <map>
-                                      <entry key="url" value="jar:file:/Applications/Android%20Studio.app/Contents/plugins/android/lib/android.jar!/images/material_design_icons/editor/ic_attach_file_black_24dp.xml" />
+                                      <entry key="url" value="jar:file:/Applications/Android%20Studio.app/Contents/plugins/android/lib/android.jar!/images/material_design_icons/action/ic_search_black_24dp.xml" />
                                     </map>
                                   </option>
                                 </PersistentState>
@@ -177,9 +177,9 @@
                         </option>
                         <option name="values">
                           <map>
-                            <entry key="color" value="939393" />
+                            <entry key="color" value="d40101" />
                             <entry key="height" value="28" />
-                            <entry key="outputName" value="ic_attach_file" />
+                            <entry key="outputName" value="ic_search_28dp" />
                             <entry key="overrideSize" value="true" />
                             <entry key="sourceFile" value="$APPLICATION_HOME_DIR$/bin/C:\Users\wildan" />
                             <entry key="width" value="28" />

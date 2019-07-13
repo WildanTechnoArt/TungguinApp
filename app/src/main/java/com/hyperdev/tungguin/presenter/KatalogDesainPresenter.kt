@@ -5,57 +5,60 @@ import android.widget.Toast
 import com.hyperdev.tungguin.model.katalogdesain.KatalogDesainResponse
 import com.hyperdev.tungguin.network.ConnectivityStatus
 import com.hyperdev.tungguin.network.HandleError
-import com.hyperdev.tungguin.repository.KatalogDesainRepositoryImpl
+import com.hyperdev.tungguin.repository.product.ProductRepositoryImpl
 import com.hyperdev.tungguin.utils.SchedulerProvider
-import com.hyperdev.tungguin.view.KatalogDesainView
+import com.hyperdev.tungguin.ui.view.KatalogDesainView
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.subscribers.ResourceSubscriber
 import retrofit2.HttpException
 import java.net.SocketTimeoutException
 
-class KatalogDesainPresenter(private val view: KatalogDesainView.View,
-                             private val context: Context,
-                             private val katalog: KatalogDesainRepositoryImpl,
-                             private val scheduler: SchedulerProvider) : KatalogDesainView.Presenter{
+class KatalogDesainPresenter(
+    private val view: KatalogDesainView.View,
+    private val context: Context,
+    private val katalog: ProductRepositoryImpl,
+    private val scheduler: SchedulerProvider
+) : KatalogDesainView.Presenter {
 
     private val compositeDisposable = CompositeDisposable()
 
     override fun getKatalogDesain(token: String) {
         view.displayProgress()
 
-        compositeDisposable.add(katalog.getKatalogDesain(token, "application/json")
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribeOn(scheduler.io())
-            .subscribeWith(object : ResourceSubscriber<KatalogDesainResponse>(){
-                override fun onComplete() {
-                    view.hideProgress()
-                }
-
-                override fun onNext(t: KatalogDesainResponse) {
-                    try{
-                        t.data?.let { view.showKatalogItemList(it) }
-                    }catch(ex: Exception){
-                        ex.printStackTrace()
+        compositeDisposable.add(
+            katalog.getKatalogDesain(token, "application/json")
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(scheduler.io())
+                .subscribeWith(object : ResourceSubscriber<KatalogDesainResponse>() {
+                    override fun onComplete() {
+                        view.hideProgress()
                     }
-                }
 
-                override fun onError(e: Throwable) {
-                    e.printStackTrace()
-                    view.hideProgress()
-
-                    if(ConnectivityStatus.isConnected(context)){
-                        when (e) {
-                            is HttpException -> // non 200 error codes
-                                HandleError.handleError(e, e.code(), context)
-                            is SocketTimeoutException -> // connection errors
-                                Toast.makeText(context, "Connection Timeout!", Toast.LENGTH_LONG).show()
+                    override fun onNext(t: KatalogDesainResponse) {
+                        try {
+                            t.data?.let { view.showKatalogItemList(it) }
+                        } catch (ex: Exception) {
+                            ex.printStackTrace()
                         }
-                    }else{
-                        Toast.makeText(context, "Tidak Terhubung Dengan Internet!", Toast.LENGTH_LONG).show()
                     }
-                }
-            })
+
+                    override fun onError(e: Throwable) {
+                        e.printStackTrace()
+                        view.hideProgress()
+
+                        if (ConnectivityStatus.isConnected(context)) {
+                            when (e) {
+                                is HttpException -> // non 200 error codes
+                                    HandleError.handleError(e, e.code(), context)
+                                is SocketTimeoutException -> // connection errors
+                                    Toast.makeText(context, "Connection Timeout!", Toast.LENGTH_LONG).show()
+                            }
+                        } else {
+                            Toast.makeText(context, "Tidak Terhubung Dengan Internet!", Toast.LENGTH_LONG).show()
+                        }
+                    }
+                })
         )
     }
 

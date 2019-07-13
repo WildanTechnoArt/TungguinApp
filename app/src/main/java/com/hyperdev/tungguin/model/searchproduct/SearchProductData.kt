@@ -10,7 +10,7 @@ data class SearchProductData (
     var currentPage: Int? = null,
     @SerializedName("data")
     @Expose
-    var dataProduct: List<DesignItem>? = null,
+    var dataProduct: List<SearchItem>? = null,
     @SerializedName("first_page_url")
     @Expose
     var firstPageUrl: String? = null,

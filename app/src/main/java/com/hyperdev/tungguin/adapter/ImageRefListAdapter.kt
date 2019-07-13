@@ -1,14 +1,14 @@
 package com.hyperdev.tungguin.adapter
 
 import android.annotation.SuppressLint
-import android.support.v7.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView
 import android.view.View
 import android.view.ViewGroup
 import android.view.LayoutInflater
 import android.widget.ImageButton
 import android.widget.TextView
 import com.hyperdev.tungguin.R
-import com.hyperdev.tungguin.view.DeleteImageView
+import com.hyperdev.tungguin.ui.view.DeleteImageView
 
 class ImageRefListAdapter(private var nameImgList: ArrayList<String?>, private var imageView: DeleteImageView) :
     RecyclerView.Adapter<ImageRefListAdapter.ViewHolder>() {
@@ -32,10 +32,10 @@ class ImageRefListAdapter(private var nameImgList: ArrayList<String?>, private v
     @SuppressLint("SetTextI18n")
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
 
-        //Inisialisasi Data pada View
-        val getImgName = nameImgList.get(position).toString()
+        //Inisialisasi DashboardData pada View
+        val getImgName = nameImgList[position].toString()
 
-        //Deklarasi Data pada View
+        //Deklarasi DashboardData pada View
         holder.nameImage.text = getImgName
 
         holder.closeImage.setOnClickListener {
@@ -44,7 +44,7 @@ class ImageRefListAdapter(private var nameImgList: ArrayList<String?>, private v
         }
     }
 
-    private fun onDeleteData(position: Int?){
+    private fun onDeleteData(position: Int?) {
         nameImgList.removeAt(position!!)
         notifyItemRemoved(position)
         notifyItemRangeChanged(position, nameImgList.size)

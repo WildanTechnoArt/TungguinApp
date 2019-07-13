@@ -2,12 +2,12 @@ package com.hyperdev.tungguin.presenter
 
 import android.content.Context
 import android.widget.Toast
-import com.hyperdev.tungguin.model.searchproduct.SearchByNameResponse
+import com.hyperdev.tungguin.model.searchproduct.SearchProductResponse
 import com.hyperdev.tungguin.network.ConnectivityStatus
 import com.hyperdev.tungguin.network.HandleError
-import com.hyperdev.tungguin.repository.SearchProductRepositoryImpl
+import com.hyperdev.tungguin.repository.product.ProductRepositoryImpl
 import com.hyperdev.tungguin.utils.SchedulerProvider
-import com.hyperdev.tungguin.view.SearchProductView
+import com.hyperdev.tungguin.ui.view.SearchProductView
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.subscribers.ResourceSubscriber
@@ -15,92 +15,99 @@ import retrofit2.HttpException
 import java.net.SocketTimeoutException
 import java.util.*
 
-// Digunakan untuk menjembatani Model dengan View pada Fragment
-class SearchProductPresenter(private val view: SearchProductView.View,
-                             private val context: Context,
-                             private val product: SearchProductRepositoryImpl,
-                             private val scheduler: SchedulerProvider) : SearchProductView.Presenter{
+class SearchProductPresenter(
+    private val view: SearchProductView.View,
+    private val context: Context,
+    private val product: ProductRepositoryImpl?,
+    private val scheduler: SchedulerProvider
+) : SearchProductView.Presenter {
 
     private val compositeDisposable = CompositeDisposable()
 
-    override fun getProductByName(auth: String, name: String?) {
-        view.displayProgressItem()
+    override fun getProductByName(token: String, name: String?) {
+        view.showSearchProgressBar()
 
-        compositeDisposable.add(product.searchProuctByName(auth, "application/json", name.toString())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribeOn(scheduler.io())
-            .subscribeWith(object : ResourceSubscriber<SearchByNameResponse>(){
+        product?.searchProuctByName(token, "application/json", name.toString())
+            ?.observeOn(AndroidSchedulers.mainThread())
+            ?.subscribeOn(scheduler.io())
+            ?.subscribeWith(object : ResourceSubscriber<SearchProductResponse>() {
                 override fun onComplete() {
-                    view.hideProgressItem()
+                    view.hideSearchProgressBar()
                 }
 
-                override fun onNext(t: SearchByNameResponse) {
-                    try{
+                override fun onNext(t: SearchProductResponse) {
+                    try {
                         t.data?.let { it.dataProduct?.let { it1 -> view.showProductByName(it1) } }
-                        t.data?.let { view.showProduct(it) }
-                    }catch(ex: Exception){
+                        t.data?.let { view.getProductPageUrl(it) }
+                    } catch (ex: Exception) {
                         ex.printStackTrace()
                     }
                 }
 
                 override fun onError(e: Throwable) {
                     e.printStackTrace()
-                    view.hideProgressItem()
+                    view.hideSearchProgressBar()
                     view.showProductByName(Collections.emptyList())
 
-                    if(ConnectivityStatus.isConnected(context)){
+                    if (ConnectivityStatus.isConnected(context)) {
                         when (e) {
                             is HttpException -> // non 200 error codes
                                 HandleError.handleError(e, e.code(), context)
                             is SocketTimeoutException -> // connection errors
                                 Toast.makeText(context, "Connection Timeout!", Toast.LENGTH_LONG).show()
                         }
-                    }else{
+                    } else {
                         Toast.makeText(context, "Tidak Terhubung Dengan Internet!", Toast.LENGTH_LONG).show()
                     }
                 }
-            })
-        )
+            })?.let {
+                compositeDisposable.add(
+                    it
+                )
+            }
     }
 
-    override fun getProductByPage(auth: String, page: Int?) {
-        view.displayProgressItem()
+    override fun getProductByPage(token: String, page: Int?) {
+        view.showSearchProgressBar()
 
-        compositeDisposable.add(product.searchProuctByPage(auth, "application/json", page!!)
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribeOn(scheduler.io())
-            .subscribeWith(object : ResourceSubscriber<SearchByNameResponse>(){
+        product?.searchProuctByPage(token, "application/json", page!!)
+            ?.observeOn(AndroidSchedulers.mainThread())
+            ?.subscribeOn(scheduler.io())
+            ?.subscribeWith(object : ResourceSubscriber<SearchProductResponse>() {
                 override fun onComplete() {
-                    view.hideProgressItem()
+                    view.hideSearchProgressBar()
                 }
 
-                override fun onNext(t: SearchByNameResponse) {
-                    try{
+                override fun onNext(t: SearchProductResponse) {
+                    try {
                         t.data?.let { it.dataProduct?.let { it1 -> view.showProductByPage(it1) } }
-                        t.data?.let { view.showProduct(it) }
-                    }catch(ex: Exception){
+                        t.data?.let { view.getProductPageUrl(it) }
+                    } catch (ex: Exception) {
                         ex.printStackTrace()
                     }
                 }
 
                 override fun onError(e: Throwable) {
                     e.printStackTrace()
-                    view.hideProgressItem()
+                    view.hideSearchProgressBar()
                     view.showProductByPage(Collections.emptyList())
 
-                    if(ConnectivityStatus.isConnected(context)){
+                    if (ConnectivityStatus.isConnected(context)) {
                         when (e) {
                             is HttpException -> // non 200 error codes
                                 HandleError.handleError(e, e.code(), context)
                             is SocketTimeoutException -> // connection errors
                                 Toast.makeText(context, "Connection Timeout!", Toast.LENGTH_LONG).show()
                         }
-                    }else{
+                    } else {
                         Toast.makeText(context, "Tidak Terhubung Dengan Internet!", Toast.LENGTH_LONG).show()
                     }
                 }
-            })
-        )
+            })?.let {
+                compositeDisposable.add(
+                    it
+                )
+            }
     }
 
     override fun onDestroy() {

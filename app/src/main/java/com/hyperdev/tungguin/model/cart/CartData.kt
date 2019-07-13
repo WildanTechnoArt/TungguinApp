@@ -3,11 +3,11 @@ package com.hyperdev.tungguin.model.cart
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
-data class CartData (
+data class CartData(
 
     @SerializedName("items")
     @Expose
-    var items: List<Item>? = null,
+    var items: List<CartItem>? = null,
     @SerializedName("sub_total")
     @Expose
     var subTotal: String? = null,

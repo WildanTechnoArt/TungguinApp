@@ -4,8 +4,8 @@ import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
 import android.graphics.Color
-import android.support.constraint.ConstraintLayout
-import android.support.v7.widget.RecyclerView
+import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -13,15 +13,15 @@ import android.widget.TextView
 import android.widget.Toast
 import com.hyperdev.tungguin.BuildConfig
 import com.hyperdev.tungguin.R
-import com.hyperdev.tungguin.model.topuphistori.ListTopUp
+import com.hyperdev.tungguin.model.transaction.ListTopUp
 import com.midtrans.sdk.corekit.core.MidtransSDK
 import com.midtrans.sdk.corekit.core.UIKitCustomSetting
 import com.midtrans.sdk.corekit.core.themes.CustomColorTheme
 import com.midtrans.sdk.corekit.models.snap.TransactionResult
 import com.midtrans.sdk.uikit.SdkUIFlowBuilder
 
-class TopUpRecyclerAdapter(private var context: Context?, private var topupList: ArrayList<ListTopUp>)
-    :RecyclerView.Adapter<TopUpRecyclerAdapter.ViewHolder>(){
+class TopUpRecyclerAdapter(private var context: Context?, private var topupList: ArrayList<ListTopUp>) :
+    RecyclerView.Adapter<TopUpRecyclerAdapter.ViewHolder>() {
 
     inner class ViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
         //Deklarasi View
@@ -64,8 +64,9 @@ class TopUpRecyclerAdapter(private var context: Context?, private var topupList:
         holder.getListFormattedDate.text = "Date: $getFormattedDate"
         holder.getListFormattedExpireAt.text = getFormattedExpireAt
         holder.getListItemView.setOnClickListener {
+
             @Suppress("SENSELESS_COMPARISON")
-            if(getMidtransToken != null){
+            if (getMidtransToken != null) {
 
                 midtransInitialotation()
 
@@ -76,10 +77,11 @@ class TopUpRecyclerAdapter(private var context: Context?, private var topupList:
 
                 MidtransSDK.getInstance().startPaymentUiFlow(context, getMidtransToken.toString())
             }
+
         }
     }
 
-    private fun midtransInitialotation(){
+    private fun midtransInitialotation() {
         SdkUIFlowBuilder.init()
             .setClientKey(BuildConfig.MIDTRANS_CLIENTID)
             .setContext(context)
@@ -112,7 +114,7 @@ class TopUpRecyclerAdapter(private var context: Context?, private var topupList:
                     }
                 }
             }
-            .setMerchantBaseUrl("https://app.tungguin.com/") //set merchant url (required)
+            .setMerchantBaseUrl(BuildConfig.BASE_URL) //set merchant url (required)
             .enableLog(true) // enable sdk log (optional)
             .setColorTheme(
                 CustomColorTheme(

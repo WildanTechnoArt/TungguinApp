@@ -1,9 +1,9 @@
 package com.hyperdev.tungguin.fragment
 
 import android.os.Bundle
-import android.support.v4.app.Fragment
-import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
+import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -13,14 +13,14 @@ import android.widget.TextView
 import com.hyperdev.tungguin.R
 import com.hyperdev.tungguin.adapter.TransactionRecyclerAdapter
 import com.hyperdev.tungguin.database.SharedPrefManager
-import com.hyperdev.tungguin.model.transactionhistory.ListTransaction
-import com.hyperdev.tungguin.model.transactionhistory.TransactionHistory
+import com.hyperdev.tungguin.model.transaction.ListTransaction
+import com.hyperdev.tungguin.model.transaction.TransactionHistory
 import com.hyperdev.tungguin.network.BaseApiService
-import com.hyperdev.tungguin.network.NetworkUtil
+import com.hyperdev.tungguin.network.NetworkClient
 import com.hyperdev.tungguin.presenter.TransactionHistoriPresenter
-import com.hyperdev.tungguin.repository.TransactionHistoryRepositoryImpl
+import com.hyperdev.tungguin.repository.transaction.TransactionRepositoryImp
 import com.hyperdev.tungguin.utils.AppSchedulerProvider
-import com.hyperdev.tungguin.view.HistoriTransactionView
+import com.hyperdev.tungguin.ui.view.HistoriTransactionView
 import kotlin.properties.Delegates
 
 class TransactionHisFragment : Fragment(), HistoriTransactionView.View {
@@ -29,9 +29,9 @@ class TransactionHisFragment : Fragment(), HistoriTransactionView.View {
     private var listTransaction: MutableList<ListTransaction> = mutableListOf()
     private lateinit var presenter: HistoriTransactionView.Presenter
     private lateinit var token: String
-    private lateinit var recycler : RecyclerView
-    private lateinit var progressBar : ProgressBar
-    private lateinit var txtImgNotFound : TextView
+    private lateinit var recycler: RecyclerView
+    private lateinit var progressBar: ProgressBar
+    private lateinit var txtImgNotFound: TextView
     private lateinit var baseApiService: BaseApiService
     private val TAG = javaClass.simpleName
     private var adapter by Delegates.notNull<TransactionRecyclerAdapter>()
@@ -43,7 +43,7 @@ class TransactionHisFragment : Fragment(), HistoriTransactionView.View {
         val view = inflater.inflate(R.layout.fragment_transaction_his, container, false)
 
         recycler = view.findViewById(R.id.recyclerTransactionList)
-        progressBar = view.findViewById(R.id.progressBar)
+        progressBar = view.findViewById(R.id.progress_bar)
         txtImgNotFound = view.findViewById(R.id.txt_img_not_found)
 
         page = 1
@@ -57,17 +57,17 @@ class TransactionHisFragment : Fragment(), HistoriTransactionView.View {
         return view
     }
 
-    private fun loadData(){
+    private fun loadData() {
         token = SharedPrefManager.getInstance(context!!).token.toString()
 
-        baseApiService = NetworkUtil.getClient(context!!)!!
+        baseApiService = NetworkClient.getClient(context!!)!!
             .create(BaseApiService::class.java)
 
         val layout = LinearLayoutManager(context)
         recycler.layoutManager = layout
         recycler.setHasFixedSize(true)
 
-        val request = TransactionHistoryRepositoryImpl(baseApiService)
+        val request = TransactionRepositoryImp(baseApiService)
         val scheduler = AppSchedulerProvider()
         presenter = TransactionHistoriPresenter(this, context!!, request, scheduler)
         adapter = TransactionRecyclerAdapter(listTransaction as ArrayList<ListTransaction>)
@@ -112,18 +112,18 @@ class TransactionHisFragment : Fragment(), HistoriTransactionView.View {
     }
 
     override fun showTransactionHistory(dataTransaction: List<ListTransaction>) {
-        if(page == 1){
+        if (page == 1) {
             listTransaction.clear()
             listTransaction.addAll(dataTransaction)
             adapter.notifyDataSetChanged()
-        }else{
+        } else {
             adapter.refreshAdapter(dataTransaction)
         }
 
-        if(adapter.itemCount.toString() != "0"){
+        if (adapter.itemCount.toString() != "0") {
             txtImgNotFound.visibility = View.GONE
             recycler.visibility = View.VISIBLE
-        }else{
+        } else {
             txtImgNotFound.visibility = View.VISIBLE
             recycler.visibility = View.GONE
         }

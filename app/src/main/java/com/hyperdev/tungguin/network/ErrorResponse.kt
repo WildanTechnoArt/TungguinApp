@@ -3,7 +3,7 @@ package com.hyperdev.tungguin.network
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
-data class ErrorResponse (
+data class ErrorResponse(
     @SerializedName("code")
     @Expose
     var code: Int? = null,

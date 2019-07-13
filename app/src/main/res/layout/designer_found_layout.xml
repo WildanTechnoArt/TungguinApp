@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fillViewport="true"
+        android:orientation="vertical">
+
+    <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="24dp"
+            android:orientation="vertical"
+            android:gravity="center">
+
+        <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:textStyle="bold"
+                android:textSize="20sp"
+                android:textColor="@color/colorPrimary"
+                android:text="YEAYY"
+                tools:ignore="HardcodedText"/>
+
+        <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:gravity="center"
+                android:textStyle="bold"
+                android:textSize="15sp"
+                android:text="Kami telah menemukan designer untuk anda."
+                tools:ignore="HardcodedText"/>
+
+        <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/img_profile_designer"
+                android:layout_width="150dp"
+                android:layout_height="150dp"
+                android:elevation="6dp"
+                android:layout_marginTop="24dp"
+                app:civ_border_color="@color/colorPrimary"
+                app:civ_border_width="2dp"
+                tools:targetApi="lollipop"/>
+
+        <TextView
+                android:id="@+id/tv_name_designer"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:gravity="center"
+                android:textStyle="bold"
+                android:textColor="@color/colorPrimary"
+                android:textSize="16sp"
+                tools:ignore="HardcodedText"/>
+
+        <TextView
+                android:id="@+id/tv_id_designer"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:textStyle="bold"
+                android:textSize="15sp"
+                android:textColor="@color/azure.primary_dark"
+                android:layout_marginTop="4dp"
+                tools:ignore="HardcodedText"/>
+
+        <TextView
+                android:id="@+id/tv_intro"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:textStyle="bold"
+                android:textSize="15sp"
+                android:layout_marginTop="16dp"/>
+
+        <Button
+                android:id="@+id/btn_detail_order"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:background="@drawable/primary_round_button"
+                android:text="Detail Order"
+                android:textAllCaps="false"
+                android:textColor="#FFFFFF"
+                android:elevation="6dp"
+                android:textStyle="bold"
+                tools:targetApi="lollipop"
+                tools:ignore="HardcodedText"
+                style="@style/Widget.AppCompat.Button"/>
+
+    </LinearLayout>
+
+</ScrollView>

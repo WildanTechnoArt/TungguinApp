@@ -6,8 +6,8 @@ import android.content.Intent
 import android.graphics.Color
 import android.graphics.Paint
 import android.net.Uri
-import android.support.annotation.NonNull
-import android.support.v7.widget.RecyclerView
+import androidx.annotation.NonNull
+import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -15,10 +15,10 @@ import android.widget.TextView
 import com.github.library.bubbleview.BubbleTextView
 import com.hyperdev.tungguin.R
 import com.hyperdev.tungguin.model.chat.ChatData
-import com.hyperdev.tungguin.view.ui.ChatActivity
+import com.hyperdev.tungguin.ui.activity.ChatActivity
 
-class MessageAdapter(private val mContext: Context, private val options: ArrayList<ChatData>)
-    : RecyclerView.Adapter<RecyclerView.ViewHolder>(){
+class MessageAdapter(private val mContext: Context, private val options: ArrayList<ChatData>) :
+    RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     @NonNull
     override fun onCreateViewHolder(@NonNull parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
@@ -41,7 +41,8 @@ class MessageAdapter(private val mContext: Context, private val options: ArrayLi
 
     fun refreshAdapter(chatList: List<ChatData>) {
         this.options.addAll(chatList)
-        notifyItemRangeChanged(0, this.options.size)    }
+        notifyItemRangeChanged(0, this.options.size)
+    }
 
     fun addMessage(message: ChatData) {
         this.options.add(message)
@@ -59,8 +60,9 @@ class MessageAdapter(private val mContext: Context, private val options: ArrayLi
         val chatMessage = options[position]
 
         if (chatMessage.type == ChatActivity.TYPE_MESSAGE_RECEIVED) {
+
             @Suppress("SENSELESS_COMPARISON")
-            if(chatMessage.file.toString() != "null"){
+            if (chatMessage.file.toString() != "null") {
                 (holder as ReceivedMessageViewHolder).chatView.setTextColor(Color.parseColor("#FF0012FF"))
                 holder.chatView.paintFlags = Paint.UNDERLINE_TEXT_FLAG
                 holder.chatView.text = chatMessage.file.toString()
@@ -72,13 +74,15 @@ class MessageAdapter(private val mContext: Context, private val options: ArrayLi
                     (it.context as Activity)
                 }
                 holder.dateView.text = chatMessage.formattedDate.toString()
-            }else{
+            } else {
                 (holder as ReceivedMessageViewHolder).chatView.text = chatMessage.text.toString()
                 holder.dateView.text = chatMessage.formattedDate.toString()
             }
+
         } else {
+
             @Suppress("SENSELESS_COMPARISON")
-            if(chatMessage.file.toString() != "null"){
+            if (chatMessage.file.toString() != "null") {
                 (holder as SentMessageViewHolder).chatView.setTextColor(Color.parseColor("#FFFFFF"))
                 holder.chatView.paintFlags = Paint.UNDERLINE_TEXT_FLAG
                 holder.chatView.text = chatMessage.file.toString()
@@ -90,10 +94,11 @@ class MessageAdapter(private val mContext: Context, private val options: ArrayLi
                     (it.context as Activity)
                 }
                 holder.dateView.text = chatMessage.formattedDate.toString()
-            }else{
+            } else {
                 (holder as SentMessageViewHolder).chatView.text = chatMessage.text.toString()
                 holder.dateView.text = chatMessage.formattedDate.toString()
             }
+
         }
     }
 

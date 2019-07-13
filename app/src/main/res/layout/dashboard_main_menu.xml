@@ -1,0 +1,302 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:app="http://schemas.android.com/apk/res-auto"
+              xmlns:tools="http://schemas.android.com/tools"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:orientation="vertical">
+
+    <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal"
+            android:baselineAligned="false">
+
+        <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="3dp"
+                android:layout_marginStart="3dp"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+            <androidx.cardview.widget.CardView
+                    android:id="@+id/btn_order"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="4dp"
+                    android:layout_marginStart="4dp"
+                    app:cardCornerRadius="8dp"
+                    app:cardElevation="4dp">
+
+                <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="@drawable/new_menu_round_button"
+                        android:gravity="center"
+                        android:padding="12dp"
+                        tools:ignore="TooDeepLayout">
+
+                    <ImageView
+                            android:layout_width="40dp"
+                            android:layout_height="35dp"
+                            android:contentDescription="@string/gambar"
+                            app:srcCompat="@drawable/order"/>
+
+                </RelativeLayout>
+
+            </androidx.cardview.widget.CardView>
+
+            <TextView
+                    android:text="@string/menu1"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColor="#FFFFFF"
+                    android:gravity="center"
+                    android:textSize="14sp"
+                    android:layout_marginTop="4dp"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:layout_marginEnd="3dp"
+                android:layout_marginStart="3dp">
+
+            <androidx.cardview.widget.CardView
+                    android:id="@+id/btn_profile"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="4dp"
+                    android:layout_marginStart="4dp"
+                    app:cardCornerRadius="8dp"
+                    app:cardElevation="4dp"
+            >
+
+                <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:gravity="center"
+                        android:background="@drawable/new_menu_round_button"
+                        tools:ignore="TooDeepLayout"
+                        android:padding="12dp">
+
+                    <ImageView
+                            android:layout_width="40dp"
+                            android:layout_height="35dp"
+                            android:contentDescription="@string/gambar"
+                            tools:ignore="TooDeepLayout"
+                            app:srcCompat="@drawable/profil"/>
+
+                </RelativeLayout>
+            </androidx.cardview.widget.CardView>
+
+            <TextView
+                    android:text="@string/profil"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColor="#FFFFFF"
+                    android:gravity="center"
+                    android:textSize="14sp"
+                    android:layout_marginTop="4dp"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:layout_marginEnd="3dp"
+                android:layout_marginStart="3dp"
+                tools:ignore="RtlSymmetry">
+
+            <androidx.cardview.widget.CardView
+                    android:id="@+id/order_histori"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:cardCornerRadius="8dp"
+                    app:cardElevation="4dp"
+                    android:layout_marginEnd="4dp"
+                    android:layout_marginStart="4dp"
+                    android:background="@drawable/menu_round_button"
+            >
+
+                <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:gravity="center"
+                        android:background="@drawable/new_menu_round_button"
+                        android:padding="12dp">
+
+                    <ImageView
+                            android:layout_width="40dp"
+                            android:layout_height="35dp"
+                            app:srcCompat="@drawable/history"
+                            android:contentDescription="@string/gambar"
+                    />
+
+                </RelativeLayout>
+            </androidx.cardview.widget.CardView>
+
+            <TextView
+                    android:text="@string/menu5"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColor="#FFFFFF"
+                    android:gravity="center"
+                    android:textSize="14sp"
+                    android:layout_marginTop="4dp"/>
+
+        </LinearLayout>
+
+    </LinearLayout>
+    <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="18dp"
+            android:baselineAligned="false">
+
+        <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:layout_marginEnd="3dp"
+                android:layout_marginStart="3dp"
+                tools:ignore="RtlSymmetry"
+        >
+
+            <androidx.cardview.widget.CardView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:cardCornerRadius="8dp"
+                    app:cardElevation="4dp"
+                    android:layout_marginEnd="4dp"
+                    android:layout_marginStart="4dp"
+                    android:id="@+id/katalog_desain"
+            >
+
+                <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:gravity="center"
+                        android:background="@drawable/new_menu_round_button"
+                        android:padding="12dp">
+
+                    <ImageView
+                            android:layout_width="40dp"
+                            android:layout_height="35dp"
+                            app:srcCompat="@drawable/katalog"
+                            android:contentDescription="@string/gambar"/>
+
+                </RelativeLayout>
+            </androidx.cardview.widget.CardView>
+
+            <TextView
+                    android:text="@string/menu4"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColor="#FFFFFF"
+                    android:gravity="center"
+                    android:textSize="14sp"
+                    android:layout_marginTop="4dp"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:layout_marginEnd="3dp"
+                android:layout_marginStart="3dp">
+
+            <androidx.cardview.widget.CardView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:cardCornerRadius="8dp"
+                    app:cardElevation="4dp"
+                    android:layout_marginEnd="4dp"
+                    android:layout_marginStart="4dp" android:id="@+id/btnHelp"
+            >
+
+                <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:gravity="center"
+                        android:background="@drawable/new_menu_round_button"
+                        android:padding="12dp">
+
+                    <ImageView
+                            android:layout_width="40dp"
+                            android:layout_height="35dp"
+                            android:contentDescription="@string/gambar"
+                            app:srcCompat="@drawable/help"/>
+
+                </RelativeLayout>
+            </androidx.cardview.widget.CardView>
+
+            <TextView
+                    android:text="@string/menu7"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColor="#FFFFFF"
+                    android:gravity="center"
+                    android:textSize="14sp"
+                    android:layout_marginTop="4dp"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:layout_marginEnd="3dp"
+                android:layout_marginStart="3dp"
+                tools:ignore="RtlSymmetry">
+
+            <androidx.cardview.widget.CardView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:cardCornerRadius="8dp"
+                    app:cardElevation="4dp"
+                    android:layout_marginStart="4dp"
+                    android:layout_marginEnd="4dp"
+                    android:id="@+id/btnLogout"
+            >
+
+                <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:gravity="center"
+                        android:background="@drawable/new_menu_round_button"
+                        android:padding="12dp">
+
+                    <ImageView
+                            android:layout_width="40dp"
+                            android:layout_height="35dp"
+                            android:contentDescription="@string/gambar"
+                            app:srcCompat="@drawable/logout"/>
+                </RelativeLayout>
+
+            </androidx.cardview.widget.CardView>
+
+            <TextView
+                    android:text="@string/logout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColor="#FFFFFF"
+                    android:gravity="center"
+                    android:textSize="14sp"
+                    android:layout_marginTop="4dp"/>
+        </LinearLayout>
+
+    </LinearLayout>
+
+</LinearLayout>

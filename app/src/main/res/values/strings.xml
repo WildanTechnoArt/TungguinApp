@@ -18,7 +18,7 @@
     <string name="logopass">logoPass</string>
     <string name="cari_desain">Cari desain</string>
     <string name="gambar">gambar</string>
-    <string name="welcome">Selamat datang</string>
+    <string name="welcome">Selamat datang…</string>
     <string name="intro">Mau desain apa sekarang?</string>
     <string name="tungguin_pay">Tungguin Pay</string>
     <string name="saldo">Rp. ........</string>
@@ -28,7 +28,7 @@
     <string name="menu1">Order</string>
     <string name="menu2">Chat</string>
     <string name="menu3">Reward</string>
-    <string name="menu4">Katalog Desain</string>
+    <string name="menu4">Promo Desain</string>
     <string name="menu5">Histori Order</string>
     <string name="menu6">Garansi</string>
     <string name="menu7">Help</string>
@@ -71,13 +71,13 @@
     </string>
     <string name="rp_0">Rp0</string>
     <string name="saldo_e_wallet">Saldo e-Wallet Anda:</string>
-    <string name="formatterdId">TopUp from TGTOPUP-30</string>
+    <string name="formatterdId">-</string>
     <string name="formattedStatus">Menunggu Pembayaran</string>
-    <string name="idrp_20_000">Rp 20.000,-</string>
-    <string name="farmatteedDate">Date: 27 Feb 2019 20:30</string>
-    <string name="formattedEx">Ex: 28 Feb 2019 02:30</string>
+    <string name="idrp_20_000">Rp 0,-</string>
+    <string name="farmatteedDate">Date:</string>
+    <string name="formattedEx">Ex:</string>
     <string name="deposit">deposit</string>
-    <string name="date2">28 Feb 2019 05:04</string>
+    <string name="date2">-</string>
     <string name="data_not_found">Desain tidak ditemukan!</string>
     <string name="product">Spanduk Sekolah</string>
     <string name="srcDesain">Mau desain apa sekarang?</string>
@@ -87,8 +87,8 @@
     <string name="titleContact">Mau request apa?</string>
     <string name="content">Silakan tulis permintaan mu disini</string>
     <string name="src_design">Cari desain</string>
-    <string name="wildan">Hei Wildan</string>
-    <string name="productNameExample">SPANDUK KULINER</string>
+    <string name="wildan">Hei.....</string>
+    <string name="productNameExample">-</string>
     <string name="txt_data_not_found">TIdak Ada Data</string>
     <item name="visible" type="id"/>
     <item name="masked" type="id"/>
