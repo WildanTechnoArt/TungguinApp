@@ -1,11 +1,11 @@
 package com.hyperdev.tungguin.ui.view
 
-import com.hyperdev.tungguin.model.detailorder.OrderDetailItem
+import com.hyperdev.tungguin.model.detailorder.DetailOrderData
 
 class SearchDesignerView {
 
     interface View {
-        fun showDetailOrder(data: OrderDetailItem?)
+        fun showDetailOrder(data: DetailOrderData?)
         fun displayProgress()
         fun hideProgress()
     }

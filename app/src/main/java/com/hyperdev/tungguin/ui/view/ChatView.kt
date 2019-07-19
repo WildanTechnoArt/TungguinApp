@@ -11,7 +11,7 @@ import okhttp3.RequestBody
 class ChatView {
 
     interface View {
-        fun showChatItem(chatlist: List<ChatData>)
+        fun showChatItem(chatlist: MutableList<ChatData>)
         fun showChatData(historiItem: HistoriItem?)
         fun profileDesigner(designer: DesainerProfile)
         fun loadFile(file: FileData?)
@@ -23,7 +23,7 @@ class ChatView {
     }
 
     interface Presenter {
-        fun getChatData(token: String, hasher_id: String, page: Int)
+        fun getChatData(token: String, hasher_id: String, page: Int?)
         fun sendMessage(
             token: String, accept: String, hashed_id: String,
             text: RequestBody, file: MultipartBody.Part?

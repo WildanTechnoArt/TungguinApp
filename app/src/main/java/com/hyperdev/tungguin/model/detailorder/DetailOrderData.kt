@@ -4,7 +4,7 @@ import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 import com.hyperdev.tungguin.model.historiorder.StatusItem
 
-data class OrderDetailItem (
+data class DetailOrderData (
 
     @SerializedName("payment_type")
     @Expose
@@ -52,7 +52,7 @@ data class OrderDetailItem (
 
     @SerializedName("result")
     @Expose
-    var result: List<ResultItem>? = null,
+    var result: List<ResultItem> = emptyList(),
 
     @SerializedName("testimonial")
     @Expose

@@ -66,8 +66,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content" android:id="@+id/toggle_detail_order"
                     android:layout_marginTop="8dp"
-                    android:textOff="Kirim Detail Order Sekarang" android:textAllCaps="false"
-                    android:textOn="Sembunyikan Detail Order"/>
+                    android:textOff="@string/send_detail_order" android:textAllCaps="false"
+                    android:textOn="@string/hide_detail_order"/>
             <TextView
                     android:text="Konsep Desain"
                     android:layout_width="match_parent"

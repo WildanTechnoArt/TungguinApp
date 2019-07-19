@@ -1,14 +1,11 @@
 package com.hyperdev.tungguin.ui.activity
 
-import android.content.Context
 import android.content.Intent
 import android.content.pm.ActivityInfo
-import android.net.ConnectivityManager
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import com.google.android.material.snackbar.Snackbar
-import com.google.android.material.tabs.TabLayout
 import android.view.View
+import androidx.appcompat.app.AppCompatActivity
+import com.google.android.material.tabs.TabLayout
 import com.hyperdev.tungguin.R
 import com.hyperdev.tungguin.adapter.PagerAdapter
 import com.hyperdev.tungguin.database.SharedPrefManager
@@ -17,8 +14,8 @@ import com.hyperdev.tungguin.network.BaseApiService
 import com.hyperdev.tungguin.network.NetworkClient
 import com.hyperdev.tungguin.presenter.HistoryPresenter
 import com.hyperdev.tungguin.repository.transaction.TransactionRepositoryImp
-import com.hyperdev.tungguin.utils.AppSchedulerProvider
 import com.hyperdev.tungguin.ui.view.BalanceView
+import com.hyperdev.tungguin.utils.AppSchedulerProvider
 import kotlinx.android.synthetic.main.activity_history.*
 
 class HistoryActivity : AppCompatActivity(), BalanceView.View {
@@ -76,32 +73,23 @@ class HistoryActivity : AppCompatActivity(), BalanceView.View {
     }
 
     private fun loadData() {
+        baseApiService = NetworkClient.getClient(this@HistoryActivity)!!
+            .create(BaseApiService::class.java)
 
-        val connectivity = getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
-        val networkInfo = connectivity.activeNetworkInfo
+        getToken = SharedPrefManager.getInstance(this@HistoryActivity).token.toString()
 
-        if (networkInfo != null && networkInfo.isConnected) {
-            baseApiService = NetworkClient.getClient(this@HistoryActivity)!!
-                .create(BaseApiService::class.java)
+        val repository = TransactionRepositoryImp(baseApiService)
+        val scheduler = AppSchedulerProvider()
+        presenter = HistoryPresenter(this, this@HistoryActivity, repository, scheduler)
+        presenter.getUserBalance("Bearer $getToken")
 
-            getToken = SharedPrefManager.getInstance(this@HistoryActivity).token.toString()
+        //Memanggil dan Memasukan Value pada Class PagerAdapter(FragmentManager dan JumlahTab)
+        val pageAdapter = PagerAdapter(
+            supportFragmentManager, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT, history_tabs.tabCount
+        )
 
-            val repository = TransactionRepositoryImp(baseApiService)
-            val scheduler = AppSchedulerProvider()
-            presenter = HistoryPresenter(this, this@HistoryActivity, repository, scheduler)
-            presenter.getUserBalance("Bearer $getToken")
-
-            //Memanggil dan Memasukan Value pada Class PagerAdapter(FragmentManager dan JumlahTab)
-            val pageAdapter = PagerAdapter(
-                supportFragmentManager, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT, history_tabs.tabCount
-            )
-
-            //Memasang Adapter pada ViewPager
-            viewpager.adapter = pageAdapter
-        } else {
-            disabledView()
-            Snackbar.make(histori_layout, "Tidak terhubung dengan internet !", Snackbar.LENGTH_LONG).show()
-        }
+        //Memasang Adapter pada ViewPager
+        viewpager.adapter = pageAdapter
     }
 
     override fun displayTransaction(transactionItem: DataTransaction) {

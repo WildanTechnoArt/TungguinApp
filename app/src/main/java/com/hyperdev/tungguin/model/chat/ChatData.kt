@@ -23,5 +23,9 @@ data class ChatData (
 
     @SerializedName("sender")
     @Expose
-    var sender: String? = null
+    var sender: String? = null,
+
+    @SerializedName("file_type")
+    @Expose
+    var fileType: String? = null
 )

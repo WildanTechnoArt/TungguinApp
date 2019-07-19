@@ -22,10 +22,6 @@ data class ItemDesign (
     @Expose
     var formattedPrice : String? = null,
 
-    @SerializedName("design_document_url")
-    @Expose
-    var designDocumentUrl : String? = null,
-
     @SerializedName("design_preference_array")
     @Expose
     var preferenceArray : List<String>? = null,

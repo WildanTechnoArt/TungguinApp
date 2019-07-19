@@ -14,7 +14,7 @@ import android.view.MenuItem
 import android.widget.Toast
 import com.hyperdev.tungguin.BuildConfig
 import com.hyperdev.tungguin.R
-import com.hyperdev.tungguin.adapter.CartListAdapter
+import com.hyperdev.tungguin.adapter.CartAdapter
 import com.hyperdev.tungguin.database.SharedPrefManager
 import com.hyperdev.tungguin.model.cart.*
 import com.hyperdev.tungguin.network.BaseApiService
@@ -39,7 +39,7 @@ class CartActivity : AppCompatActivity(), MyCartView.View {
     private lateinit var token: String
     private lateinit var baseApiService: BaseApiService
     private var disabledAddCart: Boolean = false
-    private var adapter by Delegates.notNull<CartListAdapter>()
+    private var adapter by Delegates.notNull<CartAdapter>()
     private var condition: Boolean? = null
     private lateinit var hashedId: String
     private lateinit var paymentMethod: String
@@ -171,7 +171,7 @@ class CartActivity : AppCompatActivity(), MyCartView.View {
 
         presenter = CartPresenter(this, this@CartActivity, repository, scheduler)
 
-        adapter = CartListAdapter(
+        adapter = CartAdapter(
             listCartItem as ArrayList<CartItem>, this@CartActivity, repository, scheduler, "Bearer $token"
         )
 

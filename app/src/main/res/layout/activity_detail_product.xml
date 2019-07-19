@@ -82,7 +82,7 @@
                 </com.synnapps.carouselview.CarouselView>
 
                 <TextView
-                        android:text="Gambar hanya contoh / ilustrasi"
+                        android:text="@string/image_ilustration"
                         android:layout_width="match_parent"
                         android:gravity="center"
                         android:textStyle="italic" android:layout_marginTop="8dp" android:layout_height="wrap_content"/>

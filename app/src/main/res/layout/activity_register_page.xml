@@ -59,7 +59,7 @@
                         android:id="@+id/firstName"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:hint="@string/nama"
+                        android:hint="@string/full_name"
                         android:textSize="16sp"
                         android:maxLength="25"
                         android:inputType="text"/>
@@ -164,7 +164,7 @@
                     android:id="@+id/btnRegister"
                     android:textAllCaps="true"
                     android:textColor="#FFFFFF"
-                    android:background="@drawable/register_round_button"
+                    android:background="@drawable/pink_hover_button"
                     android:elevation="6dp"
                     tools:targetApi="lollipop"
                     app:layout_constraintBottom_toBottomOf="parent"

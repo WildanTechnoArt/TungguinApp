@@ -48,7 +48,7 @@
             android:paddingRight="8dp" android:paddingTop="4dp"/>
 
     <TextView
-            android:text="@string/idrp_20_000"
+            android:text="@string/rp_0"
             android:layout_width="wrap_content"
             android:layout_height="17dp"
             android:id="@+id/listFormattedAmount"

@@ -12,7 +12,7 @@
     <string name="retype_password">Retype Password</string>
     <string name="password">Password</string>
     <string name="email">Alamat Email</string>
-    <string name="nama">Nama Lengkap</string>
+    <string name="nama_lengkap">Nama Lengkap</string>
     <string name="nomor_whatsapp">Nomor WhatsApp</string>
     <string name="logoemail">logoEmail</string>
     <string name="logopass">logoPass</string>
@@ -62,18 +62,10 @@
     <string name="_750_000">750.000</string>
     <string name="_1_000_000">1.000.000</string>
     <string name="jumlah_top_up">Jumlah Top Up</string>
-    <string name="lorem_ipsum">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed sit amet nibh ex. Phasellus
-        congue, justo id convallis congue, dui est dignissim velit, at tristique nibh magna non enim. Sed placerat
-        sapien imperdiet ligula tincidunt, in venenatis mi blandit. Nulla facilisi. Quisque pellentesque tellus et dolor
-        tempus, et tincidunt dolor mattis. Quisque quis tempor turpis, sed ultricies augue. Nunc pulvinar aliquam enim,
-        sit amet ultrices nisl vulputate eu. Fusce ligula massa, venenatis sed posuere vitae, varius sed felis. Duis
-        euismod laoreet lectus quis pellentesque.
-    </string>
     <string name="rp_0">Rp0</string>
     <string name="saldo_e_wallet">Saldo e-Wallet Anda:</string>
     <string name="formatterdId">-</string>
     <string name="formattedStatus">Menunggu Pembayaran</string>
-    <string name="idrp_20_000">Rp 0,-</string>
     <string name="farmatteedDate">Date:</string>
     <string name="formattedEx">Ex:</string>
     <string name="deposit">deposit</string>
@@ -90,6 +82,39 @@
     <string name="wildan">Hei.....</string>
     <string name="productNameExample">-</string>
     <string name="txt_data_not_found">TIdak Ada Data</string>
+    <string name="informasi_order">Informasi Order</string>
+    <string name="id_order">ID Order</string>
+    <string name="waktu_pemesanan">Waktu Pemesanan</string>
+    <string name="expire_date">Expire Date</string>
+    <string name="status">Status</string>
+    <string name="name">Nama</string>
+    <string name="text_designer">Designer</string>
+    <string name="none">-</string>
+    <string name="designer_code">Kode:</string>
+    <string name="order_information">Designer akan muncul ketika pembayaran sudah selesai dilakukan.</string>
+    <string name="payment_instructions">Unduh Instruksi Pembayaran</string>
+    <string name="btn_chat">Chat</string>
+    <string name="btn_rating">Berikan Penilaian</string>
+    <string name="btn_repeat_order">Order Lagi ke Designer Ini</string>
+    <string name="contact_designer">Hubungi Via WhatsApp</string>
+    <string name="full_name">Nama Lengkap</string>
+    <string name="testimoni">Testimoni</string>
+    <string name="testimoni_designer">Testimoni Designer:</string>
+    <string name="testimoni_aplikasi">Testimoni Aplikasi:</string>
+    <string name="tip">Tip:</string>
+    <string name="image_ilustration">Gambar hanya contoh / ilustrasi</string>
+    <string name="send_detail_order">Kirim Detail Order Sekarang</string>
+    <string name="hide_detail_order">Sembunyikan Detail Order</string>
+    <string name="order_detail_product">Detail Produk yang Dipesan</string>
+    <string name="design_result">Hasil Desain</string>
+    <string name="download_file_information">Silakan unduh filenya pada link berikut ini:</string>
+    <string name="desain">Desain</string>
+    <string name="konsep_desain">Konsep Desain</string>
+    <string name="detail_design">Detail Desain</string>
+    <string name="preferensi_desain">Preferensi Desain</string>
+    <string name="harga">Harga</string>
+    <string name="message_example">Message</string>
+    <string name="clock">00:00:00</string>
     <item name="visible" type="id"/>
     <item name="masked" type="id"/>
     <item name="path_password_eye_mask_visible" type="id"/>

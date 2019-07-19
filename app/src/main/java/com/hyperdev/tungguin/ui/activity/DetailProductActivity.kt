@@ -42,7 +42,7 @@ class DetailProductActivity : AppCompatActivity(), DetailProductView.View {
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         token = SharedPrefManager.getInstance(this@DetailProductActivity).token.toString()
-        hashed_id = intent.getStringExtra("sendProductID").toString()
+        hashed_id = intent?.getStringExtra("sendProductID").toString()
 
         baseApiService = NetworkClient.getClient(this@DetailProductActivity)!!
             .create(BaseApiService::class.java)

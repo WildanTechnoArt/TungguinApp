@@ -1,21 +1,22 @@
 package com.hyperdev.tungguin.ui.activity
 
 import android.annotation.SuppressLint
+import android.content.ActivityNotFoundException
 import android.content.Intent
 import android.content.pm.ActivityInfo
+import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.recyclerview.widget.LinearLayoutManager
 import android.text.util.Linkify
 import android.view.View
 import android.widget.Toast
-import com.hyperdev.tungguin.BuildConfig
 import com.hyperdev.tungguin.GlideApp
 import com.hyperdev.tungguin.R
 import com.hyperdev.tungguin.adapter.DesignOrderAdapter
 import com.hyperdev.tungguin.database.SharedPrefManager
 import com.hyperdev.tungguin.model.detailorder.ItemDesign
-import com.hyperdev.tungguin.model.detailorder.OrderDetailItem
+import com.hyperdev.tungguin.model.detailorder.DetailOrderData
 import com.hyperdev.tungguin.model.profile.DataUser
 import com.hyperdev.tungguin.network.BaseApiService
 import com.hyperdev.tungguin.network.NetworkClient
@@ -23,11 +24,12 @@ import com.hyperdev.tungguin.presenter.DetailOrderPresenter
 import com.hyperdev.tungguin.repository.order.OrderRepositoryImp
 import com.hyperdev.tungguin.utils.AppSchedulerProvider
 import com.hyperdev.tungguin.ui.view.DetailOrderView
-import com.midtrans.sdk.corekit.core.MidtransSDK
-import com.midtrans.sdk.corekit.core.themes.CustomColorTheme
-import com.midtrans.sdk.corekit.models.snap.TransactionResult
-import com.midtrans.sdk.uikit.SdkUIFlowBuilder
 import kotlinx.android.synthetic.main.activity_detail_order.*
+import kotlinx.android.synthetic.main.customer_information.*
+import kotlinx.android.synthetic.main.designer_information.*
+import kotlinx.android.synthetic.main.information_order.*
+import kotlinx.android.synthetic.main.product_order_information.*
+import kotlinx.android.synthetic.main.testimoni_designer.*
 import kotlin.properties.Delegates
 
 class DetailOrderActivity : AppCompatActivity(), DetailOrderView.View {
@@ -50,7 +52,7 @@ class DetailOrderActivity : AppCompatActivity(), DetailOrderView.View {
         supportActionBar?.setHomeButtonEnabled(true)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
-        orderId = intent.getStringExtra("sendOrderID").toString()
+        orderId = intent?.getStringExtra("sendOrderID").toString()
         token = SharedPrefManager.getInstance(this@DetailOrderActivity).token.toString()
 
         baseApiService = NetworkClient.getClient(this@DetailOrderActivity)!!
@@ -61,18 +63,16 @@ class DetailOrderActivity : AppCompatActivity(), DetailOrderView.View {
         presenter = DetailOrderPresenter(this@DetailOrderActivity, this@DetailOrderActivity, repository, scheduler)
 
         val layout = LinearLayoutManager(this@DetailOrderActivity)
-        list_product_buy.layoutManager = layout
-        list_product_buy.setHasFixedSize(false)
-        list_product_buy.isNestedScrollingEnabled = false
+        rv_list_product_order.layoutManager = layout
+        rv_list_product_order.setHasFixedSize(false)
+        rv_list_product_order.isNestedScrollingEnabled = false
 
         presenter.getUserProfile("Bearer $token")
         presenter.getDetailOrder("Bearer $token", orderId)
 
         adapter = DesignOrderAdapter(listDesignItem as ArrayList<ItemDesign>)
 
-        list_product_buy.adapter = adapter
-
-        midtransInitialotation()
+        rv_list_product_order.adapter = adapter
 
         swipe_refresh.setOnRefreshListener {
             presenter.getDetailOrder("Bearer $token", orderId)
@@ -105,13 +105,15 @@ class DetailOrderActivity : AppCompatActivity(), DetailOrderView.View {
     }
 
     @SuppressLint("SetTextI18n")
-    override fun showDetailOrder(data: OrderDetailItem?) {
+    override fun showDetailOrder(data: DetailOrderData?) {
 
         val getDesignerName = data?.designer?.name.toString()
         val getDesignerKode = "Kode: ${data?.designer?.formattedId.toString()}"
         val photoUrl = data?.designer?.photoUrl.toString()
         val getIdOrder = data?.formattedId.toString()
-        val getMidtransToken = data?.midtransToken.toString()
+        val getPdfUrl = data?.pdfUrl.toString()
+        val internalDesigner = data?.designer?.isInternal
+        val phoneNumner = data?.designer?.phoneNumber.toString()
         val getStatusDesign = data?.statusFormatted?.status.toString()
         val getDateExpired = data?.expireDateFormatted.toString()
 
@@ -124,102 +126,118 @@ class DetailOrderActivity : AppCompatActivity(), DetailOrderView.View {
                 finish()
 
             }
+
             "in_progress" -> {
 
-                tv_name_designer.visibility = View.VISIBLE
-                tv_name_designer.text = getDesignerName
-                id_designer.visibility = View.VISIBLE
-                id_designer.text = getDesignerKode
-                profile_image.visibility = View.VISIBLE
+                tv_designer_name.visibility = View.VISIBLE
+                tv_designer_name.text = getDesignerName
+                tv_id_designer.visibility = View.VISIBLE
+                tv_id_designer.text = getDesignerKode
+                img_designer.visibility = View.VISIBLE
+
+                if(internalDesigner == true){
+                    val numberWithCountry = phoneNumner.replaceFirst("0", "62")
+                    btn_contact_designer.visibility = View.VISIBLE
+                    btn_contact_designer.setOnClickListener {
+                        val uri = Uri.parse("https://api.whatsapp.com/send?phone=$numberWithCountry")
+                        startActivity(Intent(Intent.ACTION_VIEW, uri))
+                    }
+                }
+
                 GlideApp.with(this@DetailOrderActivity)
                     .load(photoUrl)
                     .placeholder(R.drawable.circle_profil)
-                    .into(profile_image)
-                id_order.visibility = View.VISIBLE
-                id_order.text = getIdOrder
+                    .into(img_designer)
 
-                txt_no_desainer.visibility = View.GONE
-                btn_bayar.visibility = View.GONE
-                btn_layout.visibility = View.VISIBLE
+                order_id.visibility = View.VISIBLE
+                order_id.text = getIdOrder
+
+                tv_order_information.visibility = View.GONE
+                btn_payment_instructions.visibility = View.GONE
                 btn_chat.visibility = View.VISIBLE
                 btn_rating.visibility = View.GONE
 
                 status_order.setBackgroundResource(R.drawable.order_round_no_hover)
 
             }
+
             "pending" -> {
 
-                tv_name_designer.visibility = View.GONE
-                id_designer.visibility = View.GONE
-                profile_image.visibility = View.GONE
-                id_order.visibility = View.GONE
-
-                txt_no_desainer.visibility = View.VISIBLE
-                btn_bayar.visibility = View.VISIBLE
-                btn_layout.visibility = View.GONE
-                btn_bayar.setOnClickListener {
-                    MidtransSDK.getInstance().startPaymentUiFlow(this@DetailOrderActivity, getMidtransToken)
+                tv_order_information.visibility = View.VISIBLE
+                btn_payment_instructions.visibility = View.VISIBLE
+                btn_payment_instructions.setOnClickListener {
+                    try {
+                        val pdfUrl = Uri.parse(getPdfUrl)
+                        val intent = Intent(Intent.ACTION_VIEW, pdfUrl)
+                        startActivity(intent)
+                    } catch (ex: ActivityNotFoundException) {
+                        Toast.makeText(this, "Tidak ada aplikasi yang dapat menangani permintaan ini. " +
+                                "Silakan instal browser web", Toast.LENGTH_LONG).show()
+                        ex.printStackTrace()
+                    }
                 }
 
                 status_order.setBackgroundResource(R.drawable.orange_round_no_hover)
 
             }
+
             "expired" -> {
 
-                tv_name_designer.visibility = View.GONE
-                id_designer.visibility = View.GONE
-                profile_image.visibility = View.GONE
+                tv_designer_name.visibility = View.GONE
+                tv_id_designer.visibility = View.GONE
+                img_designer.visibility = View.GONE
 
-                txt_no_desainer.visibility = View.VISIBLE
-                btn_bayar.visibility = View.GONE
-                btn_layout.visibility = View.GONE
+                tv_order_information.visibility = View.VISIBLE
+                btn_payment_instructions.visibility = View.GONE
 
                 status_order.setBackgroundResource(R.drawable.red_round_no_hover)
 
             }
+
             "success" -> {
 
-                if (data?.result?.isNotEmpty()!!) {
+                if (data?.result?.isNotEmpty() == true) {
                     card_result_design.visibility = View.VISIBLE
-                    val fileUrl = data.result!![0].pathUrl.toString()
-                    link_download_file.text = fileUrl
-                    Linkify.addLinks(link_download_file, Linkify.WEB_URLS)
+                    val fileUrl = data.result[0].pathUrl.toString()
+                    tv_download_file.text = fileUrl
+                    Linkify.addLinks(tv_download_file, Linkify.WEB_URLS)
                 }
 
                 status_order.setBackgroundResource(R.drawable.order_round_no_hover)
 
-                tv_name_designer.visibility = View.VISIBLE
-                tv_name_designer.text = getDesignerName
-                id_designer.visibility = View.VISIBLE
-                id_designer.text = getDesignerKode
-                profile_image.visibility = View.VISIBLE
+                btn_contact_designer.visibility = View.GONE
+                tv_designer_name.visibility = View.VISIBLE
+                tv_designer_name.text = getDesignerName
+                tv_id_designer.visibility = View.VISIBLE
+                tv_id_designer.text = getDesignerKode
+                img_designer.visibility = View.VISIBLE
+
                 GlideApp.with(this@DetailOrderActivity)
                     .load(photoUrl)
                     .placeholder(R.drawable.circle_profil)
-                    .into(profile_image)
-                id_order.visibility = View.VISIBLE
-                id_order.text = getIdOrder
+                    .into(img_designer)
 
-                txt_no_desainer.visibility = View.GONE
-                btn_bayar.visibility = View.GONE
-                btn_layout.visibility = View.VISIBLE
-                btn_chat.visibility = View.VISIBLE
+                order_id.visibility = View.VISIBLE
+                order_id.text = getIdOrder
 
-                if (data.testimonial?.orderId != null) {
+                tv_order_information.visibility = View.GONE
+                btn_payment_instructions.visibility = View.GONE
+
+                if (data?.testimonial?.orderId != null) {
                     btn_rating.visibility = View.GONE
-                    card_testimoni.visibility = View.VISIBLE
-                    rating.rating = data.testimonial!!.starRating!!.toFloat()
-                    testi_designer.text = data.testimonial!!.designerTestimonial.toString()
-                    testi_app.text = data.testimonial!!.appTestimonial.toString()
-                    tip_designer.text = data.testimonial!!.designerTipFormatted.toString()
+                    testimoni_designer.visibility = View.VISIBLE
+                    rating_bar.rating = data.testimonial!!.starRating!!.toFloat()
+                    tv_testi_designer.text = data.testimonial!!.designerTestimonial.toString()
+                    tv_testi_app.text = data.testimonial!!.appTestimonial.toString()
+                    tv_tip_designer.text = data.testimonial!!.designerTipFormatted.toString()
                 } else {
                     btn_rating.visibility = View.VISIBLE
-                    card_testimoni.visibility = View.GONE
+                    testimoni_designer.visibility = View.GONE
                 }
 
                 btn_repeat_order.visibility = View.VISIBLE
                 btn_repeat_order.setOnClickListener {
-                    val getIdDesigner = data.designer?.hashedId.toString()
+                    val getIdDesigner = data?.designer?.hashedId.toString()
                     Toast.makeText(
                         this@DetailOrderActivity,
                         "Designer telah dipilih, silakan order kembali",
@@ -244,55 +262,6 @@ class DetailOrderActivity : AppCompatActivity(), DetailOrderView.View {
         total_harga.text = data?.realTotalFormatted.toString()
     }
 
-    private fun midtransInitialotation() {
-        SdkUIFlowBuilder.init()
-            .setClientKey(BuildConfig.MIDTRANS_CLIENTID)
-            .setContext(this@DetailOrderActivity)
-            .setTransactionFinishedCallback {
-                if (it.response != null) {
-                    when (it.status) {
-                        TransactionResult.STATUS_SUCCESS -> {
-                            Toast.makeText(
-                                this@DetailOrderActivity,
-                                "Transaction Finished ",
-                                Toast.LENGTH_LONG
-                            ).show()
-                        }
-                        TransactionResult.STATUS_PENDING -> {
-                        }
-                        TransactionResult.STATUS_FAILED -> Toast.makeText(
-                            this@DetailOrderActivity,
-                            "Transaction Failed",
-                            Toast.LENGTH_LONG
-                        ).show()
-                    }
-                    it.response.validationMessages
-                } else if (it.isTransactionCanceled) {
-                    Toast.makeText(this@DetailOrderActivity, "Transaction Canceled", Toast.LENGTH_LONG).show()
-                } else {
-                    if (it.status.equals(TransactionResult.STATUS_INVALID, ignoreCase = true)) {
-                        Toast.makeText(this@DetailOrderActivity, "Transaction Invalid", Toast.LENGTH_LONG).show()
-                    } else {
-                        Toast.makeText(
-                            this@DetailOrderActivity,
-                            "Transaction Finished with failure.",
-                            Toast.LENGTH_LONG
-                        ).show()
-                    }
-                }
-            }
-            .setMerchantBaseUrl(BuildConfig.BASE_URL) //set merchant url (required)
-            .enableLog(true) // enable sdk log (optional)
-            .setColorTheme(
-                CustomColorTheme(
-                    "#FFE51255",
-                    "#B61548",
-                    "#FFE51255"
-                )
-            ) // set theme. it will replace theme on snap theme on MAP ( optional)
-            .buildSDK()
-    }
-
     override fun displayProfile(profileItem: DataUser) {
         username.text = profileItem.name.toString()
         email_user.text = profileItem.email.toString()
@@ -301,7 +270,6 @@ class DetailOrderActivity : AppCompatActivity(), DetailOrderView.View {
 
     override fun displayProgress() {
         swipe_refresh.isRefreshing = true
-        detail_order_scrollview.visibility = View.GONE
     }
 
     override fun hideProgress() {
@@ -310,7 +278,6 @@ class DetailOrderActivity : AppCompatActivity(), DetailOrderView.View {
 
     override fun onSuccess() {
         swipe_refresh.isRefreshing = false
-        detail_order_scrollview.visibility = View.VISIBLE
     }
 
     override fun onSupportNavigateUp(): Boolean {

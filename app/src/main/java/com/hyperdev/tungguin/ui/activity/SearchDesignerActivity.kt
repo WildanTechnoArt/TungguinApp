@@ -15,7 +15,7 @@ import com.hyperdev.tungguin.BuildConfig
 import com.hyperdev.tungguin.GlideApp
 import com.hyperdev.tungguin.R
 import com.hyperdev.tungguin.database.SharedPrefManager
-import com.hyperdev.tungguin.model.detailorder.OrderDetailItem
+import com.hyperdev.tungguin.model.detailorder.DetailOrderData
 import com.hyperdev.tungguin.network.BaseApiService
 import com.hyperdev.tungguin.network.NetworkClient
 import com.hyperdev.tungguin.presenter.SearchDesignPresenter
@@ -119,7 +119,7 @@ class SearchDesignerActivity : AppCompatActivity(), SearchDesignerView.View {
     }
 
     @SuppressLint("SetTextI18n")
-    override fun showDetailOrder(data: OrderDetailItem?) {
+    override fun showDetailOrder(data: DetailOrderData?) {
         if ((data?.statusFormatted?.status.toString() == "searching_designer")) {
             mCountdownTimer = MyCountdownTimer()
             mCountdownTimer.start()
@@ -135,7 +135,7 @@ class SearchDesignerActivity : AppCompatActivity(), SearchDesignerView.View {
             progress_bar.visibility = View.GONE
             tv_search_design.visibility = View.GONE
 
-            tv_name_designer.text = data?.designer?.name.toString()
+            tv_designer_name.text = data?.designer?.name.toString()
             tv_id_designer.text = "Kode: ${data?.designer?.formattedId.toString()}"
             GlideApp.with(this@SearchDesignerActivity)
                 .load(data?.designer?.photoUrl.toString())

@@ -13,6 +13,14 @@ data class DesainerProfile (
     @Expose
     var formattedId: String? = null,
 
+    @SerializedName("is_internal")
+    @Expose
+    var isInternal: Boolean? = null,
+
+    @SerializedName("phone_number")
+    @Expose
+    var phoneNumber: String? = null,
+
     @SerializedName("photo_url")
     @Expose
     var photoUrl: String? = null,

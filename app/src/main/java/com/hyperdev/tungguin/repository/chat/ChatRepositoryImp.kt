@@ -19,7 +19,7 @@ class ChatRepositoryImp(private val baseApiService: BaseApiService) : ChatReposi
         token: String,
         accept: String,
         hashed_id: String,
-        page: Int
+        page: Int?
     ): Flowable<ChatHistoriResponse> = baseApiService.getChatHistori(token, accept, hashed_id, page)
 
     // Method untuk mengirim pesan dari customer ke designer

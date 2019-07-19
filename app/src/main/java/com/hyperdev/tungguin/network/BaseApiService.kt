@@ -230,7 +230,7 @@ interface BaseApiService {
         @Header("Authorization") token: String,
         @Header("Accept") accept: String,
         @Path("hashed_id") hashed_id: String,
-        @Query("page") page: Int
+        @Query("page") page: Int?
     ): Flowable<ChatHistoriResponse>
 
     @POST("order/{hashed_id}/chat")

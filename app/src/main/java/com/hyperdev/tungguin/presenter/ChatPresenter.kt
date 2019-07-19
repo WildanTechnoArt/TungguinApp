@@ -137,7 +137,7 @@ class ChatPresenter(
         )
     }
 
-    override fun getChatData(token: String, hasher_id: String, page: Int) {
+    override fun getChatData(token: String, hasher_id: String, page: Int?) {
         view.showProgress()
         compositeDisposable.add(
             chat.getChatHistori(token, "application/json", hasher_id, page)

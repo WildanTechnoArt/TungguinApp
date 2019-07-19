@@ -12,7 +12,7 @@ import android.widget.RatingBar
 import android.widget.Toast
 import com.hyperdev.tungguin.R
 import com.hyperdev.tungguin.database.SharedPrefManager
-import com.hyperdev.tungguin.model.detailorder.OrderDetailItem
+import com.hyperdev.tungguin.model.detailorder.DetailOrderData
 import com.hyperdev.tungguin.network.BaseApiService
 import com.hyperdev.tungguin.network.NetworkClient
 import com.hyperdev.tungguin.presenter.ReviewOrderPresenter
@@ -39,7 +39,7 @@ class TestimoniActivity : AppCompatActivity(), ReviewOrderView.View {
         setContentView(R.layout.activity_testimoni)
         requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
 
-        orderId = intent.getStringExtra("sendOrderID").toString()
+        orderId = intent?.getStringExtra("sendOrderID").toString()
         token = SharedPrefManager.getInstance(this@TestimoniActivity).token.toString()
 
         baseApiService = NetworkClient.getClient(this@TestimoniActivity)!!
@@ -54,7 +54,7 @@ class TestimoniActivity : AppCompatActivity(), ReviewOrderView.View {
             sendReview()
         }
 
-        rating.onRatingBarChangeListener = RatingBar
+        rating_bar.onRatingBarChangeListener = RatingBar
             .OnRatingBarChangeListener { _, rating, _ -> starCount = rating }
 
         inputAmount!!.addTextChangedListener(object : TextWatcher {
@@ -189,8 +189,8 @@ class TestimoniActivity : AppCompatActivity(), ReviewOrderView.View {
     }
 
     @SuppressLint("SetTextI18n")
-    override fun showDetailOrder(data: OrderDetailItem?) {
-        tv_name_designer.text = data?.designer?.name.toString()
+    override fun showDetailOrder(data: DetailOrderData?) {
+        tv_designer_name.text = data?.designer?.name.toString()
         kode_designer.text = "Kode: ${data?.designer?.formattedId.toString()}"
         date_order.text = data?.formattedDate.toString()
         order_id.text = data?.formattedId.toString()

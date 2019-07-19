@@ -7,9 +7,13 @@ data class HistoriItem (
 
     @SerializedName("data")
     @Expose
-    var dataChat: List<ChatData>? = null,
+    var dataChat: MutableList<ChatData>? = null,
 
     @SerializedName("next_page_url")
     @Expose
-    var nextPageUrl: String? = null
+    var nextPageUrl: String? = null,
+
+    @SerializedName("prev_page_url")
+    @Expose
+    var prevPageUrl: String? = null
 )

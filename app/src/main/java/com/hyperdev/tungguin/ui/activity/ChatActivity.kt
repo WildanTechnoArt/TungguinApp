@@ -17,6 +17,7 @@ import android.widget.Toast
 import com.github.nkzawa.emitter.Emitter
 import com.github.nkzawa.socketio.client.IO
 import com.github.nkzawa.socketio.client.Socket
+import com.hyperdev.tungguin.BuildConfig
 import com.hyperdev.tungguin.GlideApp
 import com.hyperdev.tungguin.R
 import com.hyperdev.tungguin.adapter.MessageAdapter
@@ -58,13 +59,14 @@ class ChatActivity : AppCompatActivity(), ChatView.View {
     private lateinit var requestMessage: RequestBody
     private var fileBody: MultipartBody.Part? = null
     private lateinit var nextPageURL: String
+    private lateinit var prevPageUrl: String
 
     // WebSocket
     private var socket: Socket? = null
 
     private fun initSocket() {
         try {
-            socket = IO.socket("https://websocket.tungguin.com/")
+            socket = IO.socket(BuildConfig.WEBSOCKET_URL)
         } catch (ex: URISyntaxException) {
             ex.printStackTrace()
         }
@@ -116,10 +118,6 @@ class ChatActivity : AppCompatActivity(), ChatView.View {
             }
         }
 
-        swipe_refresh.setOnRefreshListener {
-            presenter.getChatData("Bearer $token", orderId, page = page)
-        }
-
         initListener()
 
         chat_input.addTextChangedListener(object : TextWatcher {
@@ -159,12 +157,12 @@ class ChatActivity : AppCompatActivity(), ChatView.View {
     }
 
     private fun initData() {
-
+        swipe_refresh.isEnabled = false
         page = 1
 
         RxPaparazzo.register(application)
 
-        orderId = intent.getStringExtra("sendOrderID").toString()
+        orderId = intent?.getStringExtra("sendOrderID").toString()
 
         socket?.on("order", chatDesigner)
         socket?.connect()
@@ -183,7 +181,7 @@ class ChatActivity : AppCompatActivity(), ChatView.View {
         val scheduler = AppSchedulerProvider()
         presenter = ChatPresenter(this, this@ChatActivity, request, scheduler)
 
-        adapter = MessageAdapter(this@ChatActivity, listChatItem as ArrayList<ChatData>)
+        adapter = MessageAdapter(this@ChatActivity, listChatItem)
 
         presenter.getChatData("Bearer $token", orderId, page = page)
         presenter.getDetailOrder("Bearer $token", orderId)
@@ -214,6 +212,7 @@ class ChatActivity : AppCompatActivity(), ChatView.View {
             val date: String?
             val file: String?
             val sender: String?
+            val fileType: String?
 
             try {
 
@@ -222,18 +221,18 @@ class ChatActivity : AppCompatActivity(), ChatView.View {
                 date = jsonObject.getString("formatted_date")
                 file = jsonObject.getString("file")
                 sender = jsonObject.getString("sender")
+                fileType = jsonObject.getString("file_type")
 
                 if (type != null) {
                     when (type) {
                         "new_message" -> {
                             chatData = if (sender.toString() == "customer") {
-                                ChatData(TYPE_MESSAGE_SENT, text, file, date, sender)
+                                ChatData(TYPE_MESSAGE_SENT, text, file, date, sender, fileType)
                             } else {
-                                ChatData(TYPE_MESSAGE_RECEIVED, text, file, date, sender)
+                                ChatData(TYPE_MESSAGE_RECEIVED, text, file, date, sender, fileType)
                             }
                             adapter.addMessage(chatData)
                             list_chat.post { list_chat.smoothScrollToPosition(adapter.itemCount - 1) }
-
                         }
                     }
                 }
@@ -254,6 +253,7 @@ class ChatActivity : AppCompatActivity(), ChatView.View {
 
     override fun showChatData(historiItem: HistoriItem?) {
         nextPageURL = historiItem?.nextPageUrl.toString()
+        prevPageUrl = historiItem?.prevPageUrl.toString()
     }
 
     override fun loadFile(file: FileData?) {
@@ -293,12 +293,10 @@ class ChatActivity : AppCompatActivity(), ChatView.View {
         presenter.onDestroy()
     }
 
-    override fun showChatItem(chatlist: List<ChatData>) {
-        if (page == 1) {
-            listChatItem.clear()
-            listChatItem.addAll(chatlist)
-            adapter.notifyDataSetChanged()
-        } else {
+    override fun showChatItem(chatlist: MutableList<ChatData>) {
+        if(page == 1){
+            adapter.setData(chatlist)
+        }else{
             adapter.refreshAdapter(chatlist)
         }
     }

@@ -36,7 +36,7 @@
                         android:text="............."
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:id="@+id/tv_name_designer"
+                        android:id="@+id/tv_designer_name"
                         app:layout_constraintStart_toStartOf="parent"
                         android:layout_marginStart="12dp"
                         app:layout_constraintTop_toTopOf="parent"
@@ -73,7 +73,7 @@
                         android:id="@+id/kode_designer"
                         app:layout_constraintStart_toStartOf="parent"
                         android:layout_marginStart="12dp"
-                        app:layout_constraintTop_toBottomOf="@+id/tv_name_designer"
+                        app:layout_constraintTop_toBottomOf="@+id/tv_designer_name"
                         android:textColor="@color/azure.primary_dark"
                         android:textStyle="bold" tools:ignore="HardcodedText"/>
             </androidx.constraintlayout.widget.ConstraintLayout>
@@ -98,10 +98,11 @@
                     android:gravity="center"/>
 
             <RatingBar
+                    android:id="@+id/rating_bar"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:id="@+id/rating"
                     android:layout_marginTop="8dp"
+                    android:theme="@style/RatingBar"
                     android:numStars="5" android:stepSize="1"/>
 
             <View

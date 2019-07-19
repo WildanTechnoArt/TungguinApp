@@ -118,7 +118,7 @@ class OrderDesignActivity : AppCompatActivity(), DetailProductView.View, UploadI
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         token = SharedPrefManager.getInstance(this@OrderDesignActivity).token.toString()
-        hashed_id = intent.getStringExtra("sendProductID").toString()
+        hashed_id = intent?.getStringExtra("sendProductID").toString()
         cartDataMap["type"] = setRequestBody(hashed_id)
 
         baseApiService = NetworkClient.getClient(this@OrderDesignActivity)!!
@@ -515,7 +515,7 @@ class OrderDesignActivity : AppCompatActivity(), DetailProductView.View, UploadI
         inputTextareaViews[index]?.textSize = 14.0f
         inputTextareaViews[index]?.setPadding(paddingPx, paddingPx, paddingPx, paddingPx)
         inputTextareaViews[index]?.hint = palaceholder
-        inputTextareaViews[index]?.setSingleLine(false)
+        inputTextareaViews[index]?.isSingleLine = false
         inputTextareaViews[index]?.imeOptions = EditorInfo.IME_FLAG_NO_ENTER_ACTION
 
         formatted_layout.addView(textViews)

@@ -2,347 +2,269 @@
 <LinearLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
-        xmlns:tools="http://schemas.android.com/tools"
         android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" android:layout_marginBottom="8dp" android:layout_marginLeft="4dp"
-        android:layout_marginRight="4dp" android:layout_marginTop="8dp" android:id="@+id/linearLayout4">
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:layout_marginStart="4dp"
+        android:layout_marginEnd="4dp"
+        android:layout_marginTop="8dp">
 
-    <LinearLayout
-            android:orientation="horizontal"
+    <TextView
+            android:id="@+id/tv_show_detail"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            tools:ignore="UseCompoundDrawables"
-            android:id="@+id/show_detail">
-
-        <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintBottom_toBottomOf="@+id/info_order"
-                app:srcCompat="@drawable/ic_expand_more_28dp"
-                tools:ignore="ContentDescription" android:id="@+id/more_item"/>
-
-        <TextView
-                android:text="Design Spanduk"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:textStyle="bold"
-                android:textColor="@color/colorPrimary"
-                android:textSize="15sp"
-                android:id="@+id/name_design"
-                tools:ignore="HardcodedText"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                android:gravity="center_vertical"
-                android:layout_marginStart="4dp"/>
-
-    </LinearLayout>
+            android:drawableStart="@drawable/ic_expand_more_28dp"
+            android:text="@string/none"
+            android:textStyle="bold"
+            android:textColor="@color/colorPrimary"
+            android:textSize="15sp"
+            android:gravity="center_vertical" android:background="@drawable/new_menu_round_button"/>
 
     <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/cl_table_product"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginTop="4dp" android:id="@+id/table_product">
+            android:layout_marginTop="4dp">
 
         <View
+                android:id="@+id/top_line"
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
                 android:background="#FFDADADA"
-                android:id="@+id/line11"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent"/>
 
         <View
+                android:id="@+id/first_line"
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
                 android:background="#FFDADADA"
-                android:id="@+id/line22"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
                 android:layout_marginTop="8dp"
-                app:layout_constraintTop_toBottomOf="@+id/txtdo11"/>
+                app:layout_constraintTop_toBottomOf="@+id/tv_design"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"/>
 
         <View
+                android:id="@+id/center_line"
                 android:layout_width="1dp"
                 android:layout_height="0dp"
+                android:layout_marginStart="8dp"
                 android:background="#FFDADADA"
-                android:id="@+id/line33"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintTop_toTopOf="@+id/line11"
-                app:layout_constraintStart_toEndOf="@+id/txtdo55"
-                android:layout_marginStart="8dp"
+                app:layout_constraintTop_toTopOf="@+id/top_line"
+                app:layout_constraintStart_toEndOf="@+id/tv_design_reference"
                 app:layout_constraintHorizontal_bias="0.0"/>
 
         <View
+                android:id="@+id/left_line"
                 android:layout_width="1dp"
                 android:layout_height="0dp"
                 android:background="#FFDADADA"
-                android:id="@+id/line66"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="@+id/line11"
-                app:layout_constraintHorizontal_bias="0.0" app:layout_constraintBottom_toBottomOf="parent"/>
+                app:layout_constraintTop_toTopOf="@+id/top_line"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintBottom_toBottomOf="parent"/>
 
         <View
+                android:id="@+id/right_line"
                 android:layout_width="1dp"
                 android:layout_height="0dp"
                 android:background="#FFDADADA"
-                android:id="@+id/line77"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintTop_toTopOf="@+id/line11"
+                app:layout_constraintTop_toTopOf="@+id/top_line"
                 app:layout_constraintHorizontal_bias="1.0"/>
 
         <View
+                android:id="@+id/second_line"
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
+                android:layout_marginTop="8dp"
                 android:background="#FFDADADA"
-                android:id="@+id/line88"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                android:layout_marginTop="8dp" app:layout_constraintTop_toBottomOf="@+id/detail_design"/>
+                app:layout_constraintTop_toBottomOf="@+id/design_concept"/>
 
         <View
+                android:id="@+id/fifth_line"
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
+                android:layout_marginTop="8dp"
                 android:background="#FFDADADA"
-                android:id="@+id/line200"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/konsep_design" android:layout_marginTop="8dp"/>
-        <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:background="#FFDADADA"
-                android:id="@+id/line99"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/referensi_design" android:layout_marginTop="8dp"/>
+                app:layout_constraintTop_toBottomOf="@+id/design_reference"/>
 
         <View
+                android:id="@+id/fourth_line"
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
+                android:layout_marginTop="8dp"
                 android:background="#FFDADADA"
-                android:id="@+id/line1011"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/dokumen"
-                android:layout_marginTop="8dp"/>
+                app:layout_constraintTop_toBottomOf="@+id/detail_design"/>
+
         <View
+                android:id="@+id/bottom_line"
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
+                android:layout_marginTop="8dp"
                 android:background="#FFDADADA"
-                android:id="@+id/line1010"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/txtdo44"
-                android:layout_marginTop="8dp" app:layout_constraintBottom_toBottomOf="parent"
-        />
+                app:layout_constraintTop_toBottomOf="@+id/tv_design_price"/>
+
         <TextView
-                android:text="Desain"
+                android:id="@+id/tv_design"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:id="@+id/txtdo11"
-                app:layout_constraintStart_toStartOf="parent"
                 android:layout_marginTop="8dp"
-                app:layout_constraintTop_toBottomOf="@+id/line11"
-                android:textStyle="bold"
-                android:layout_marginLeft="8dp"
-                android:layout_marginEnd="8dp"
-                app:layout_constraintEnd_toStartOf="@+id/line33"
-                android:layout_marginRight="8dp"
-                android:layout_marginBottom="8dp"
-                app:layout_constraintBottom_toTopOf="@+id/line22"
                 android:layout_marginStart="8dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginBottom="8dp"
+                android:text="@string/desain"
+                android:textStyle="bold"
+                app:layout_constraintEnd_toStartOf="@+id/center_line"
+                app:layout_constraintBottom_toTopOf="@+id/first_line"
                 app:layout_constraintHorizontal_bias="0.6"
-                tools:ignore="HardcodedText"/>
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/top_line"/>
 
         <TextView
-                android:text="Konsep Design"
+                android:id="@+id/tv_design_concept"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:id="@+id/txtdo22"
                 android:layout_marginTop="8dp"
-                app:layout_constraintTop_toBottomOf="@+id/line22"
-                app:layout_constraintStart_toStartOf="parent"
-                android:textStyle="bold"
-                android:layout_marginBottom="8dp"
-                app:layout_constraintBottom_toTopOf="@+id/line200"
                 android:layout_marginStart="8dp"
-                tools:ignore="HardcodedText" app:layout_constraintVertical_chainStyle="spread_inside"/>
+                android:layout_marginBottom="8dp"
+                android:text="@string/konsep_desain"
+                android:textStyle="bold"
+                app:layout_constraintTop_toBottomOf="@+id/first_line"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintBottom_toTopOf="@+id/second_line"
+                app:layout_constraintVertical_chainStyle="spread_inside"/>
 
         <TextView
-                android:text="Detail Design"
+                android:id="@+id/tv_detail_design"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:id="@+id/txtdo66"
-                app:layout_constraintStart_toStartOf="parent"
-                android:textStyle="bold"
-                android:layout_marginBottom="8dp"
-                app:layout_constraintBottom_toTopOf="@+id/line88"
                 android:layout_marginStart="8dp"
-                tools:ignore="HardcodedText" app:layout_constraintVertical_chainStyle="spread_inside"
-                android:layout_marginTop="8dp" app:layout_constraintTop_toBottomOf="@+id/line200"/>
-        <TextView
-                android:text="Dokumen"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:id="@+id/txtdo33"
-                android:textStyle="bold"
-                app:layout_constraintStart_toStartOf="parent"
-                android:layout_marginLeft="8dp"
-                app:layout_constraintEnd_toStartOf="@+id/line33"
-                android:layout_marginEnd="8dp"
-                android:layout_marginRight="8dp"
-                android:layout_marginStart="8dp"
-                android:gravity="center_vertical"
-                tools:ignore="HardcodedText"
                 android:layout_marginTop="8dp"
-                app:layout_constraintTop_toBottomOf="@+id/line88"
-                android:layout_marginBottom="8dp"
-                app:layout_constraintBottom_toTopOf="@+id/line1011"/>
-
-        <TextView
-                android:text="Preferensi Design"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:id="@+id/txtdo55"
+                android:text="@string/detail_design"
                 android:textStyle="bold"
                 app:layout_constraintStart_toStartOf="parent"
-                android:layout_marginStart="8dp"
-                android:gravity="center_vertical"
-                tools:ignore="HardcodedText"
-                android:layout_marginBottom="8dp"
-                app:layout_constraintBottom_toTopOf="@+id/line99" android:layout_marginTop="8dp"
-                app:layout_constraintTop_toBottomOf="@+id/line1011"/>
+                app:layout_constraintVertical_chainStyle="spread_inside"
+                app:layout_constraintTop_toBottomOf="@+id/second_line"/>
+
         <TextView
+                android:id="@+id/tv_design_reference"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginBottom="8dp"
+                android:layout_marginTop="8dp"
+                android:text="@string/preferensi_desain"
+                android:textStyle="bold"
+                android:gravity="center_vertical"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintBottom_toTopOf="@+id/fifth_line"
+                app:layout_constraintTop_toBottomOf="@+id/fourth_line"/>
+
+        <TextView
                 android:id="@+id/number_design"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginBottom="8dp"
                 android:textStyle="bold"
                 android:textColor="#000000"
-                tools:ignore="HardcodedText"
-                android:layout_marginTop="8dp"
-                app:layout_constraintTop_toBottomOf="@+id/line11"
-                app:layout_constraintStart_toEndOf="@+id/line33"
-                android:layout_marginLeft="8dp"
-                android:layout_marginStart="8dp"
-                android:layout_marginBottom="8dp"
-                app:layout_constraintBottom_toTopOf="@+id/line22"
-                app:layout_constraintEnd_toStartOf="@+id/line77"
-                android:layout_marginEnd="8dp"
-                android:layout_marginRight="8dp"/>
+                app:layout_constraintBottom_toTopOf="@+id/first_line"
+                app:layout_constraintTop_toBottomOf="@+id/top_line"
+                app:layout_constraintStart_toEndOf="@+id/center_line"
+                app:layout_constraintEnd_toStartOf="@+id/right_line"/>
 
         <TextView
+                android:id="@+id/design_concept"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginBottom="8dp"
+                android:textColor="#000000"
                 android:focusableInTouchMode="true"
                 android:scrollHorizontally="false"
                 android:singleLine="false"
-                android:id="@+id/konsep_design"
-                android:layout_marginLeft="8dp"
-                android:layout_marginStart="8dp"
-                app:layout_constraintStart_toEndOf="@+id/line33"
-                android:layout_marginTop="8dp"
-                app:layout_constraintTop_toBottomOf="@+id/line22"
-                app:layout_constraintEnd_toStartOf="@+id/line77"
-                android:layout_marginEnd="8dp"
-                android:layout_marginRight="8dp"
-                tools:ignore="HardcodedText" android:textColor="#000000"
-                android:layout_marginBottom="8dp"
-                app:layout_constraintBottom_toTopOf="@+id/line200"/>
+                app:layout_constraintStart_toEndOf="@+id/center_line"
+                app:layout_constraintTop_toBottomOf="@+id/first_line"
+                app:layout_constraintEnd_toStartOf="@+id/right_line"
+                app:layout_constraintBottom_toTopOf="@+id/second_line"/>
 
         <TextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:focusableInTouchMode="true"
-                android:scrollHorizontally="false"
-                android:singleLine="false"
                 android:id="@+id/detail_design"
-                android:layout_marginLeft="8dp"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
-                app:layout_constraintStart_toEndOf="@+id/line33"
-                app:layout_constraintEnd_toStartOf="@+id/line77"
                 android:layout_marginEnd="8dp"
-                android:layout_marginRight="8dp"
-                tools:ignore="HardcodedText"
+                android:focusableInTouchMode="true"
+                android:scrollHorizontally="false"
+                android:singleLine="false"
                 android:textColor="#000000"
-                android:layout_marginBottom="8dp"
-                app:layout_constraintBottom_toTopOf="@+id/line88"
                 android:layout_marginTop="8dp"
-                app:layout_constraintTop_toBottomOf="@+id/line200"/>
+                app:layout_constraintStart_toEndOf="@+id/center_line"
+                app:layout_constraintEnd_toStartOf="@+id/right_line"
+                app:layout_constraintTop_toBottomOf="@+id/second_line"/>
 
         <TextView
+                android:id="@+id/design_price"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:id="@+id/dokumen"
-                android:layout_marginLeft="8dp"
                 android:layout_marginStart="8dp"
-                app:layout_constraintStart_toEndOf="@+id/line33"
-                app:layout_constraintEnd_toStartOf="@+id/line77"
                 android:layout_marginEnd="8dp"
-                android:layout_marginRight="8dp"
-                android:layout_marginTop="8dp"
-                app:layout_constraintTop_toBottomOf="@+id/line88"
-                tools:ignore="HardcodedText"
-                android:textColor="#FF0012FF"
-                app:layout_constraintBottom_toBottomOf="@+id/line1011"
-                android:layout_marginBottom="8dp"/>
-
-        <TextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:id="@+id/price_product"
-                android:layout_marginLeft="8dp"
-                android:layout_marginStart="8dp"
-                app:layout_constraintStart_toEndOf="@+id/line33"
-                app:layout_constraintEnd_toStartOf="@+id/line77"
-                android:layout_marginEnd="8dp"
-                android:layout_marginRight="8dp"
-                app:layout_constraintTop_toBottomOf="@+id/line99"
-                tools:ignore="HardcodedText"
                 android:textColor="#000000"
                 android:layout_marginTop="8dp"
                 android:textStyle="bold"
                 android:layout_marginBottom="8dp"
-                app:layout_constraintBottom_toTopOf="@+id/line1010"/>
+                app:layout_constraintTop_toBottomOf="@+id/fifth_line"
+                app:layout_constraintStart_toEndOf="@+id/center_line"
+                app:layout_constraintEnd_toStartOf="@+id/right_line"
+                app:layout_constraintBottom_toTopOf="@+id/bottom_line"/>
 
         <TextView
-                android:text="Harga"
+                android:id="@+id/tv_design_price"
+                android:text="@string/harga"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:id="@+id/txtdo44"
-                app:layout_constraintEnd_toStartOf="@+id/line33"
-                android:layout_marginEnd="8dp"
-                android:layout_marginRight="8dp"
-                app:layout_constraintStart_toEndOf="@+id/line66"
-                android:layout_marginLeft="8dp"
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="8dp"
-                app:layout_constraintTop_toBottomOf="@+id/line99"
+                android:layout_marginEnd="8dp"
                 android:textStyle="bold"
-                tools:ignore="HardcodedText"/>
+                app:layout_constraintEnd_toStartOf="@+id/center_line"
+                app:layout_constraintStart_toEndOf="@+id/left_line"
+                app:layout_constraintTop_toBottomOf="@+id/fifth_line"/>
 
         <TextView
+                android:id="@+id/design_reference"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:id="@+id/referensi_design"
+                android:layout_marginEnd="8dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginBottom="8dp"
                 android:autoLink="web"
-                app:layout_constraintEnd_toStartOf="@+id/line77"
-                android:layout_marginEnd="8dp"
-                android:layout_marginRight="8dp"
-                android:layout_marginTop="8dp"
-                app:layout_constraintTop_toBottomOf="@+id/line1011"
-                app:layout_constraintStart_toEndOf="@+id/line33"
-                android:layout_marginLeft="8dp"
-                android:layout_marginStart="8dp"
-                app:layout_constraintBottom_toTopOf="@+id/line99"
                 android:textColor="#000000"
-                android:layout_marginBottom="8dp"/>
+                app:layout_constraintEnd_toStartOf="@+id/right_line"
+                app:layout_constraintTop_toBottomOf="@+id/fourth_line"
+                app:layout_constraintStart_toEndOf="@+id/center_line"
+                app:layout_constraintBottom_toTopOf="@+id/fifth_line"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

@@ -12,5 +12,5 @@ data class DetailOrderResponse (
 
     @SerializedName("data")
     @Expose
-    var data: OrderDetailItem? = null
+    var data: DetailOrderData? = null
 )
