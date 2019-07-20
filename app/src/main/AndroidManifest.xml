@@ -20,6 +20,8 @@
             android:theme="@style/AppTheme"
             tools:ignore="AllowBackup,GoogleAppIndexingWarning"
             tools:replace="android:allowBackup">
+        <activity android:name=".ui.activity.ChatListActivity">
+        </activity>
         <activity android:name=".ui.activity.SearchProductActivity"/>
         <activity android:name=".ui.activity.TestimoniActivity">
             <meta-data

@@ -23,7 +23,7 @@ class HandleError {
             } else {
                 // non 200 and 401 error codes
                 val gson = Gson()
-                val response = gson.fromJson(e.response().errorBody()?.charStream(), Response::class.java)
+                val response = gson.fromJson(e.response()?.errorBody()?.charStream(), Response::class.java)
                 val message = response.meta?.message.toString()
                 if (message != "null") {
                     Toast.makeText(context, message, Toast.LENGTH_LONG).show()

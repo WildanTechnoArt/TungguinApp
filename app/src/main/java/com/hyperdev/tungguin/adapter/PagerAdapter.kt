@@ -12,8 +12,8 @@ class PagerAdapter(fm: FragmentManager, behavior: Int, private val numberTabs: I
     //Mengembalikan Fragment yang terkait dengan posisi tertentu
     override fun getItem(position: Int): Fragment {
         return when (position) {
-            0 -> TransactionHisFragment()
-            1 -> TopUpHisFragment()
+            0 -> TopUpHisFragment()
+            1 -> TransactionHisFragment()
             else -> null
         }!!
     }

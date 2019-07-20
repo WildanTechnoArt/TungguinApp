@@ -53,11 +53,13 @@ class ProfileActivity : AppCompatActivity(), ProfileView.View, ProfileUpdateView
         setContentView(R.layout.activity_profile)
         requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
 
-        //Inisialisasi Toolbar dan Menampilkan Menu Home pada Toolbar
         setSupportActionBar(toolbar)
-        supportActionBar?.setDisplayShowHomeEnabled(true)
-        supportActionBar?.setHomeButtonEnabled(true)
-        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+
+        supportActionBar?.apply {
+            setDisplayShowHomeEnabled(true)
+            setHomeButtonEnabled(true)
+            setDisplayHomeAsUpEnabled(true)
+        }
 
         initData()
 
@@ -271,7 +273,6 @@ class ProfileActivity : AppCompatActivity(), ProfileView.View, ProfileUpdateView
         Snackbar.make(profile_layout, message, Snackbar.LENGTH_SHORT).show()
     }
 
-    //Digunakan untuk menentukan aksi pada tombol home
     override fun onSupportNavigateUp(): Boolean {
         onBackPressed()
         return true

@@ -20,7 +20,11 @@ class ChatRepositoryImp(private val baseApiService: BaseApiService) : ChatReposi
         accept: String,
         hashed_id: String,
         page: Int?
-    ): Flowable<ChatHistoriResponse> = baseApiService.getChatHistori(token, accept, hashed_id, page)
+    ): Flowable<ChatHistoryResponse> = baseApiService.getChatHistori(token, accept, hashed_id, page)
+
+    // Digunakan untuk menampilkan daftar Chat Designer yang sedang aktif
+    override fun getChatList(token: String, accept: String, page: Int?): Flowable<ChatListResponse> =
+        baseApiService.getChat(token, accept, page)
 
     // Method untuk mengirim pesan dari customer ke designer
     override fun chatRequest(

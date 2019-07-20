@@ -38,7 +38,7 @@ import com.hyperdev.tungguin.utils.AppSchedulerProvider
 import com.miguelbcr.ui.rx_paparazzo2.RxPaparazzo
 import com.miguelbcr.ui.rx_paparazzo2.entities.FileData
 import kotlinx.android.synthetic.main.activity_order_design.*
-import okhttp3.MediaType
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import kotlin.collections.ArrayList
@@ -254,7 +254,7 @@ class OrderDesignActivity : AppCompatActivity(), DetailProductView.View, UploadI
     }
 
     private fun setRequestBody(data: String): RequestBody {
-        return RequestBody.create(MediaType.parse("text/plain"), data)
+        return RequestBody.create("text/plain".toMediaTypeOrNull(), data)
     }
 
     override fun loadFileDoc(fileDoc: FileData?) {
@@ -281,7 +281,7 @@ class OrderDesignActivity : AppCompatActivity(), DetailProductView.View, UploadI
     }
 
     private fun saveimageBody(file: FileData?, nomor: String): MultipartBody.Part {
-        request = RequestBody.create(MediaType.parse("application/x-www-form-urlencoded"), file?.file!!)
+        request = RequestBody.create("application/x-www-form-urlencoded".toMediaTypeOrNull(), file?.file!!)
         return MultipartBody.Part.createFormData("design_preference[$nomor]", file.filename, request)
     }
 

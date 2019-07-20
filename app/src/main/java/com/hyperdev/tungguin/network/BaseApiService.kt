@@ -3,7 +3,7 @@ package com.hyperdev.tungguin.network
 import com.hyperdev.tungguin.model.cart.AddToCartResponse
 import com.hyperdev.tungguin.model.dashboard.AnnouncementResponse
 import com.hyperdev.tungguin.model.cart.CartResponse
-import com.hyperdev.tungguin.model.chat.ChatHistoriResponse
+import com.hyperdev.tungguin.model.chat.ChatHistoryResponse
 import com.hyperdev.tungguin.model.chat.MessageModel
 import com.hyperdev.tungguin.model.cart.CheckVoucherResponse
 import com.hyperdev.tungguin.model.cart.CheckoutResponse
@@ -21,6 +21,7 @@ import com.hyperdev.tungguin.model.profile.ProfileResponse
 import com.hyperdev.tungguin.model.authentication.CityResponse
 import com.hyperdev.tungguin.model.authentication.ProvinceResponse
 import com.hyperdev.tungguin.model.authentication.RegisterResponse
+import com.hyperdev.tungguin.model.chat.ChatListResponse
 import com.hyperdev.tungguin.model.searchproduct.SearchProductResponse
 import com.hyperdev.tungguin.model.transaction.TopUpResponse
 import com.hyperdev.tungguin.model.transaction.HistoriTopUpResponse
@@ -32,7 +33,6 @@ import okhttp3.RequestBody
 import retrofit2.http.*
 import retrofit2.http.GET
 
-// Berisi Perintah Untuk Berkomunikasi Dengan API
 interface BaseApiService {
 
     @POST("register")
@@ -231,7 +231,7 @@ interface BaseApiService {
         @Header("Accept") accept: String,
         @Path("hashed_id") hashed_id: String,
         @Query("page") page: Int?
-    ): Flowable<ChatHistoriResponse>
+    ): Flowable<ChatHistoryResponse>
 
     @POST("order/{hashed_id}/chat")
     @Multipart
@@ -254,6 +254,13 @@ interface BaseApiService {
         @Field("app_testimonial") app_testi: String,
         @Field("tip") tip: String
     ): Observable<DetailOrderResponse>
+
+    @GET("chat")
+    fun getChat(
+        @Header("Authorization") token: String,
+        @Header("Accept") accept: String,
+        @Query("page") page: Int?
+    ): Flowable<ChatListResponse>
 
     @GET("dashboard-slider")
     fun getDashboardSlider(@Header("Authorization") token: String): Flowable<DashboardResponse>

@@ -29,6 +29,8 @@ import java.text.NumberFormat
 import com.midtrans.sdk.corekit.core.themes.CustomColorTheme
 import com.midtrans.sdk.corekit.models.snap.TransactionResult
 import com.midtrans.sdk.uikit.SdkUIFlowBuilder
+import com.midtrans.sdk.corekit.models.snap.CreditCard
+import com.midtrans.sdk.corekit.models.BankType
 
 class TopUpActivity : AppCompatActivity(), TopUpView.View {
 
@@ -108,6 +110,17 @@ class TopUpActivity : AppCompatActivity(), TopUpView.View {
 
     private fun transactionRequest(transactionID: String, topupAmount: Long) {
         val transactionRequest = TransactionRequest(transactionID, topupAmount.toDouble())
+
+        val creditCardOptions = CreditCard()
+        // Set to true if you want to save card to Snap
+        creditCardOptions.isSaveCard = false
+        // Set bank name when using MIGS channel
+        creditCardOptions.bank = BankType.BCA
+        // Set MIGS channel (ONLY for BCA, BRI and Maybank Acquiring bank)
+        creditCardOptions.channel = CreditCard.MIGS
+        // Set Credit Card Options
+        transactionRequest.creditCard = creditCardOptions
+
         // Set transaction request into SDK instance
         MidtransSDK.getInstance().transactionRequest = transactionRequest
     }

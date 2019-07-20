@@ -40,8 +40,8 @@ class HistoryActivity : AppCompatActivity(), BalanceView.View {
         supportActionBar?.setHomeButtonEnabled(true)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
-        history_tabs.addTab(history_tabs.newTab().setText("Histori Transaksi"))
         history_tabs.addTab(history_tabs.newTab().setText("Histori Top Up"))
+        history_tabs.addTab(history_tabs.newTab().setText("Histori Transaksi"))
 
         /*
          Menambahkan Listener yang akan dipanggil kapan pun halaman berubah atau
@@ -68,7 +68,6 @@ class HistoryActivity : AppCompatActivity(), BalanceView.View {
 
     override fun onResume() {
         super.onResume()
-        disabledView()
         loadData()
     }
 
@@ -92,28 +91,22 @@ class HistoryActivity : AppCompatActivity(), BalanceView.View {
         viewpager.adapter = pageAdapter
     }
 
-    override fun displayTransaction(transactionItem: DataTransaction) {
+    override fun showTransaction(transactionItem: DataTransaction) {
         my_saldo.text = transactionItem.balance.toString()
     }
 
-    override fun displayProgress() {
-        disabledView()
+    override fun showProgressBar() {
+        progress_bar.visibility = View.VISIBLE
     }
 
-    override fun hideProgress() {
-        enabledView()
+    override fun hideProgressBar() {
+        progress_bar.visibility = View.GONE
     }
 
-    private fun enabledView() {
+    override fun onSuccess() {
         progress_bar.visibility = View.GONE
         appbar.visibility = View.VISIBLE
         viewpager.visibility = View.VISIBLE
-    }
-
-    private fun disabledView() {
-        progress_bar.visibility = View.VISIBLE
-        appbar.visibility = View.GONE
-        viewpager.visibility = View.GONE
     }
 
     override fun onSupportNavigateUp(): Boolean {

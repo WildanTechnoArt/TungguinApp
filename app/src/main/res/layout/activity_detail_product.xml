@@ -97,7 +97,7 @@
                         tools:ignore="HardcodedText" android:id="@+id/tv_description"/>
 
                 <View
-                        android:id="@+id/view"
+                        android:id="@+id/line"
                         android:layout_width="match_parent"
                         android:layout_height="1dp"
                         android:layout_marginTop="8dp"

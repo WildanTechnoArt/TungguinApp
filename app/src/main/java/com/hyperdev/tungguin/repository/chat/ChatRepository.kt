@@ -13,7 +13,10 @@ interface ChatRepository {
     fun getOrderDetail(token: String, accept: String, hashed_id: String): Flowable<DetailOrderResponse>
 
     // Method ini digunakna untuk menampilkan chat atau histori chat antara customer dan designer
-    fun getChatHistori(token: String, accept: String, hashed_id: String, page: Int?): Flowable<ChatHistoriResponse>
+    fun getChatHistori(token: String, accept: String, hashed_id: String, page: Int?): Flowable<ChatHistoryResponse>
+
+    // Digunakan untuk menampilkan daftar Chat Designer yang sedang aktif
+    fun getChatList(token: String, accept: String, page: Int?): Flowable<ChatListResponse>
 
     // Method untuk mengirim pesan dari customer ke designer
     fun chatRequest(

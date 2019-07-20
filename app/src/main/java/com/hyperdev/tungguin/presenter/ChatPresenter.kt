@@ -4,7 +4,7 @@ import android.app.Activity
 import android.content.Context
 import android.widget.Toast
 import com.google.gson.Gson
-import com.hyperdev.tungguin.model.chat.ChatHistoriResponse
+import com.hyperdev.tungguin.model.chat.ChatHistoryResponse
 import com.hyperdev.tungguin.model.chat.MessageModel
 import com.hyperdev.tungguin.model.detailorder.DetailOrderResponse
 import com.hyperdev.tungguin.network.ConnectivityStatus
@@ -65,7 +65,7 @@ class ChatPresenter(
                             is HttpException -> {
                                 val gson = Gson()
                                 val response =
-                                    gson.fromJson(e.response().errorBody()?.charStream(), Response::class.java)
+                                    gson.fromJson(e.response()?.errorBody()?.charStream(), Response::class.java)
                                 val message = response.meta?.message.toString()
                                 Toast.makeText(context, message, Toast.LENGTH_LONG).show()
                             }
@@ -143,12 +143,12 @@ class ChatPresenter(
             chat.getChatHistori(token, "application/json", hasher_id, page)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(scheduler.io())
-                .subscribeWith(object : ResourceSubscriber<ChatHistoriResponse>() {
+                .subscribeWith(object : ResourceSubscriber<ChatHistoryResponse>() {
                     override fun onComplete() {
                         view.onSuccess()
                     }
 
-                    override fun onNext(t: ChatHistoriResponse) {
+                    override fun onNext(t: ChatHistoryResponse) {
                         try {
                             t.data?.dataChat?.let { view.showChatItem(it) }
                             view.showChatData(t.data)

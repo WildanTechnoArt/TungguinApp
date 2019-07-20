@@ -93,7 +93,7 @@ class DetailProductActivity : AppCompatActivity(), DetailProductView.View {
         }else{
             tv_description.visibility = View.GONE
             product_description.visibility = View.GONE
-            view.visibility = View.GONE
+            line.visibility = View.GONE
             view2.visibility = View.GONE
         }
 

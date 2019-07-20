@@ -44,7 +44,7 @@ data class DetailOrderData (
 
     @SerializedName("designer")
     @Expose
-    var designer: DesainerProfile? = null,
+    var designer: DesignerData? = null,
 
     @SerializedName("items")
     @Expose

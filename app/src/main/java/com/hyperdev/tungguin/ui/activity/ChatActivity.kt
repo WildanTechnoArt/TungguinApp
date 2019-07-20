@@ -24,17 +24,18 @@ import com.hyperdev.tungguin.adapter.MessageAdapter
 import com.hyperdev.tungguin.database.SharedPrefManager
 import com.hyperdev.tungguin.model.chat.ChatData
 import com.hyperdev.tungguin.model.chat.HistoriItem
-import com.hyperdev.tungguin.model.detailorder.DesainerProfile
+import com.hyperdev.tungguin.model.detailorder.DesignerData
 import com.hyperdev.tungguin.network.BaseApiService
 import com.hyperdev.tungguin.network.NetworkClient
 import com.hyperdev.tungguin.presenter.ChatPresenter
 import com.hyperdev.tungguin.repository.chat.ChatRepositoryImp
 import com.hyperdev.tungguin.utils.AppSchedulerProvider
 import com.hyperdev.tungguin.ui.view.ChatView
+import com.hyperdev.tungguin.utils.UtilsConstant.Companion.HASHED_ID
 import com.miguelbcr.ui.rx_paparazzo2.RxPaparazzo
 import com.miguelbcr.ui.rx_paparazzo2.entities.FileData
 import kotlinx.android.synthetic.main.activity_chat.*
-import okhttp3.MediaType
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import org.json.JSONException
@@ -162,7 +163,7 @@ class ChatActivity : AppCompatActivity(), ChatView.View {
 
         RxPaparazzo.register(application)
 
-        orderId = intent?.getStringExtra("sendOrderID").toString()
+        orderId = intent?.getStringExtra(HASHED_ID).toString()
 
         socket?.on("order", chatDesigner)
         socket?.connect()
@@ -190,7 +191,7 @@ class ChatActivity : AppCompatActivity(), ChatView.View {
     }
 
     private fun setRequestBody(data: String): RequestBody {
-        return RequestBody.create(MediaType.parse("text/plain"), data)
+        return RequestBody.create("text/plain".toMediaTypeOrNull(), data)
     }
 
     private fun sendMessage(message: String) {
@@ -257,7 +258,7 @@ class ChatActivity : AppCompatActivity(), ChatView.View {
     }
 
     override fun loadFile(file: FileData?) {
-        requestFile = RequestBody.create(MediaType.parse("application/x-www-form-urlencoded"), file?.file!!)
+        requestFile = RequestBody.create("application/x-www-form-urlencoded".toMediaTypeOrNull(), file?.file!!)
         fileBody = MultipartBody.Part.createFormData("file", file.filename, requestFile)
         sendMessage("null")
     }
@@ -277,7 +278,7 @@ class ChatActivity : AppCompatActivity(), ChatView.View {
         isLoading = false
     }
 
-    override fun profileDesigner(designer: DesainerProfile) {
+    override fun profileDesigner(designer: DesignerData) {
         designerName = designer.name.toString()
         designer_name.text = designerName
         GlideApp.with(this@ChatActivity)

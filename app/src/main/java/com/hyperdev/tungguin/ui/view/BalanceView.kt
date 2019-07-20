@@ -5,9 +5,10 @@ import com.hyperdev.tungguin.model.transaction.DataTransaction
 class BalanceView {
 
     interface View {
-        fun displayTransaction(transactionItem: DataTransaction)
-        fun displayProgress()
-        fun hideProgress()
+        fun showTransaction(transactionItem: DataTransaction)
+        fun showProgressBar()
+        fun hideProgressBar()
+        fun onSuccess()
     }
 
     interface Presenter {

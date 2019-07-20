@@ -61,8 +61,12 @@ class DashboardActivity : AppCompatActivity(), DashboardView.View {
     }
 
     private fun mainMenuListener(){
-        cart.setOnClickListener {
+        img_cart.setOnClickListener {
             startActivity(Intent(this@DashboardActivity, CartActivity::class.java))
+        }
+
+        img_message.setOnClickListener {
+            startActivity(Intent(this@DashboardActivity, ChatListActivity::class.java))
         }
 
         tv_search_design.setOnClickListener {

@@ -59,7 +59,7 @@ class AddToCartPresenter(
                             is HttpException -> {
                                 val gson = Gson()
                                 val response =
-                                    gson.fromJson(e.response().errorBody()?.charStream(), Response::class.java)
+                                    gson.fromJson(e.response()?.errorBody()?.charStream(), Response::class.java)
                                 val message = response.meta?.message.toString()
                                 Toast.makeText(context, message, Toast.LENGTH_LONG).show()
                             }

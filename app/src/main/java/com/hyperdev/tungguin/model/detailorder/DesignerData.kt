@@ -3,7 +3,7 @@ package com.hyperdev.tungguin.model.detailorder
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
-data class DesainerProfile (
+data class DesignerData (
 
     @SerializedName("name")
     @Expose
@@ -28,4 +28,5 @@ data class DesainerProfile (
     @SerializedName("hashed_id")
     @Expose
     var hashedId: String? = null
+
 )

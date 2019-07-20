@@ -3,7 +3,7 @@ package com.hyperdev.tungguin.ui.view
 import android.app.Activity
 import com.hyperdev.tungguin.model.chat.ChatData
 import com.hyperdev.tungguin.model.chat.HistoriItem
-import com.hyperdev.tungguin.model.detailorder.DesainerProfile
+import com.hyperdev.tungguin.model.detailorder.DesignerData
 import com.miguelbcr.ui.rx_paparazzo2.entities.FileData
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
@@ -13,7 +13,7 @@ class ChatView {
     interface View {
         fun showChatItem(chatlist: MutableList<ChatData>)
         fun showChatData(historiItem: HistoriItem?)
-        fun profileDesigner(designer: DesainerProfile)
+        fun profileDesigner(designer: DesignerData)
         fun loadFile(file: FileData?)
         fun showProgress()
         fun hideProgress()

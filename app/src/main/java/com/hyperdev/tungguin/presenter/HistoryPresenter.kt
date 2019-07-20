@@ -25,7 +25,7 @@ class HistoryPresenter(
     private val compositeDisposable = CompositeDisposable()
 
     override fun getUserBalance(token: String) {
-        view.displayProgress()
+        view.showProgressBar()
 
         compositeDisposable.add(
             history.getTransactionBalance(token, "application/json")
@@ -33,12 +33,12 @@ class HistoryPresenter(
                 .subscribeOn(scheduler.io())
                 .subscribeWith(object : ResourceSubscriber<TransactionResponse>() {
                     override fun onComplete() {
-                        view.hideProgress()
+                        view.onSuccess()
                     }
 
                     override fun onNext(t: TransactionResponse) {
                         try {
-                            t.data?.let { view.displayTransaction(it) }
+                            t.data?.let { view.showTransaction(it) }
                         } catch (ex: Exception) {
                             ex.printStackTrace()
                         }
@@ -46,7 +46,7 @@ class HistoryPresenter(
 
                     override fun onError(e: Throwable) {
                         e.printStackTrace()
-                        view.hideProgress()
+                        view.hideProgressBar()
 
                         if (ConnectivityStatus.isConnected(context)) {
                             when (e) {
