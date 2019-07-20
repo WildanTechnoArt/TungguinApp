@@ -1,0 +1,195 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="4dp"
+        app:cardCornerRadius="4dp"
+        app:cardElevation="3dp">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_margin="8dp">
+
+        <TextView
+                android:id="@+id/tv_designer"
+                android:text="@string/text_designer"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textStyle="bold"
+                android:textColor="@color/colorPrimary"
+                android:textSize="16sp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"/>
+
+        <View
+                android:id="@+id/line"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginTop="4dp"
+                android:background="#FFDADADA"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tv_designer"/>
+
+        <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/img_designer"
+                android:layout_width="110dp"
+                android:layout_height="110dp"
+                android:layout_marginTop="8dp"
+                app:civ_border_color="@color/colorPrimary"
+                app:civ_border_width="2dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/line"
+                android:visibility="gone"/>
+
+        <TextView
+                android:id="@+id/tv_designer_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                android:text="@string/none"
+                android:textStyle="bold"
+                android:textColor="@color/colorPrimary"
+                android:textSize="15sp"
+                android:gravity="center"
+                app:layout_constraintTop_toBottomOf="@+id/img_designer"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent" android:visibility="gone"/>
+
+        <TextView
+                android:id="@+id/tv_id_designer"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:text="@string/designer_code"
+                android:textStyle="bold"
+                android:textSize="14sp"
+                android:gravity="center"
+                app:layout_constraintTop_toBottomOf="@+id/tv_designer_name"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent" android:textColor="@color/colorPrimary"
+                android:visibility="gone"/>
+
+        <TextView
+                android:id="@+id/tv_order_information"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="@string/order_information"
+                android:textStyle="bold"
+                app:layout_constraintTop_toBottomOf="@+id/line"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent" android:visibility="gone"/>
+
+        <Button
+                android:id="@+id/btn_payment_instructions"
+                android:text="@string/payment_instructions"
+                android:layout_width="wrap_content"
+                android:layout_height="32dp"
+                android:layout_marginBottom="4dp"
+                android:layout_marginTop="12dp"
+                android:background="@drawable/ref_round_button"
+                android:elevation="6dp"
+                android:paddingEnd="12dp"
+                android:paddingStart="12dp"
+                android:textStyle="bold"
+                android:textAllCaps="false"
+                android:textColor="#FFFFFF"
+                app:layout_constraintTop_toBottomOf="@+id/tv_order_information"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                tools:targetApi="lollipop" android:visibility="gone"/>
+
+        <Button
+                android:id="@+id/btn_chat"
+                android:layout_width="wrap_content"
+                android:layout_height="32dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="4dp"
+                android:background="@drawable/primary_round_button2"
+                android:elevation="6dp"
+                android:text="@string/btn_chat"
+                android:textStyle="bold"
+                android:textAllCaps="false"
+                android:textColor="#FFFFFF"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/btn_contact_designer"
+                tools:targetApi="lollipop"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintVertical_bias="0.0"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:visibility="gone"
+                style="@style/Widget.AppCompat.Button"/>
+
+        <Button
+                android:id="@+id/btn_rating"
+                android:text="@string/btn_rating"
+                android:layout_width="wrap_content"
+                android:layout_height="32dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="4dp"
+                android:background="@drawable/primary_round_button2"
+                android:paddingEnd="12dp"
+                android:paddingStart="12dp"
+                android:textStyle="bold"
+                android:textAllCaps="false"
+                android:textColor="#FFFFFF"
+                android:elevation="6dp"
+                tools:targetApi="lollipop"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/btn_contact_designer"
+                app:layout_constraintVertical_bias="0.0"
+                style="@style/Widget.AppCompat.Button"
+                app:layout_constraintStart_toStartOf="parent"
+                android:visibility="gone"/>
+
+        <Button
+                android:id="@+id/btn_repeat_order"
+                android:text="@string/btn_repeat_order"
+                android:layout_width="wrap_content"
+                android:layout_height="32dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="4dp"
+                android:textStyle="bold"
+                android:textAllCaps="false"
+                android:background="@drawable/ref_round_button"
+                android:textColor="#FFFFFF"
+                android:elevation="6dp"
+                android:paddingLeft="12dp"
+                android:paddingRight="12dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/btn_rating"
+                app:layout_constraintBottom_toBottomOf="parent"
+                tools:targetApi="lollipop" android:visibility="gone"/>
+
+        <Button
+                android:id="@+id/btn_contact_designer"
+                android:layout_width="wrap_content"
+                android:layout_height="32dp"
+                android:layout_marginTop="12dp"
+                android:background="@drawable/pink_hover_button"
+                android:paddingEnd="12dp"
+                android:paddingStart="12dp"
+                android:text="@string/contact_designer"
+                android:textStyle="bold"
+                android:textColor="@color/white"
+                android:textAllCaps="false"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tv_id_designer"
+                android:visibility="gone"/>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</androidx.cardview.widget.CardView>

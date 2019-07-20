@@ -1,0 +1,195 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:layout_marginBottom="4dp"
+        android:layout_marginLeft="4dp"
+        android:layout_marginRight="4dp"
+        app:cardElevation="3dp"
+        app:cardCornerRadius="4dp">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_margin="8dp">
+
+        <View
+                android:id="@+id/top_line"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="#FFDADADA"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"/>
+
+        <View
+                android:id="@+id/first_line"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginTop="8dp"
+                android:background="#FFDADADA"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tv_name"/>
+
+        <View
+                android:id="@+id/center_line"
+                android:layout_width="1dp"
+                android:layout_height="0dp"
+                android:layout_marginStart="8dp"
+                android:background="#FFDADADA"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/top_line"
+                app:layout_constraintStart_toEndOf="@+id/tv_email"
+                app:layout_constraintHorizontal_bias="0.34"/>
+
+        <View
+                android:id="@+id/left_line"
+                android:layout_width="1dp"
+                android:layout_height="0dp"
+                android:background="#FFDADADA"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/top_line"
+                app:layout_constraintHorizontal_bias="0.0"/>
+
+        <View
+                android:id="@+id/right_line"
+                android:layout_width="1dp"
+                android:layout_height="0dp"
+                android:background="#FFDADADA"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/top_line"
+                app:layout_constraintHorizontal_bias="1.0"/>
+
+        <View
+                android:id="@+id/second_line"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginTop="8dp"
+                android:background="#FFDADADA"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tv_email"/>
+
+        <View
+                android:id="@+id/bottom_line"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginTop="8dp"
+                android:background="#FFDADADA"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tv_nomor"/>
+
+        <TextView
+                android:id="@+id/tv_name"
+                android:text="@string/name"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginBottom="8dp"
+                android:layout_marginStart="8dp"
+                android:gravity="center_vertical"
+                android:textStyle="bold"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/top_line"
+                app:layout_constraintEnd_toStartOf="@+id/center_line"
+                app:layout_constraintBottom_toTopOf="@+id/first_line"
+                app:layout_constraintHorizontal_bias="0.6"/>
+
+        <TextView
+                android:id="@+id/tv_email"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginBottom="8dp"
+                android:text="Email"
+                android:textStyle="bold"
+                app:layout_constraintTop_toBottomOf="@+id/first_line"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintBottom_toTopOf="@+id/second_line"
+                app:layout_constraintVertical_chainStyle="spread_inside"
+                tools:ignore="HardcodedText"/>
+
+        <TextView
+                android:id="@+id/tv_nomor"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:textStyle="bold"
+                android:layout_marginEnd="8dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginBottom="8dp"
+                android:layout_marginTop="8dp"
+                android:gravity="center_vertical"
+                android:text="No Telepon"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/center_line"
+                app:layout_constraintBottom_toTopOf="@+id/second_line"
+                app:layout_constraintTop_toBottomOf="@+id/second_line"
+                tools:ignore="HardcodedText"/>
+
+        <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:id="@+id/username"
+                android:layout_marginStart="8dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="8dp"
+                android:textColor="#000000"
+                app:layout_constraintStart_toEndOf="@+id/center_line"
+                app:layout_constraintEnd_toStartOf="@+id/right_line"
+                app:layout_constraintTop_toBottomOf="@+id/top_line"
+                app:layout_constraintBottom_toTopOf="@+id/first_line"
+                tools:ignore="HardcodedText"/>
+
+        <TextView
+                android:id="@+id/email_user"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginBottom="8dp"
+                android:ellipsize="marquee"
+                android:focusable="auto"
+                android:focusableInTouchMode="true"
+                android:marqueeRepeatLimit="marquee_forever"
+                android:scrollHorizontally="true"
+                android:singleLine="true"
+                android:textColor="#000000"
+                app:layout_constraintStart_toEndOf="@+id/center_line"
+                app:layout_constraintTop_toBottomOf="@+id/first_line"
+                app:layout_constraintEnd_toStartOf="@+id/right_line"
+                app:layout_constraintBottom_toTopOf="@+id/second_line"
+                tools:ignore="HardcodedText"/>
+
+        <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:id="@+id/phone_nomor"
+                android:layout_marginStart="8dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="8dp"
+                android:textColor="#000000"
+                app:layout_constraintStart_toEndOf="@+id/center_line"
+                app:layout_constraintEnd_toStartOf="@+id/right_line"
+                app:layout_constraintTop_toBottomOf="@+id/second_line"
+                app:layout_constraintBottom_toTopOf="@+id/bottom_line"
+                tools:ignore="HardcodedText"/>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</androidx.cardview.widget.CardView>

@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/item_selector_button" android:id="@+id/cl_item_view">
+
+    <TextView
+            android:id="@+id/tv_design_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="12dp"
+            android:text="@string/none"
+            android:textStyle="bold"
+            android:textSize="15sp"
+            app:layout_constraintTop_toTopOf="@+id/img_photo_designer"
+            app:layout_constraintStart_toEndOf="@+id/img_photo_designer"/>
+
+    <TextView
+            android:id="@+id/tv_designer_id"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="12dp"
+            android:layout_marginTop="2dp"
+            android:text="@string/designer_code"
+            app:layout_constraintTop_toBottomOf="@+id/tv_design_name"
+            app:layout_constraintStart_toEndOf="@+id/img_photo_designer"/>
+
+    <TextView
+            android:id="@+id/tv_order_id"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="12dp"
+            android:text="@string/id_order_customer"
+            app:layout_constraintStart_toEndOf="@+id/img_photo_designer"
+            app:layout_constraintTop_toBottomOf="@+id/tv_designer_id"
+            android:layout_marginTop="2dp"/>
+
+    <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/img_photo_designer"
+            android:layout_width="70dp"
+            android:layout_height="70dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginStart="8dp"
+            android:src="@drawable/profile_placeholder"
+            app:civ_border_color="@color/colorPrimary"
+            app:civ_border_width="2dp"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent" android:layout_marginBottom="8dp"
+            app:layout_constraintBottom_toBottomOf="parent"/>
+
+    <View
+            android:id="@+id/line"
+            android:layout_width="0dp"
+            android:layout_height="1dp"
+            android:background="#FFDADADA"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/img_photo_designer"
+            app:layout_constraintStart_toEndOf="@+id/img_photo_designer"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
