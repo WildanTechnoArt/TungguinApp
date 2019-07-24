@@ -63,6 +63,7 @@
                                             <option name="values">
                                               <map>
                                                 <entry key="color" value="000000" />
+                                                <entry key="scalingPercent" value="95" />
                                                 <entry key="trimmed" value="true" />
                                               </map>
                                             </option>
@@ -74,11 +75,9 @@
                                   <option name="values">
                                     <map>
                                       <entry key="backgroundAssetType" value="COLOR" />
-                                      <entry key="backgroundColor" value="fd0040" />
                                       <entry key="backgroundLayerName" value="ic_tungguin_background" />
-                                      <entry key="foregroundImage" value="$USER_HOME$/Downloads/logotungguin.png" />
-                                      <entry key="foregroundLayerName" value="ic_tungguin_foreground" />
-                                      <entry key="outputName" value="ic_launcher_tungguin" />
+                                      <entry key="foregroundImage" value="$PROJECT_DIR$/../../asset tungguin/logo_tungguin_googleplay.png" />
+                                      <entry key="outputName" value="ic_new_tungguin" />
                                     </map>
                                   </option>
                                 </PersistentState>
@@ -126,7 +125,18 @@
                                           <PersistentState>
                                             <option name="values">
                                               <map>
-                                                <entry key="url" value="jar:file:/Applications/Android%20Studio.app/Contents/plugins/android/lib/android.jar!/images/material_design_icons/social/ic_notifications_active_black_24dp.xml" />
+                                                <entry key="url" value="jar:file:/Applications/Android%20Studio.app/Contents/plugins/android/lib/android.jar!/images/material_design_icons/social/ic_notifications_none_black_24dp.xml" />
+                                              </map>
+                                            </option>
+                                          </PersistentState>
+                                        </value>
+                                      </entry>
+                                      <entry key="image">
+                                        <value>
+                                          <PersistentState>
+                                            <option name="values">
+                                              <map>
+                                                <entry key="color" value="000000" />
                                               </map>
                                             </option>
                                           </PersistentState>
@@ -136,12 +146,19 @@
                                   </option>
                                   <option name="values">
                                     <map>
-                                      <entry key="outputName" value="ic_notification" />
+                                      <entry key="assetType" value="IMAGE" />
+                                      <entry key="imageAsset" value="$PROJECT_DIR$/../../asset tungguin/icon_tungguin_notifikasi.png" />
+                                      <entry key="outputName" value="ic_new_notification" />
                                     </map>
                                   </option>
                                 </PersistentState>
                               </value>
                             </entry>
+                          </map>
+                        </option>
+                        <option name="values">
+                          <map>
+                            <entry key="outputIconType" value="NOTIFICATION" />
                           </map>
                         </option>
                       </PersistentState>

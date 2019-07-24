@@ -12,10 +12,10 @@
 
     <application
             android:allowBackup="true"
-            android:icon="@mipmap/ic_launcher_tungguin"
+            android:icon="@mipmap/ic_new_tungguin"
             android:label="@string/app_name"
             android:largeHeap="true"
-            android:roundIcon="@mipmap/ic_launcher_tungguin_round"
+            android:roundIcon="@mipmap/ic_new_tungguin_round"
             android:supportsRtl="true"
             android:theme="@style/AppTheme"
             tools:ignore="AllowBackup,GoogleAppIndexingWarning"
@@ -87,7 +87,7 @@
 
         <meta-data
                 android:name="com.google.firebase.messaging.default_notification_icon"
-                android:resource="@drawable/ic_notification"/>
+                android:resource="@drawable/ic_new_notification"/>
         <meta-data
                 android:name="com.google.firebase.messaging.default_notification_color"
                 android:resource="@color/colorAccent"/>

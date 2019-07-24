@@ -80,7 +80,7 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
         )
         val channelId = "Default"
         val builder = NotificationCompat.Builder(this, channelId)
-            .setSmallIcon(R.drawable.ic_notification)
+            .setSmallIcon(R.drawable.ic_new_notification)
             .setDefaults(Notification.DEFAULT_ALL)
             .setContentTitle(title)
             .setContentText(message)

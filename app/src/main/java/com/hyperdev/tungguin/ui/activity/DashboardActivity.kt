@@ -180,13 +180,19 @@ class DashboardActivity : AppCompatActivity(), DashboardView.View {
         val hours: Int = date.get(Calendar.HOUR_OF_DAY)
         tv_user_balance.text = profileItem.formattedBalance.toString()
 
-        if (profileItem.cartCount.toString() != "0") {
+        if (profileItem.cartCount != 0) {
             tv_cart_count.visibility = View.VISIBLE
         } else {
             tv_cart_count.visibility = View.GONE
         }
-
         tv_cart_count.text = profileItem.cartCount.toString()
+
+        if (profileItem.activeOrderCount != 0) {
+            tv_chat_active_count.visibility = View.VISIBLE
+        } else {
+            tv_chat_active_count.visibility = View.GONE
+        }
+        tv_chat_active_count.text = profileItem.activeOrderCount.toString()
 
         when (hours) {
             in 1..9 -> tv_my_name.text = "Selamat pagi, ${profileItem.name}!"
