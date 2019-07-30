@@ -3,12 +3,11 @@ package com.hyperdev.tungguin.ui.activity
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.content.pm.ActivityInfo
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import com.google.android.material.snackbar.Snackbar
 import android.text.Editable
 import android.text.TextWatcher
-import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
+import com.google.android.material.snackbar.Snackbar
 import com.hyperdev.tungguin.BuildConfig
 import com.hyperdev.tungguin.R
 import com.hyperdev.tungguin.database.SharedPrefManager
@@ -17,20 +16,19 @@ import com.hyperdev.tungguin.model.transaction.DataTopUp
 import com.hyperdev.tungguin.network.BaseApiService
 import com.hyperdev.tungguin.network.NetworkClient
 import com.hyperdev.tungguin.presenter.TopUpPresenter
-import com.hyperdev.tungguin.repository.profile.ProfileRepositoryImpl
-import com.hyperdev.tungguin.repository.transaction.TransactionRepositoryImp
-import com.hyperdev.tungguin.utils.AppSchedulerProvider
 import com.hyperdev.tungguin.ui.view.TopUpView
+import com.hyperdev.tungguin.utils.AppSchedulerProvider
 import com.midtrans.sdk.corekit.core.MidtransSDK
 import com.midtrans.sdk.corekit.core.TransactionRequest
 import com.midtrans.sdk.corekit.core.UIKitCustomSetting
-import kotlinx.android.synthetic.main.activity_top_up.*
-import java.text.NumberFormat
 import com.midtrans.sdk.corekit.core.themes.CustomColorTheme
+import com.midtrans.sdk.corekit.models.BankType
+import com.midtrans.sdk.corekit.models.snap.CreditCard
 import com.midtrans.sdk.corekit.models.snap.TransactionResult
 import com.midtrans.sdk.uikit.SdkUIFlowBuilder
-import com.midtrans.sdk.corekit.models.snap.CreditCard
-import com.midtrans.sdk.corekit.models.BankType
+import com.shashank.sony.fancytoastlib.FancyToast
+import kotlinx.android.synthetic.main.activity_top_up.*
+import java.text.NumberFormat
 
 class TopUpActivity : AppCompatActivity(), TopUpView.View {
 
@@ -52,19 +50,21 @@ class TopUpActivity : AppCompatActivity(), TopUpView.View {
 
         //Inisialisasi Toolbar dan Menampilkan Menu Home pada Toolbar
         setSupportActionBar(toolbar)
-        supportActionBar?.setDisplayShowHomeEnabled(true)
-        supportActionBar?.setHomeButtonEnabled(true)
-        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        supportActionBar?.apply {
+            setDisplayShowHomeEnabled(true)
+            setHomeButtonEnabled(true)
+            setDisplayHomeAsUpEnabled(true)
+        }
 
         initData()
 
-        swipeRefresh.setOnRefreshListener {
+        swipe_refresh.setOnRefreshListener {
             presenter.getUserAmount("Bearer $getToken")
         }
 
         midtransInitialotation()
 
-        inputAmount!!.addTextChangedListener(object : TextWatcher {
+        input_amount!!.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(s: Editable?) {
 
             }
@@ -76,7 +76,7 @@ class TopUpActivity : AppCompatActivity(), TopUpView.View {
             @SuppressLint("SetTextI18n")
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 try {
-                    customAmount = inputAmount.text.toString()
+                    customAmount = input_amount.text.toString()
                     topupAmount = customAmount.toLong()
                     totalTopUp.text = moneyFormat.format(topupAmount)
                 } catch (ex: NumberFormatException) {
@@ -94,16 +94,14 @@ class TopUpActivity : AppCompatActivity(), TopUpView.View {
 
     private fun initData() {
 
-        baseApiService = NetworkClient.getClient(this@TopUpActivity)!!
+        baseApiService = NetworkClient.getClient(this)!!
             .create(BaseApiService::class.java)
 
-        getToken = SharedPrefManager.getInstance(this@TopUpActivity).token.toString()
+        getToken = SharedPrefManager.getInstance(this).token.toString()
         moneyFormat = NumberFormat.getCurrencyInstance()
 
-        val repository = ProfileRepositoryImpl(baseApiService)
-        val repository2 = TransactionRepositoryImp(baseApiService)
         val scheduler = AppSchedulerProvider()
-        presenter = TopUpPresenter(this, this@TopUpActivity, repository, repository2, scheduler)
+        presenter = TopUpPresenter(this, this, baseApiService, scheduler)
         presenter.getUserAmount("Bearer $getToken")
 
     }
@@ -133,10 +131,12 @@ class TopUpActivity : AppCompatActivity(), TopUpView.View {
                 if (it.response != null) {
                     when (it.status) {
                         TransactionResult.STATUS_SUCCESS -> {
-                            Toast.makeText(
-                                this@TopUpActivity,
+                            FancyToast.makeText(
+                                this,
                                 "Transaction Finished ",
-                                Toast.LENGTH_LONG
+                                FancyToast.LENGTH_SHORT,
+                                FancyToast.SUCCESS,
+                                false
                             ).show()
                             finish()
                         }
@@ -144,21 +144,35 @@ class TopUpActivity : AppCompatActivity(), TopUpView.View {
                             startActivity(Intent(this, HistoryActivity::class.java))
                             finish()
                         }
-                        TransactionResult.STATUS_FAILED -> Toast.makeText(
-                            this@TopUpActivity,
+                        TransactionResult.STATUS_FAILED -> FancyToast.makeText(
+                            this,
                             "Transaction Failed",
-                            Toast.LENGTH_LONG
+                            FancyToast.LENGTH_SHORT,
+                            FancyToast.ERROR,
+                            false
                         ).show()
                     }
                     it.response.validationMessages
                 } else if (it.isTransactionCanceled) {
-                    Toast.makeText(this@TopUpActivity, "Transaction Canceled", Toast.LENGTH_LONG).show()
+                    FancyToast.makeText(this, "Transaction Canceled", FancyToast.LENGTH_SHORT, FancyToast.INFO, false)
+                        .show()
                 } else {
                     if (it.status.equals(TransactionResult.STATUS_INVALID, ignoreCase = true)) {
-                        Toast.makeText(this@TopUpActivity, "Transaction Invalid", Toast.LENGTH_LONG).show()
+                        FancyToast.makeText(
+                            this,
+                            "Transaction Invalid",
+                            FancyToast.LENGTH_SHORT,
+                            FancyToast.ERROR,
+                            false
+                        ).show()
                     } else {
-                        Toast.makeText(this@TopUpActivity, "Transaction Finished with failure.", Toast.LENGTH_LONG)
-                            .show()
+                        FancyToast.makeText(
+                            this,
+                            "Transaction Finished with failure",
+                            FancyToast.LENGTH_SHORT,
+                            FancyToast.WARNING,
+                            false
+                        ).show()
                     }
                 }
             }
@@ -177,47 +191,47 @@ class TopUpActivity : AppCompatActivity(), TopUpView.View {
     private fun topupButton() {
         topup25k.setOnClickListener {
             topupAmount = 25000
-            inputAmount.setText(topupAmount.toString())
+            input_amount.setText(topupAmount.toString())
             totalTopUp.text = moneyFormat.format(topupAmount)
         }
         topup50k.setOnClickListener {
             topupAmount = 50000
-            inputAmount.setText(topupAmount.toString())
+            input_amount.setText(topupAmount.toString())
             totalTopUp.text = moneyFormat.format(topupAmount)
         }
         topup75k.setOnClickListener {
             topupAmount = 75000
-            inputAmount.setText(topupAmount.toString())
+            input_amount.setText(topupAmount.toString())
             totalTopUp.text = moneyFormat.format(topupAmount)
         }
         topup100k.setOnClickListener {
             topupAmount = 100000
-            inputAmount.setText(topupAmount.toString())
+            input_amount.setText(topupAmount.toString())
             totalTopUp.text = moneyFormat.format(topupAmount)
         }
         topup200k.setOnClickListener {
             topupAmount = 200000
-            inputAmount.setText(topupAmount.toString())
+            input_amount.setText(topupAmount.toString())
             totalTopUp.text = moneyFormat.format(topupAmount)
         }
         topup300k.setOnClickListener {
             topupAmount = 300000
-            inputAmount.setText(topupAmount.toString())
+            input_amount.setText(topupAmount.toString())
             totalTopUp.text = moneyFormat.format(topupAmount)
         }
         topup500k.setOnClickListener {
             topupAmount = 500000
-            inputAmount.setText(topupAmount.toString())
+            input_amount.setText(topupAmount.toString())
             totalTopUp.text = moneyFormat.format(topupAmount)
         }
         topup750k.setOnClickListener {
             topupAmount = 750000
-            inputAmount.setText(topupAmount.toString())
+            input_amount.setText(topupAmount.toString())
             totalTopUp.text = moneyFormat.format(topupAmount)
         }
         topup1000k.setOnClickListener {
             topupAmount = 1000000
-            inputAmount.setText(topupAmount.toString())
+            input_amount.setText(topupAmount.toString())
             totalTopUp.text = moneyFormat.format(topupAmount)
         }
     }
@@ -232,11 +246,11 @@ class TopUpActivity : AppCompatActivity(), TopUpView.View {
     }
 
     override fun showProgressBar() {
-        swipeRefresh.isRefreshing = true
+        swipe_refresh.isRefreshing = true
     }
 
     override fun hideProgressBar() {
-        swipeRefresh.isRefreshing = false
+        swipe_refresh.isRefreshing = false
     }
 
     override fun onSuccess() {
@@ -248,7 +262,7 @@ class TopUpActivity : AppCompatActivity(), TopUpView.View {
         // Start Payment
         transactionRequest(transactionId, topupAmount)
         MidtransSDK.getInstance().startPaymentUiFlow(this@TopUpActivity, midtransToken)
-        swipeRefresh.isRefreshing = false
+        swipe_refresh.isRefreshing = false
     }
 
     override fun noInternetConnection(message: String) {

@@ -1,24 +1,23 @@
 package com.hyperdev.tungguin.ui.activity
 
-import  android.annotation.SuppressLint
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.content.pm.ActivityInfo
 import android.content.pm.PackageManager
 import android.graphics.Color
 import android.graphics.Typeface
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import com.google.android.material.snackbar.Snackbar
-import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
-import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.LinearLayoutManager
 import android.text.InputType
 import android.util.TypedValue
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.widget.*
+import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
+import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.hyperdev.tungguin.R
 import com.hyperdev.tungguin.adapter.ImageRefListAdapter
 import com.hyperdev.tungguin.adapter.PriceListAdapter
@@ -31,18 +30,18 @@ import com.hyperdev.tungguin.network.NetworkClient
 import com.hyperdev.tungguin.presenter.AddToCartPresenter
 import com.hyperdev.tungguin.presenter.DetailProductPresenter
 import com.hyperdev.tungguin.presenter.UploadFilePresenter
-import com.hyperdev.tungguin.repository.cart.CartRepositoryImp
-import com.hyperdev.tungguin.repository.product.ProductRepositoryImpl
 import com.hyperdev.tungguin.ui.view.*
 import com.hyperdev.tungguin.utils.AppSchedulerProvider
+import com.hyperdev.tungguin.utils.UtilsConstant.Companion.HASHED_ID
 import com.miguelbcr.ui.rx_paparazzo2.RxPaparazzo
 import com.miguelbcr.ui.rx_paparazzo2.entities.FileData
+import com.shashank.sony.fancytoastlib.FancyToast
 import kotlinx.android.synthetic.main.activity_order_design.*
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
-import kotlin.collections.ArrayList
-import kotlin.collections.HashMap
+import okhttp3.RequestBody.Companion.asRequestBody
+import okhttp3.RequestBody.Companion.toRequestBody
 import kotlin.properties.Delegates
 
 class OrderDesignActivity : AppCompatActivity(), DetailProductView.View, UploadImageView.View,
@@ -113,40 +112,36 @@ class OrderDesignActivity : AppCompatActivity(), DetailProductView.View, UploadI
         spinnerOption.add("Pilih Opsi...")
 
         setSupportActionBar(toolbar)
-        supportActionBar?.setDisplayShowHomeEnabled(true)
-        supportActionBar?.setHomeButtonEnabled(true)
-        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        supportActionBar?.apply {
+            setDisplayShowHomeEnabled(true)
+            setHomeButtonEnabled(true)
+            setDisplayHomeAsUpEnabled(true)
+        }
 
         token = SharedPrefManager.getInstance(this@OrderDesignActivity).token.toString()
-        hashed_id = intent?.getStringExtra("sendProductID").toString()
+        hashed_id = intent?.getStringExtra(HASHED_ID).toString()
         cartDataMap["type"] = setRequestBody(hashed_id)
 
         baseApiService = NetworkClient.getClient(this@OrderDesignActivity)!!
             .create(BaseApiService::class.java)
 
         val layout = GridLayoutManager(this@OrderDesignActivity, 3)
-        priceList_view.layoutManager = layout
-        priceList_view.setHasFixedSize(true)
+        rv_price_list.layoutManager = layout
+        rv_price_list.setHasFixedSize(true)
 
-        val repository = ProductRepositoryImpl(baseApiService)
-        val repository2 = CartRepositoryImp(baseApiService)
         val scheduler = AppSchedulerProvider()
-        presenter = DetailProductPresenter(this@OrderDesignActivity, this, repository, scheduler)
-        presenterCart = AddToCartPresenter(this@OrderDesignActivity, this, repository2, scheduler)
-        presenterImage = UploadFilePresenter(this@OrderDesignActivity, scheduler)
-
-        adapter = PriceListAdapter(priceListDesain as ArrayList<PriceList>, this@OrderDesignActivity)
+        presenter = DetailProductPresenter(this, this, baseApiService, scheduler)
+        presenterCart = AddToCartPresenter(this, this, baseApiService, scheduler)
+        presenterImage = UploadFilePresenter(this, scheduler)
 
         presenter.getDetailProduct("Bearer $token", hashed_id)
 
-        priceList_view.adapter = adapter
-
         val layoutImg = LinearLayoutManager(this@OrderDesignActivity)
-        image_ref_list.layoutManager = layoutImg
-        image_ref_list.setHasFixedSize(false)
-        image_ref_list.isNestedScrollingEnabled = false
+        rv_refrence_list.layoutManager = layoutImg
+        rv_refrence_list.setHasFixedSize(false)
+        rv_refrence_list.isNestedScrollingEnabled = false
 
-        order_desain.setOnClickListener {
+        btn_design_order.setOnClickListener {
             if (kondisi) {
                 textIndex = 0
                 numberIndex = 0
@@ -154,7 +149,7 @@ class OrderDesignActivity : AppCompatActivity(), DetailProductView.View, UploadI
                 spinnerIndex = 0
 
                 cartDataMap["type"] = setRequestBody(hashed_id)
-                cartDataMap["design_concept"] = setRequestBody(input_konsep_desain.text.toString())
+                cartDataMap["design_concept"] = setRequestBody(input_design_concept.text.toString())
                 for ((index, data) in keyList.withIndex()) {
 
                     if (typeList[index] == "text") {
@@ -196,11 +191,17 @@ class OrderDesignActivity : AppCompatActivity(), DetailProductView.View, UploadI
 
                 orderDesainRequest()
             } else {
-                Toast.makeText(this@OrderDesignActivity, "Jumlah desain belum dipilih!", Toast.LENGTH_SHORT).show()
+                FancyToast.makeText(
+                    this,
+                    "Jumlah desain belum dipilih",
+                    FancyToast.LENGTH_SHORT,
+                    FancyToast.INFO,
+                    false
+                ).show()
             }
         }
 
-        btn_referensi.setOnClickListener {
+        btn_add_reference.setOnClickListener {
             if (ContextCompat.checkSelfPermission(
                     this@OrderDesignActivity, android.Manifest.permission.READ_EXTERNAL_STORAGE
                 ) != PackageManager.PERMISSION_GRANTED && ContextCompat.checkSelfPermission(
@@ -224,37 +225,37 @@ class OrderDesignActivity : AppCompatActivity(), DetailProductView.View, UploadI
         hideDetailOrder()
 
         toggle_detail_order.setOnCheckedChangeListener { _, isChecked ->
-            if(isChecked){
+            if (isChecked) {
                 showDetailOrder()
-            }else{
+            } else {
                 hideDetailOrder()
             }
         }
     }
 
-    private fun hideDetailOrder(){
-        tv_konsep_desain.visibility = View.GONE
-        input_konsep_desain.visibility = View.GONE
+    private fun hideDetailOrder() {
+        tv_concept_design.visibility = View.GONE
+        input_design_concept.visibility = View.GONE
         formatted_layout.visibility = View.GONE
-        tv_ref_desain.visibility = View.GONE
-        btn_referensi.visibility = View.GONE
+        tv_ref_design.visibility = View.GONE
+        btn_add_reference.visibility = View.GONE
     }
 
-    private fun showDetailOrder(){
-        tv_konsep_desain.visibility = View.VISIBLE
-        input_konsep_desain.visibility = View.VISIBLE
+    private fun showDetailOrder() {
+        tv_concept_design.visibility = View.VISIBLE
+        input_design_concept.visibility = View.VISIBLE
         formatted_layout.visibility = View.VISIBLE
-        tv_ref_desain.visibility = View.VISIBLE
-        btn_referensi.visibility = View.VISIBLE
+        tv_ref_design.visibility = View.VISIBLE
+        btn_add_reference.visibility = View.VISIBLE
     }
 
     private fun loadImageFileName(imgFileName: ArrayList<String?>) {
         imgAdapter = ImageRefListAdapter(imgFileName, this@OrderDesignActivity)
-        image_ref_list.adapter = imgAdapter
+        rv_refrence_list.adapter = imgAdapter
     }
 
     private fun setRequestBody(data: String): RequestBody {
-        return RequestBody.create("text/plain".toMediaTypeOrNull(), data)
+        return data.toRequestBody("text/plain".toMediaTypeOrNull())
     }
 
     override fun loadFileDoc(fileDoc: FileData?) {
@@ -271,7 +272,7 @@ class OrderDesignActivity : AppCompatActivity(), DetailProductView.View, UploadI
             imgFileList.add(it)
         }
 
-        image_ref_list.visibility = View.VISIBLE
+        rv_refrence_list.visibility = View.VISIBLE
 
         fileData.forEach {
             imgFileName.add(it?.filename.toString())
@@ -281,7 +282,7 @@ class OrderDesignActivity : AppCompatActivity(), DetailProductView.View, UploadI
     }
 
     private fun saveimageBody(file: FileData?, nomor: String): MultipartBody.Part {
-        request = RequestBody.create("application/x-www-form-urlencoded".toMediaTypeOrNull(), file?.file!!)
+        request = file?.file!!.asRequestBody("application/x-www-form-urlencoded".toMediaTypeOrNull())
         return MultipartBody.Part.createFormData("design_preference[$nomor]", file.filename, request)
     }
 
@@ -303,6 +304,8 @@ class OrderDesignActivity : AppCompatActivity(), DetailProductView.View, UploadI
 
     override fun showPriceList(priceList: List<PriceList>) {
         priceListDesain.addAll(priceList)
+        adapter = PriceListAdapter(priceListDesain as ArrayList<PriceList>, this@OrderDesignActivity)
+        rv_price_list.adapter = adapter
     }
 
     @SuppressLint("SetTextI18n")
@@ -575,19 +578,17 @@ class OrderDesignActivity : AppCompatActivity(), DetailProductView.View, UploadI
     }
 
     override fun showDetailProductItem(productItem: ProductDetailItem) {
-        nama_desain.text = productItem.name.toString()
+        tv_design_name.text = productItem.name.toString()
     }
 
     // Menampilkan PrograssBar saat memuat data
     override fun displayProgress() {
         progress_bar.visibility = View.VISIBLE
-        scrollView.visibility = View.GONE
     }
 
     // ProgressBar menghilang setelah data selesai dimuat
     override fun hideProgress() {
         progress_bar.visibility = View.GONE
-        scrollView.visibility = View.VISIBLE
     }
 
     override fun hideProgressFile() {
@@ -603,10 +604,10 @@ class OrderDesignActivity : AppCompatActivity(), DetailProductView.View, UploadI
     @SuppressLint("SetTextI18n")
     override fun shaowPriceList(priceFormatted: String, desainCount: String, kondisi: Boolean, price: String) {
         this.kondisi = kondisi
-        jumlah_desain.text = "$desainCount Desain"
+        tv_design_count.text = "$desainCount Desain"
         cartDataMap["design_option"] = setRequestBody(desainCount)
         productPrice = setRequestBody(price)
-        total_harga.text = priceFormatted
+        tv_total_price.text = priceFormatted
     }
 
     // Menampilkan Progress saat menambahkan produk ke keranjang
@@ -630,7 +631,7 @@ class OrderDesignActivity : AppCompatActivity(), DetailProductView.View, UploadI
     }
 
     override fun noInternetConnection(message: String) {
-        Snackbar.make(order_desain_layout, message, Snackbar.LENGTH_SHORT).show()
+        FancyToast.makeText(this, message, FancyToast.LENGTH_SHORT, FancyToast.ERROR, false).show()
     }
 
     override fun onSupportNavigateUp(): Boolean {
@@ -649,7 +650,6 @@ class OrderDesignActivity : AppCompatActivity(), DetailProductView.View, UploadI
                 if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     presenterImage.takePhotoGallery(this@OrderDesignActivity)
                 }
-
                 return
             }
         }

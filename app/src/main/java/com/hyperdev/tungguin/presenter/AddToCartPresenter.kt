@@ -4,9 +4,9 @@ import android.content.Context
 import android.widget.Toast
 import com.google.gson.Gson
 import com.hyperdev.tungguin.model.cart.AddToCartResponse
+import com.hyperdev.tungguin.network.BaseApiService
 import com.hyperdev.tungguin.network.ConnectivityStatus
 import com.hyperdev.tungguin.network.Response
-import com.hyperdev.tungguin.repository.cart.CartRepositoryImp
 import com.hyperdev.tungguin.ui.view.AddToCartView
 import com.hyperdev.tungguin.utils.SchedulerProvider
 import io.reactivex.Observer
@@ -21,7 +21,7 @@ import java.net.SocketTimeoutException
 class AddToCartPresenter(
     private val context: Context,
     private val view: AddToCartView.View,
-    private val cart: CartRepositoryImp,
+    private val baseApiService: BaseApiService,
     private val scheduler: SchedulerProvider
 ) : AddToCartView.Presenter {
 
@@ -36,7 +36,7 @@ class AddToCartPresenter(
 
         view.showProgressBar()
 
-        cart.addToCart(token, accept, cartMap, file, fileDoc, price)
+        baseApiService.addToCart(token, accept, cartMap, file, fileDoc, price)
             .observeOn(AndroidSchedulers.mainThread())
             .subscribeOn(scheduler.io())
             .unsubscribeOn(scheduler.io())

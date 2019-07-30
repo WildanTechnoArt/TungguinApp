@@ -15,19 +15,19 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main_page)
         requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
 
-        btnLogin.setOnClickListener {
-            startActivity(Intent(this@MainActivity, LoginActivity::class.java))
+        btn_login.setOnClickListener {
+            startActivity(Intent(this, LoginActivity::class.java))
         }
-        btnRegister.setOnClickListener {
-            startActivity(Intent(this@MainActivity, RegisterActivity::class.java))
+        btn_register.setOnClickListener {
+            startActivity(Intent(this, RegisterActivity::class.java))
         }
     }
 
     override fun onStart() {
         super.onStart()
-        val getUserToken = SharedPrefManager.getInstance(this@MainActivity).token
+        val getUserToken = SharedPrefManager.getInstance(this).token
         if (getUserToken != null) {
-            startActivity(Intent(this@MainActivity, DashboardActivity::class.java))
+            startActivity(Intent(this, DashboardActivity::class.java))
             finish()
         }
     }

@@ -14,7 +14,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:gravity="center"
-            android:background="@drawable/menu_round_button"
+            android:background="@drawable/btn_gray_round_hover"
             android:id="@+id/desain_layout" android:paddingTop="8dp"
             android:paddingBottom="8dp">
 

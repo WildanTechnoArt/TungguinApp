@@ -3,14 +3,13 @@ package com.hyperdev.tungguin.ui.activity
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.content.pm.ActivityInfo
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.CountDownTimer
 import android.view.View
-import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import com.github.nkzawa.emitter.Emitter
-import com.github.nkzawa.socketio.client.Socket
 import com.github.nkzawa.socketio.client.IO
+import com.github.nkzawa.socketio.client.Socket
 import com.hyperdev.tungguin.BuildConfig
 import com.hyperdev.tungguin.GlideApp
 import com.hyperdev.tungguin.R
@@ -19,9 +18,10 @@ import com.hyperdev.tungguin.model.detailorder.DetailOrderData
 import com.hyperdev.tungguin.network.BaseApiService
 import com.hyperdev.tungguin.network.NetworkClient
 import com.hyperdev.tungguin.presenter.SearchDesignPresenter
-import com.hyperdev.tungguin.repository.order.OrderRepositoryImp
-import com.hyperdev.tungguin.utils.AppSchedulerProvider
 import com.hyperdev.tungguin.ui.view.SearchDesignerView
+import com.hyperdev.tungguin.utils.AppSchedulerProvider
+import com.hyperdev.tungguin.utils.UtilsConstant.Companion.HASHED_ID
+import com.shashank.sony.fancytoastlib.FancyToast
 import kotlinx.android.synthetic.main.activity_search_designer.*
 import kotlinx.android.synthetic.main.designer_found_layout.*
 import org.json.JSONException
@@ -36,7 +36,6 @@ class SearchDesignerActivity : AppCompatActivity(), SearchDesignerView.View {
     private lateinit var presenter: SearchDesignerView.Presenter
     private lateinit var token: String
     private lateinit var mCountdownTimer: CountDownTimer
-
 
     // WebSocket
     private var socket: Socket? = null
@@ -54,15 +53,14 @@ class SearchDesignerActivity : AppCompatActivity(), SearchDesignerView.View {
         setContentView(R.layout.activity_search_designer)
         requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
 
-        orderId = intent.getStringExtra("sendOrderID").toString()
+        orderId = intent?.getStringExtra(HASHED_ID).toString()
         token = SharedPrefManager.getInstance(this@SearchDesignerActivity).token.toString()
 
         baseApiService = NetworkClient.getClient(this@SearchDesignerActivity)!!
             .create(BaseApiService::class.java)
 
-        val request = OrderRepositoryImp(baseApiService)
         val scheduler = AppSchedulerProvider()
-        presenter = SearchDesignPresenter(this@SearchDesignerActivity, this, request, scheduler)
+        presenter = SearchDesignPresenter(this, this, baseApiService, scheduler)
 
         // Inisialisasi WebSocket
         initSocket()
@@ -77,7 +75,7 @@ class SearchDesignerActivity : AppCompatActivity(), SearchDesignerView.View {
 
         btn_detail_order.setOnClickListener {
             val intent = Intent(this@SearchDesignerActivity, DetailOrderActivity::class.java)
-            intent.putExtra("sendOrderID", orderId)
+            intent.putExtra(HASHED_ID, orderId)
             startActivity(intent)
             finish()
         }
@@ -107,7 +105,13 @@ class SearchDesignerActivity : AppCompatActivity(), SearchDesignerView.View {
                 if (type != null) {
                     when (type) {
                         "designerFound" -> {
-                            Toast.makeText(this, "Designer ditemukan", Toast.LENGTH_LONG).show()
+                            FancyToast.makeText(
+                                this,
+                                "Designer ditemukan",
+                                FancyToast.LENGTH_SHORT,
+                                FancyToast.SUCCESS,
+                                false
+                            ).show()
                             presenter.getDetailOrder("Bearer $token", orderId)
                         }
                     }

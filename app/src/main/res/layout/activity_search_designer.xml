@@ -5,20 +5,16 @@
         xmlns:app="http://schemas.android.com/apk/res-auto"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:gravity="center"
         tools:context=".ui.activity.SearchDesignerActivity">
 
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
             android:id="@+id/swipe_refresh"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginBottom="24dp"
-            android:layout_marginLeft="24dp"
-            android:layout_marginStart="24dp"
-            android:layout_marginEnd="24dp"
-            android:layout_marginRight="24dp"
-            android:layout_marginTop="24dp"
+            android:layout_marginTop="@dimen/layout_margin"
+            android:layout_marginStart="@dimen/layout_margin"
+            android:layout_marginBottom="@dimen/layout_margin"
+            android:layout_marginEnd="@dimen/layout_margin"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
@@ -34,32 +30,33 @@
 
             <include
                     android:id="@+id/designer_found_layour"
-                    layout="@layout/designer_found_layout" android:visibility="gone"/>
+                    layout="@layout/designer_found_layout"
+                    android:visibility="gone"/>
 
             <ProgressBar
                     android:id="@+id/progress_bar"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp"
-                    android:layout_marginBottom="16dp"
+                    android:layout_marginTop="@dimen/layout_margin"
+                    android:layout_marginBottom="@dimen/layout_margin"
                     style="?android:attr/progressBarStyle"/>
 
             <TextView
                     android:id="@+id/tv_search_design"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Sedang Mencari Desainer...."
+                    android:text="@string/search_designer"
                     android:textSize="15sp"
                     android:gravity="center"
-                    tools:ignore="HardcodedText" android:textStyle="bold"/>
+                    android:textStyle="bold"/>
+
             <TextView
                     android:id="@+id/tv_timer"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="30"
+                    android:text="@string/search_designer_timer"
                     android:textSize="15sp"
-                    android:gravity="center"
-                    tools:ignore="HardcodedText"/>
+                    android:gravity="center"/>
 
         </LinearLayout>
 

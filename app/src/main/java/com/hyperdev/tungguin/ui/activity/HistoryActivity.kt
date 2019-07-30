@@ -13,7 +13,6 @@ import com.hyperdev.tungguin.model.transaction.DataTransaction
 import com.hyperdev.tungguin.network.BaseApiService
 import com.hyperdev.tungguin.network.NetworkClient
 import com.hyperdev.tungguin.presenter.HistoryPresenter
-import com.hyperdev.tungguin.repository.transaction.TransactionRepositoryImp
 import com.hyperdev.tungguin.ui.view.BalanceView
 import com.hyperdev.tungguin.utils.AppSchedulerProvider
 import kotlinx.android.synthetic.main.activity_history.*
@@ -36,9 +35,11 @@ class HistoryActivity : AppCompatActivity(), BalanceView.View {
         collapsing_toolbar.title = " "
 
         setSupportActionBar(toolbar)
-        supportActionBar?.setDisplayShowHomeEnabled(true)
-        supportActionBar?.setHomeButtonEnabled(true)
-        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        supportActionBar?.apply {
+            setDisplayShowHomeEnabled(true)
+            setHomeButtonEnabled(true)
+            setDisplayHomeAsUpEnabled(true)
+        }
 
         history_tabs.addTab(history_tabs.newTab().setText("Histori Top Up"))
         history_tabs.addTab(history_tabs.newTab().setText("Histori Transaksi"))
@@ -61,8 +62,8 @@ class HistoryActivity : AppCompatActivity(), BalanceView.View {
             override fun onTabReselected(tab: TabLayout.Tab) {}
         })
 
-        topup.setOnClickListener {
-            startActivity(Intent(this@HistoryActivity, TopUpActivity::class.java))
+        btn_topup.setOnClickListener {
+            startActivity(Intent(this, TopUpActivity::class.java))
         }
     }
 
@@ -72,14 +73,13 @@ class HistoryActivity : AppCompatActivity(), BalanceView.View {
     }
 
     private fun loadData() {
-        baseApiService = NetworkClient.getClient(this@HistoryActivity)!!
+        baseApiService = NetworkClient.getClient(this)!!
             .create(BaseApiService::class.java)
 
-        getToken = SharedPrefManager.getInstance(this@HistoryActivity).token.toString()
+        getToken = SharedPrefManager.getInstance(this).token.toString()
 
-        val repository = TransactionRepositoryImp(baseApiService)
         val scheduler = AppSchedulerProvider()
-        presenter = HistoryPresenter(this, this@HistoryActivity, repository, scheduler)
+        presenter = HistoryPresenter(this, this, baseApiService, scheduler)
         presenter.getUserBalance("Bearer $getToken")
 
         //Memanggil dan Memasukan Value pada Class PagerAdapter(FragmentManager dan JumlahTab)
@@ -92,7 +92,7 @@ class HistoryActivity : AppCompatActivity(), BalanceView.View {
     }
 
     override fun showTransaction(transactionItem: DataTransaction) {
-        my_saldo.text = transactionItem.balance.toString()
+        tv_saldo_wallet.text = transactionItem.balance.toString()
     }
 
     override fun showProgressBar() {

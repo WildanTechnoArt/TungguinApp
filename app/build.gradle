@@ -12,7 +12,7 @@ android {
         applicationId "com.hyperdev.tungguin"
         minSdkVersion 19
         targetSdkVersion 29
-        versionCode 1
+        versionCode 2
         versionName "1.0"
         multiDexEnabled true
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
@@ -21,6 +21,13 @@ android {
         buildConfigField "String", "BASE_URL", "\"https://tungguin.hyperdev.id/\""
         buildConfigField "String", "MIDTRANS_CLIENTID", "\"SB-Mid-client-u4FKbI73iZcOqvJS\""
         buildConfigField "String", "WEBSOCKET_URL", "\"https://tungguin-socket.azishapidin.com/\""
+    }
+
+    lintOptions {
+        checkReleaseBuilds false
+        // Or, if you prefer, you can continue to check for errors in release builds,
+        // but continue the build even when errors are found:
+        abortOnError false
     }
 
     buildTypes {
@@ -80,6 +87,9 @@ dependencies {
 
     // gson
     implementation 'com.google.code.gson:gson:2.8.5'
+
+    // Toast
+    implementation 'com.github.Shashank02051997:FancyToast-Android:0.1.6'
 
     debugImplementation 'com.readystatesoftware.chuck:library:1.1.0'
     releaseImplementation 'com.readystatesoftware.chuck:library-no-op:1.1.0'

@@ -14,8 +14,6 @@ import com.hyperdev.tungguin.model.profile.DataUser
 import com.hyperdev.tungguin.network.BaseApiService
 import com.hyperdev.tungguin.network.NetworkClient
 import com.hyperdev.tungguin.presenter.OrderWithSliderPresenter
-import com.hyperdev.tungguin.repository.order.OrderRepositoryImp
-import com.hyperdev.tungguin.repository.profile.ProfileRepositoryImpl
 import com.hyperdev.tungguin.utils.AppSchedulerProvider
 import com.hyperdev.tungguin.ui.view.OrderWithSliderView
 import kotlinx.android.synthetic.main.activity_order.*
@@ -39,16 +37,14 @@ class OrderActivity : AppCompatActivity(), OrderWithSliderView.View {
         setContentView(R.layout.activity_order)
         requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
 
-        token = SharedPrefManager.getInstance(this@OrderActivity).token.toString()
+        token = SharedPrefManager.getInstance(this).token.toString()
 
-        baseApiService = NetworkClient.getClient(this@OrderActivity)!!
+        baseApiService = NetworkClient.getClient(this)!!
             .create(BaseApiService::class.java)
 
-        val request = OrderRepositoryImp(baseApiService)
-        val request2 = ProfileRepositoryImpl(baseApiService)
         val scheduler = AppSchedulerProvider()
 
-        presenter = OrderWithSliderPresenter(this, this@OrderActivity, request, request2, scheduler)
+        presenter = OrderWithSliderPresenter(this, this, baseApiService, scheduler)
 
         presenter.getOrderWithSlider("Bearer $token")
         presenter.getUserProfile("Bearer $token")
@@ -64,7 +60,7 @@ class OrderActivity : AppCompatActivity(), OrderWithSliderView.View {
         val timeBetween = 2000
         val fadeOutDuration = 1000
 
-        GlideApp.with(this@OrderActivity)
+        GlideApp.with(this)
             .load(imageList[imageIndex])
             .into(img_list_fade)
 
@@ -106,7 +102,7 @@ class OrderActivity : AppCompatActivity(), OrderWithSliderView.View {
 
     @SuppressLint("SetTextI18n")
     override fun displayProfile(profileItem: DataUser) {
-        intoMyName.text = "Hai ${profileItem.name.toString()}"
+        tv_username.text = "Hai ${profileItem.name.toString()}"
     }
 
     override fun displayOrderWithSlider(orderItem: List<String>) {
@@ -119,7 +115,7 @@ class OrderActivity : AppCompatActivity(), OrderWithSliderView.View {
     }
 
     override fun displayOnlineDesigner(designerItem: OrderData) {
-        designer_count.text = designerItem.availableDesigner.toString()
+        tv_designer_online.text = designerItem.availableDesigner.toString()
     }
 
     override fun displayProgress() {

@@ -3,29 +3,26 @@ package com.hyperdev.tungguin.ui.activity
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.content.pm.ActivityInfo
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import com.google.android.material.snackbar.Snackbar
 import android.view.View
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
-import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import com.hyperdev.tungguin.R
 import com.hyperdev.tungguin.database.SharedPrefManager
-import com.hyperdev.tungguin.model.profile.DataUser
 import com.hyperdev.tungguin.model.authentication.CityItem
 import com.hyperdev.tungguin.model.authentication.ProvinceItem
+import com.hyperdev.tungguin.model.profile.DataUser
 import com.hyperdev.tungguin.network.BaseApiService
 import com.hyperdev.tungguin.network.NetworkClient
 import com.hyperdev.tungguin.presenter.ProfilePresenter
 import com.hyperdev.tungguin.presenter.ProfileUpdatePresenter
-import com.hyperdev.tungguin.repository.profile.ProfileRepositoryImpl
-import com.hyperdev.tungguin.repository.authentication.AuthRepositoryImp
 import com.hyperdev.tungguin.ui.view.ProfileUpdateView
+import com.hyperdev.tungguin.ui.view.ProfileView
 import com.hyperdev.tungguin.utils.AppSchedulerProvider
 import com.hyperdev.tungguin.utils.Validation.Companion.validateEmail
 import com.hyperdev.tungguin.utils.Validation.Companion.validateFields
-import com.hyperdev.tungguin.ui.view.ProfileView
+import com.shashank.sony.fancytoastlib.FancyToast
 import kotlinx.android.synthetic.main.activity_profile.*
 
 class ProfileActivity : AppCompatActivity(), ProfileView.View, ProfileUpdateView.View {
@@ -54,7 +51,6 @@ class ProfileActivity : AppCompatActivity(), ProfileView.View, ProfileUpdateView
         requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
 
         setSupportActionBar(toolbar)
-
         supportActionBar?.apply {
             setDisplayShowHomeEnabled(true)
             setHomeButtonEnabled(true)
@@ -63,29 +59,29 @@ class ProfileActivity : AppCompatActivity(), ProfileView.View, ProfileUpdateView
 
         initData()
 
-        swipeRefresh.setOnRefreshListener {
+        swipe_refresh.setOnRefreshListener {
             presenter.getUserProfile("Bearer $getToken")
         }
 
-        btnEditProfil.setOnClickListener {
-            if (btnEditProfil.text == "Edit Profil") {
-                btnEditProfil.text = "Simpan"
+        btn_edit_profil.setOnClickListener {
+            if (btn_edit_profil.text == "Edit Profil") {
+                btn_edit_profil.text = "Simpan"
                 enabledView()
-                btnEditPass.text = "Tutup"
-            } else if (btnEditProfil.text == "Simpan") {
+                btn_edit_password.text = "Tutup"
+            } else if (btn_edit_profil.text == "Simpan") {
                 editProfile()
             }
         }
 
-        btnEditPass.setOnClickListener {
-            if (btnEditPass.text == "Tutup") {
+        btn_edit_password.setOnClickListener {
+            if (btn_edit_password.text == "Tutup") {
                 disabledView()
-                btnEditPass.text = "Ubah Password"
-            } else if (btnEditPass.text == "Ubah Password") {
-                val intent = Intent(this@ProfileActivity, ChangePassActivity::class.java)
-                intent.putExtra("userName", my_name.text.toString())
-                intent.putExtra("userEmail", my_email.text.toString())
-                intent.putExtra("userPhone", phone_number.text.toString())
+                btn_edit_password.text = "Ubah Password"
+            } else if (btn_edit_password.text == "Ubah Password") {
+                val intent = Intent(this, ChangePassActivity::class.java)
+                intent.putExtra("userName", customer_name.text.toString())
+                intent.putExtra("userEmail", customer_email.text.toString())
+                intent.putExtra("userPhone", customer_phone.text.toString())
                 intent.putExtra("userProvince", getProvinceId)
                 intent.putExtra("userCity", getCityId)
                 startActivity(intent)
@@ -109,37 +105,34 @@ class ProfileActivity : AppCompatActivity(), ProfileView.View, ProfileUpdateView
 
         getToken = SharedPrefManager.getInstance(this@ProfileActivity).token.toString()
 
-        val request = ProfileRepositoryImpl(baseApiService)
-        val request2 = AuthRepositoryImp(baseApiService)
-        val request3 = ProfileRepositoryImpl(baseApiService)
         val scheduler = AppSchedulerProvider()
 
-        presenter = ProfilePresenter(this, this@ProfileActivity, request, request2, scheduler)
-        presenter2 = ProfileUpdatePresenter(this@ProfileActivity, this, request3, scheduler)
+        presenter = ProfilePresenter(this, this@ProfileActivity, baseApiService, scheduler)
+        presenter2 = ProfileUpdatePresenter(this@ProfileActivity, this, baseApiService, scheduler)
         presenter.getProvinceAll()
         presenter.getCityAll(provinceId)
     }
 
     private fun editProfile() {
-        namaUser = my_name.text.toString()
-        nomorUser = phone_number.text.toString()
-        emailUser = my_email.text.toString()
+        namaUser = customer_name.text.toString()
+        nomorUser = customer_phone.text.toString()
+        emailUser = customer_email.text.toString()
 
         var err = 0
 
         if (!validateFields(namaUser)) {
             err++
-            my_name.error = "Nama tidak boleh kosong !"
+            customer_name.error = "Nama tidak boleh kosong !"
         }
 
         if (!validateFields(nomorUser)) {
             err++
-            phone_number.error = "Nomor telepon tidak boleh kosong !"
+            customer_phone.error = "Nomor telepon tidak boleh kosong !"
         }
 
         if (!validateEmail(emailUser)) {
             err++
-            my_email.error = "Email tidak valid !"
+            customer_email.error = "Email tidak valid !"
         }
 
         if (err == 0) {
@@ -157,27 +150,27 @@ class ProfileActivity : AppCompatActivity(), ProfileView.View, ProfileUpdateView
 
     @SuppressLint("SetTextI18n")
     private fun enabledView() {
-        my_name.isEnabled = true
-        my_email.isEnabled = true
-        phone_number.isEnabled = true
-        provinceLayout.visibility = View.GONE
-        cityLayout.visibility = View.GONE
-        user_province.visibility = View.VISIBLE
-        user_city.visibility = View.VISIBLE
-        nameLayout.isCounterEnabled = true
+        customer_name.isEnabled = true
+        customer_email.isEnabled = true
+        customer_phone.isEnabled = true
+        province_layout.visibility = View.GONE
+        city_layout.visibility = View.GONE
+        province_items.visibility = View.VISIBLE
+        city_items.visibility = View.VISIBLE
+        name_layout.isCounterEnabled = true
     }
 
     @SuppressLint("SetTextI18n")
     private fun disabledView() {
-        btnEditProfil.text = "Edit Profil"
-        my_name.isEnabled = false
-        my_email.isEnabled = false
-        phone_number.isEnabled = false
-        provinceLayout.visibility = View.VISIBLE
-        cityLayout.visibility = View.VISIBLE
-        user_province.visibility = View.GONE
-        user_city.visibility = View.GONE
-        nameLayout.isCounterEnabled = false
+        btn_edit_profil.text = "Edit Profil"
+        customer_name.isEnabled = false
+        customer_email.isEnabled = false
+        province_layout.isEnabled = false
+        province_layout.visibility = View.VISIBLE
+        city_layout.visibility = View.VISIBLE
+        province_items.visibility = View.GONE
+        city_items.visibility = View.GONE
+        name_layout.isCounterEnabled = false
     }
 
     override fun displayProvince(provinceItem: List<ProvinceItem>) {
@@ -186,10 +179,10 @@ class ProfileActivity : AppCompatActivity(), ProfileView.View, ProfileUpdateView
             provinceIdList.add(it.id.toString())
         }
 
-        user_province.adapter =
+        province_items.adapter =
             ArrayAdapter(this@ProfileActivity, android.R.layout.simple_dropdown_item_1line, provinceList)
 
-        user_province.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+        province_items.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onNothingSelected(parent: AdapterView<*>?) {}
 
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
@@ -199,12 +192,12 @@ class ProfileActivity : AppCompatActivity(), ProfileView.View, ProfileUpdateView
                 cityIdList.add("null")
                 provinceId = provinceIdList[position]
                 if (provinceId != "null") {
-                    user_city.isEnabled = true
-                    user_city.isClickable = true
+                    city_items.isEnabled = true
+                    city_items.isClickable = true
                     presenter.getCityAll(provinceId)
                 } else {
-                    user_city.isEnabled = false
-                    user_city.isClickable = false
+                    city_items.isEnabled = false
+                    city_items.isClickable = false
                 }
             }
         }
@@ -216,9 +209,9 @@ class ProfileActivity : AppCompatActivity(), ProfileView.View, ProfileUpdateView
             cityIdList.add(it.id.toString())
         }
 
-        user_city.adapter = ArrayAdapter(this@ProfileActivity, android.R.layout.simple_spinner_dropdown_item, cityList)
+        city_items.adapter = ArrayAdapter(this@ProfileActivity, android.R.layout.simple_spinner_dropdown_item, cityList)
 
-        user_city.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+        city_items.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onNothingSelected(parent: AdapterView<*>?) {}
 
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
@@ -228,49 +221,61 @@ class ProfileActivity : AppCompatActivity(), ProfileView.View, ProfileUpdateView
     }
 
     override fun displayProfile(profileItem: DataUser) {
-        my_name.setText(profileItem.name.toString())
-        my_email.setText(profileItem.email.toString())
-        phone_number.setText(profileItem.phoneNumber.toString())
-        my_province.setText(profileItem.province?.name.toString())
-        my_city.setText(profileItem.city?.name.toString())
+        customer_name.setText(profileItem.name.toString())
+        customer_email.setText(profileItem.email.toString())
+        customer_phone.setText(profileItem.phoneNumber.toString())
+        customer_province.setText(profileItem.province?.name.toString())
+        customer_city.setText(profileItem.city?.name.toString())
         getProvinceId = profileItem.province?.id.toString()
         getCityId = profileItem.city?.id.toString()
     }
 
     // Menampilkan Progress saat memuat profil user
     override fun displayProgress() {
-        btnEditProfil.isEnabled = false
-        btnEditPass.isEnabled = false
-        swipeRefresh.isRefreshing = true
+        btn_edit_profil.isEnabled = false
+        btn_edit_password.isEnabled = false
+        swipe_refresh.isRefreshing = true
     }
 
     // Progress akan menghilang setelah data user berhasil dimuat
     override fun hideProgress() {
-        btnEditProfil.isEnabled = true
-        btnEditPass.isEnabled = true
-        swipeRefresh.isRefreshing = false
+        btn_edit_profil.isEnabled = true
+        btn_edit_password.isEnabled = true
+        swipe_refresh.isRefreshing = false
     }
 
     // Menampilkan Progress saat user ingin mengubah data profil
     override fun showProgressBar() {
-        swipeRefresh.isRefreshing = true
+        swipe_refresh.isRefreshing = true
     }
 
     // Progress akan menghilang setelah user berhasil mengubah data profil
     override fun hideProgressBar() {
-        swipeRefresh.isRefreshing = false
+        swipe_refresh.isRefreshing = false
     }
 
     @SuppressLint("SetTextI18n")
     override fun onSuccess() {
-        btnEditPass.text = "Ubah Password"
+        btn_edit_password.text = "Ubah Password"
         presenter.getUserProfile("Bearer $getToken")
         disabledView()
-        Toast.makeText(this@ProfileActivity, "Profil berhasil diubah", Toast.LENGTH_SHORT).show()
+        FancyToast.makeText(
+            this,
+            "Profil berhasil diubah",
+            FancyToast.LENGTH_SHORT,
+            FancyToast.SUCCESS,
+            false
+        ).show()
     }
 
     override fun noInternetConnection(message: String) {
-        Snackbar.make(profile_layout, message, Snackbar.LENGTH_SHORT).show()
+        FancyToast.makeText(
+            this,
+            message,
+            FancyToast.LENGTH_SHORT,
+            FancyToast.SUCCESS,
+            false
+        ).show()
     }
 
     override fun onSupportNavigateUp(): Boolean {

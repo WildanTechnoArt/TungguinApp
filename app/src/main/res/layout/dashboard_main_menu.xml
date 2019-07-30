@@ -122,8 +122,7 @@
                     app:cardElevation="4dp"
                     android:layout_marginEnd="4dp"
                     android:layout_marginStart="4dp"
-                    android:background="@drawable/menu_round_button"
-            >
+                    android:background="@drawable/btn_gray_round_hover">
 
                 <RelativeLayout
                         android:layout_width="match_parent"

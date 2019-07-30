@@ -1,21 +1,19 @@
 package com.hyperdev.tungguin.ui.activity
 
 import android.content.pm.ActivityInfo
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import com.google.android.material.snackbar.Snackbar
 import android.view.View
-import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import com.hyperdev.tungguin.R
 import com.hyperdev.tungguin.database.SharedPrefManager
 import com.hyperdev.tungguin.model.contact.MetaContactUs
 import com.hyperdev.tungguin.network.BaseApiService
 import com.hyperdev.tungguin.network.NetworkClient
 import com.hyperdev.tungguin.presenter.ContactUsPresenter
-import com.hyperdev.tungguin.repository.other.ContactUsRepositoryImp
 import com.hyperdev.tungguin.ui.view.ContactUsView
 import com.hyperdev.tungguin.utils.AppSchedulerProvider
 import com.hyperdev.tungguin.utils.Validation.Companion.validateFields
+import com.shashank.sony.fancytoastlib.FancyToast
 import kotlinx.android.synthetic.main.activity_contact_us.*
 
 class ContactUsActivity : AppCompatActivity(), ContactUsView.View {
@@ -48,9 +46,8 @@ class ContactUsActivity : AppCompatActivity(), ContactUsView.View {
         baseApiService = NetworkClient.getClient(this@ContactUsActivity)!!
             .create(BaseApiService::class.java)
 
-        val repository = ContactUsRepositoryImp(baseApiService)
         val scheduler = AppSchedulerProvider()
-        presenter = ContactUsPresenter(this@ContactUsActivity, this, repository, scheduler)
+        presenter = ContactUsPresenter(this@ContactUsActivity, this, baseApiService, scheduler)
 
         token = SharedPrefManager.getInstance(this).token.toString()
     }
@@ -58,17 +55,17 @@ class ContactUsActivity : AppCompatActivity(), ContactUsView.View {
     private fun contactRequest() {
 
         //Memasukan DataUser User Pada Variable
-        getTitleRequest = title_request.text.toString()
-        getContentRequest = request_content.text.toString()
+        getTitleRequest = input_title_request.text.toString()
+        getContentRequest = input_request_content.text.toString()
 
         var err = 0
 
         if (!validateFields(getTitleRequest)) {
             err++
-            Toast.makeText(this@ContactUsActivity, "Judul permintaan tida boleh kosong !", Toast.LENGTH_SHORT).show()
+            FancyToast.makeText(this, "Judul permintaan tida boleh kosong", FancyToast.LENGTH_SHORT, FancyToast.INFO, false).show()
         } else if (!validateFields(getContentRequest)) {
             err++
-            Toast.makeText(this@ContactUsActivity, "Isi permintaan tidak boleh kosong !", Toast.LENGTH_SHORT).show()
+            FancyToast.makeText(this, "Isi permintaan tidak boleh kosong", FancyToast.LENGTH_SHORT, FancyToast.INFO, false).show()
         }
 
         if (err == 0) {
@@ -90,10 +87,10 @@ class ContactUsActivity : AppCompatActivity(), ContactUsView.View {
         shadow.visibility = View.GONE
         progress_bar.visibility = View.GONE
         if (message != "null") {
-            Toast.makeText(this@ContactUsActivity, message, Toast.LENGTH_LONG).show()
+            FancyToast.makeText(this, message, FancyToast.LENGTH_SHORT, FancyToast.SUCCESS, false).show()
         }
-        title_request.setText("")
-        request_content.setText("")
+        input_title_request.setText("")
+        input_request_content.setText("")
     }
 
     override fun contactUsMessage(message: MetaContactUs) {
@@ -101,6 +98,6 @@ class ContactUsActivity : AppCompatActivity(), ContactUsView.View {
     }
 
     override fun noInternetConnection(message: String) {
-        Snackbar.make(contact_layout, message, Snackbar.LENGTH_SHORT).show()
+        FancyToast.makeText(this, message, FancyToast.LENGTH_SHORT, FancyToast.ERROR, false).show()
     }
 }

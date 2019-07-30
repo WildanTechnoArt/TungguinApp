@@ -12,7 +12,8 @@
     <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@drawable/menu_round_button" android:id="@+id/catalog_item_view">
+            android:background="@drawable/btn_gray_round_hover"
+            android:id="@+id/catalog_item_view">
 
         <ImageView
                 android:id="@+id/img_product_item"

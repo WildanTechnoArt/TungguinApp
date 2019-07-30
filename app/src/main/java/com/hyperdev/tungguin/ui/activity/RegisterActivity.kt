@@ -2,25 +2,24 @@ package com.hyperdev.tungguin.ui.activity
 
 import android.content.Intent
 import android.content.pm.ActivityInfo
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
-import com.hyperdev.tungguin.R
-import com.hyperdev.tungguin.network.NetworkClient
-import com.hyperdev.tungguin.utils.Validation.Companion.validateEmail
-import kotlinx.android.synthetic.main.activity_register_page.*
-import com.hyperdev.tungguin.utils.Validation.Companion.validateFields
-import com.google.android.material.snackbar.Snackbar
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
+import androidx.appcompat.app.AppCompatActivity
+import com.hyperdev.tungguin.R
 import com.hyperdev.tungguin.model.authentication.CityItem
 import com.hyperdev.tungguin.model.authentication.ProvinceItem
 import com.hyperdev.tungguin.network.BaseApiService
+import com.hyperdev.tungguin.network.NetworkClient
 import com.hyperdev.tungguin.presenter.RegisterPresenter
-import com.hyperdev.tungguin.repository.authentication.AuthRepositoryImp
-import com.hyperdev.tungguin.utils.AppSchedulerProvider
-import java.util.*
 import com.hyperdev.tungguin.ui.view.RegisterView
+import com.hyperdev.tungguin.utils.AppSchedulerProvider
+import com.hyperdev.tungguin.utils.Validation.Companion.validateEmail
+import com.hyperdev.tungguin.utils.Validation.Companion.validateFields
+import com.shashank.sony.fancytoastlib.FancyToast
+import kotlinx.android.synthetic.main.activity_register_page.*
+import java.util.*
 
 class RegisterActivity : AppCompatActivity(), RegisterView.View {
 
@@ -52,14 +51,13 @@ class RegisterActivity : AppCompatActivity(), RegisterView.View {
         baseApiService = NetworkClient.getClient(this@RegisterActivity)!!
             .create(BaseApiService::class.java)
 
-        val request = AuthRepositoryImp(baseApiService)
         val scheduler = AppSchedulerProvider()
 
-        presenter = RegisterPresenter(this@RegisterActivity, this, request, scheduler)
+        presenter = RegisterPresenter(this, this, baseApiService, scheduler)
         presenter.getProvinceAll()
         presenter.getCityAll(provinceId)
 
-        btnRegister.setOnClickListener {
+        btn_register.setOnClickListener {
             try {
                 register()
             } catch (ex: Exception) {
@@ -67,44 +65,44 @@ class RegisterActivity : AppCompatActivity(), RegisterView.View {
             }
         }
 
-        user_city.isEnabled = false
-        user_city.isClickable = false
+        city_items.isEnabled = false
+        city_items.isClickable = false
     }
 
     private fun register() {
 
         //Memasukan DataUser User Pada Variable
-        namaUser = firstName.text.toString()
-        nomorUser = nomor.text.toString()
-        emailUser = email.text.toString()
-        passUser = pass.text.toString()
-        retypePassUser = retypePass.text.toString()
+        namaUser = input_name.text.toString()
+        nomorUser = input_phone.text.toString()
+        emailUser = input_email.text.toString()
+        passUser = input_pass.text.toString()
+        retypePassUser = input_retype_pass.text.toString()
 
         var err = 0
 
         if (!validateFields(namaUser)) {
             err++
-            firstName.error = "Nama tidak boleh kosong !"
+            input_name.error = "Nama tidak boleh kosong !"
         }
 
         if (!validateFields(nomorUser)) {
             err++
-            nomor.error = "Nomor telepon tidak boleh kosong !"
+            input_phone.error = "Nomor telepon tidak boleh kosong !"
         }
 
         if (!validateEmail(emailUser)) {
             err++
-            email.error = "Email tidak valid !"
+            input_email.error = "Email tidak valid !"
         }
 
         if (!validateFields(passUser)) {
             err++
-            pass.error = "Password tidak boleh kosong !"
+            input_pass.error = "Password tidak boleh kosong !"
         }
 
         if (retypePassUser != passUser) {
             err++
-            retypePass.error = "Password yang dimasukan tidak sama !"
+            input_retype_pass.error = "Password yang dimasukan tidak sama !"
         }
 
         if (err == 0) {
@@ -126,10 +124,10 @@ class RegisterActivity : AppCompatActivity(), RegisterView.View {
             provinceIdList.add(it.id.toString())
         }
 
-        user_province.adapter =
+        province_items.adapter =
             ArrayAdapter(this@RegisterActivity, android.R.layout.simple_dropdown_item_1line, provinceList)
 
-        user_province.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+        province_items.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onNothingSelected(parent: AdapterView<*>?) {}
 
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
@@ -139,12 +137,12 @@ class RegisterActivity : AppCompatActivity(), RegisterView.View {
                 cityIdList.add("null")
                 provinceId = provinceIdList[position]
                 if (provinceId != "null") {
-                    user_city.isEnabled = true
-                    user_city.isClickable = true
+                    city_items.isEnabled = true
+                    city_items.isClickable = true
                     presenter.getCityAll(provinceId)
                 } else {
-                    user_city.isEnabled = false
-                    user_city.isClickable = false
+                    city_items.isEnabled = false
+                    city_items.isClickable = false
                 }
             }
         }
@@ -156,13 +154,12 @@ class RegisterActivity : AppCompatActivity(), RegisterView.View {
             cityIdList.add(it.id.toString())
         }
 
-        user_city.adapter = ArrayAdapter(this@RegisterActivity, android.R.layout.simple_spinner_dropdown_item, cityList)
+        city_items.adapter = ArrayAdapter(this@RegisterActivity, android.R.layout.simple_spinner_dropdown_item, cityList)
 
-        user_city.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+        city_items.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onNothingSelected(parent: AdapterView<*>?) {}
 
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-
                 cityId = cityIdList[position]
             }
         }
@@ -171,28 +168,28 @@ class RegisterActivity : AppCompatActivity(), RegisterView.View {
     override fun displayProgress() {
         shadow.visibility = View.VISIBLE
         progress_bar.visibility = View.VISIBLE
-        btnRegister.isEnabled = false
-        firstName.isEnabled = false
-        nomor.isEnabled = false
-        email.isEnabled = false
-        pass.isEnabled = false
-        retypePass.isEnabled = false
-        user_province.isEnabled = false
-        user_province.isClickable = false
+        btn_register.isEnabled = false
+        input_name.isEnabled = false
+        input_phone.isEnabled = false
+        input_email.isEnabled = false
+        input_pass.isEnabled = false
+        input_retype_pass.isEnabled = false
+        province_items.isEnabled = false
+        province_items.isClickable = false
     }
 
     override fun hideProgress() {
         shadow.visibility = View.GONE
         progress_bar.visibility = View.GONE
-        scroll.visibility = View.VISIBLE
-        btnRegister.isEnabled = true
-        firstName.isEnabled = true
-        nomor.isEnabled = true
-        email.isEnabled = true
-        pass.isEnabled = true
-        retypePass.isEnabled = true
-        user_province.isEnabled = true
-        user_province.isClickable = true
+        scroll_view.visibility = View.VISIBLE
+        btn_register.isEnabled = true
+        input_name.isEnabled = true
+        input_phone.isEnabled = true
+        input_email.isEnabled = true
+        input_pass.isEnabled = true
+        input_retype_pass.isEnabled = true
+        province_items.isEnabled = true
+        province_items.isClickable = true
     }
 
     override fun onSuccess() {
@@ -201,7 +198,7 @@ class RegisterActivity : AppCompatActivity(), RegisterView.View {
     }
 
     override fun noInternetConnection(message: String) {
-        Snackbar.make(register_page, message, Snackbar.LENGTH_SHORT).show()
+        FancyToast.makeText(this, message, FancyToast.LENGTH_SHORT, FancyToast.SUCCESS, false).show()
     }
 
     override fun onDestroy() {

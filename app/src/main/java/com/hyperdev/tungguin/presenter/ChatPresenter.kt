@@ -7,10 +7,10 @@ import com.google.gson.Gson
 import com.hyperdev.tungguin.model.chat.ChatHistoryResponse
 import com.hyperdev.tungguin.model.chat.MessageModel
 import com.hyperdev.tungguin.model.detailorder.DetailOrderResponse
+import com.hyperdev.tungguin.network.BaseApiService
 import com.hyperdev.tungguin.network.ConnectivityStatus
 import com.hyperdev.tungguin.network.HandleError
 import com.hyperdev.tungguin.network.Response
-import com.hyperdev.tungguin.repository.chat.ChatRepositoryImp
 import com.hyperdev.tungguin.utils.SchedulerProvider
 import com.hyperdev.tungguin.ui.view.ChatView
 import com.miguelbcr.ui.rx_paparazzo2.RxPaparazzo
@@ -27,7 +27,7 @@ import java.net.SocketTimeoutException
 class ChatPresenter(
     private val view: ChatView.View,
     private val context: Context,
-    private val chat: ChatRepositoryImp,
+    private val baseApiService: BaseApiService,
     private val scheduler: SchedulerProvider
 ) : ChatView.Presenter {
 
@@ -40,7 +40,7 @@ class ChatPresenter(
 
         view.showProgress()
 
-        chat.chatRequest(token, accept, hashed_id, text, file)
+        baseApiService.chatRequest(token, accept, hashed_id, text, file)
             .observeOn(AndroidSchedulers.mainThread())
             .subscribeOn(scheduler.io())
             .unsubscribeOn(scheduler.io())
@@ -102,7 +102,7 @@ class ChatPresenter(
     override fun getDetailOrder(token: String, id: String) {
         view.showProgress()
         compositeDisposable.add(
-            chat.getOrderDetail(token, "application/json", id)
+            baseApiService.getOrderDetail(token, "application/json", id)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(scheduler.io())
                 .subscribeWith(object : ResourceSubscriber<DetailOrderResponse>() {
@@ -140,7 +140,7 @@ class ChatPresenter(
     override fun getChatData(token: String, hasher_id: String, page: Int?) {
         view.showProgress()
         compositeDisposable.add(
-            chat.getChatHistori(token, "application/json", hasher_id, page)
+            baseApiService.getChatHistori(token, "application/json", hasher_id, page)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(scheduler.io())
                 .subscribeWith(object : ResourceSubscriber<ChatHistoryResponse>() {

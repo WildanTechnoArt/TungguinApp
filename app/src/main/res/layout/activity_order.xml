@@ -5,52 +5,54 @@
         xmlns:app="http://schemas.android.com/apk/res-auto"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context=".ui.activity.OrderActivity">
+        tools:context=".ui.activity.OrderActivity" android:background="@color/white">
 
     <ImageView
             android:id="@+id/img_list_fade"
             android:layout_width="match_parent"
             android:layout_height="0dp"
+            android:contentDescription="@string/gambar"
             app:layout_constraintBottom_toTopOf="@+id/center"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            tools:ignore="ContentDescription"/>
+            app:layout_constraintEnd_toEndOf="parent"/>
 
     <androidx.cardview.widget.CardView
+            android:id="@+id/card_search"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/layout_margin"
+            android:layout_marginBottom="@dimen/layout_margin"
+            android:layout_marginStart="@dimen/layout_margin"
             app:layout_constraintStart_toStartOf="parent"
-            android:layout_marginStart="16dp"
-            app:cardElevation="4dp"
-            app:cardCornerRadius="8dp"
-            android:id="@+id/card_search"
-            android:layout_marginEnd="16dp"
+            app:cardElevation="3dp"
+            app:cardCornerRadius="@dimen/normal_size_margin"
             app:layout_constraintEnd_toEndOf="parent"
-            android:layout_marginBottom="16dp"
             app:layout_constraintBottom_toBottomOf="parent">
 
         <LinearLayout
                 android:orientation="horizontal"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:paddingTop="8dp"
-                android:paddingBottom="8dp"
-                android:paddingEnd="8dp"
-                android:paddingStart="8dp">
+                android:paddingTop="@dimen/normal_size_margin"
+                android:paddingBottom="@dimen/normal_size_margin"
+                android:paddingEnd="@dimen/normal_size_margin"
+                android:paddingStart="@dimen/normal_size_margin">
 
             <ImageButton
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    app:srcCompat="@drawable/ic_search_28dp"
                     android:id="@+id/search_icon"
                     android:background="@drawable/item_selector_button"
                     android:layout_marginEnd="4dp"
-                    tools:ignore="ContentDescription" android:visibility="visible"/>
+                    android:contentDescription="@string/gambar"
+                    app:srcCompat="@drawable/ic_search_28dp"/>
 
             <EditText
+                    android:id="@+id/tv_search_design"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
+                    android:autofillHints="@string/src_design"
                     android:inputType="textPersonName"
                     android:textSize="16sp"
                     android:focusable="false"
@@ -58,104 +60,88 @@
                     android:background="@android:color/transparent"
                     android:layout_marginStart="4dp"
                     android:layout_marginEnd="4dp"
-                    android:id="@+id/tv_search_design"
-                    android:importantForAutofill="no"
-                    tools:targetApi="o" android:visibility="visible"/>
+                    tools:targetApi="o"/>
 
         </LinearLayout>
+
     </androidx.cardview.widget.CardView>
 
     <TextView
+            android:id="@+id/tv_text_one"
             android:text="@string/intro"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/txt11"
-            android:layout_marginBottom="16dp"
-            app:layout_constraintBottom_toTopOf="@+id/card_search"
+            android:layout_marginStart="@dimen/layout_margin"
+            android:layout_marginBottom="@dimen/layout_margin"
             android:textSize="16sp"
             android:textStyle="bold"
-            app:layout_constraintStart_toStartOf="parent"
-            android:layout_marginStart="16dp"/>
+            app:layout_constraintBottom_toTopOf="@+id/card_search"
+            app:layout_constraintStart_toStartOf="parent"/>
 
     <TextView
-            android:text="@string/wildan"
+            android:id="@+id/tv_username"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/intoMyName"
             android:layout_marginBottom="2dp"
-            app:layout_constraintBottom_toTopOf="@+id/txt11"
-            app:layout_constraintStart_toStartOf="parent"
-            android:layout_marginStart="16dp"
+            android:layout_marginStart="@dimen/layout_margin"
+            android:text="@string/wildan"
             android:textStyle="bold"
-            android:textSize="16sp"/>
+            android:textSize="16sp"
+            app:layout_constraintBottom_toTopOf="@+id/tv_text_one"
+            app:layout_constraintStart_toStartOf="parent"/>
 
-    <View android:layout_width="match_parent"
-          android:layout_height="1dp"
-          android:id="@+id/center"
-          app:layout_constraintStart_toStartOf="parent"
-          app:layout_constraintEnd_toEndOf="parent"
-          android:layout_marginBottom="50dp"
-          app:layout_constraintBottom_toTopOf="@+id/intoMyName"/>
+    <View
+            android:id="@+id/center"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginBottom="50dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toTopOf="@+id/tv_username"/>
 
     <androidx.cardview.widget.CardView
+            android:id="@+id/card_designer_online"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/layout_margin"
+            android:layout_marginEnd="@dimen/layout_margin"
+            android:layout_marginBottom="@dimen/very_big_size_margin"
             app:layout_constraintStart_toStartOf="parent"
-            android:layout_marginStart="16dp"
-            android:layout_marginEnd="16dp"
-            app:layout_constraintEnd_toEndOf="parent"
             app:cardElevation="4dp"
             app:cardCornerRadius="12dp"
             app:cardBackgroundColor="#D40101"
-            android:id="@+id/cardDesigner"
-            android:layout_marginBottom="24dp"
-            app:layout_constraintBottom_toTopOf="@+id/intoMyName">
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toTopOf="@+id/tv_username">
 
-        <LinearLayout
-                android:orientation="horizontal"
+        <FrameLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:gravity="center"
-                android:paddingEnd="16dp"
-                android:paddingBottom="8dp"
-                android:paddingStart="16dp"
-                android:paddingTop="8dp">
-
-            <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    app:srcCompat="@drawable/ic_place_white_24dp"
-                    android:id="@+id/place_icon"
-                    android:layout_marginEnd="4dp"
-                    tools:ignore="ContentDescription"/>
+                android:paddingEnd="@dimen/layout_margin"
+                android:paddingBottom="@dimen/normal_size_margin"
+                android:paddingStart="@dimen/layout_margin"
+                android:paddingTop="@dimen/normal_size_margin"
+                android:orientation="horizontal">
 
             <TextView
-                    android:text="0 Desainer sedang online"
+                    android:text="@string/text_designer_online"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
-                    android:id="@+id/designer_count"
+                    android:id="@+id/tv_designer_online"
                     android:gravity="center_vertical"
                     android:textColor="#FFFFFF"
                     android:textStyle="bold"
-                    android:layout_marginEnd="4dp"
-                    tools:ignore="HardcodedText"/>
+                    android:layout_marginEnd="@dimen/small_size_margin"
+                    android:drawableStart="@drawable/ic_place_white_24dp"/>
 
-            <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:id="@+id/txt22"
-                    android:gravity="center_vertical"
-                    android:textColor="#FFFFFF"
-                    tools:ignore="HardcodedText"/>
+        </FrameLayout>
 
-        </LinearLayout>
     </androidx.cardview.widget.CardView>
 
     <ProgressBar
-            style="?android:attr/progressBarStyle"
+            android:id="@+id/progress_bar"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/progress_bar"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"

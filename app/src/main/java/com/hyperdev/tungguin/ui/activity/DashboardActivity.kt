@@ -18,7 +18,6 @@ import com.hyperdev.tungguin.model.profile.DataUser
 import com.hyperdev.tungguin.network.BaseApiService
 import com.hyperdev.tungguin.network.NetworkClient
 import com.hyperdev.tungguin.presenter.DashboardPresenter
-import com.hyperdev.tungguin.repository.dashboard.DashboardRepositoryImp
 import com.hyperdev.tungguin.utils.AppSchedulerProvider
 import com.hyperdev.tungguin.ui.view.DashboardView
 import com.synnapps.carouselview.ImageListener
@@ -136,9 +135,10 @@ class DashboardActivity : AppCompatActivity(), DashboardView.View {
             .create(BaseApiService::class.java)
 
         getToken = SharedPrefManager.getInstance(this@DashboardActivity).token.toString()
-        val repository = DashboardRepositoryImp(baseApiService)
+
         val scheduler = AppSchedulerProvider()
-        presenter = DashboardPresenter(this, this@DashboardActivity, repository, scheduler)
+
+        presenter = DashboardPresenter(this, this@DashboardActivity, baseApiService, scheduler)
     }
 
     private fun resetTokenFCM() {

@@ -4,16 +4,15 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.content.pm.ActivityInfo
 import android.content.pm.PackageManager
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
+import android.view.inputmethod.InputMethodManager
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import android.text.Editable
-import android.text.TextWatcher
-import android.view.inputmethod.InputMethodManager
-import android.widget.Toast
 import com.github.nkzawa.emitter.Emitter
 import com.github.nkzawa.socketio.client.IO
 import com.github.nkzawa.socketio.client.Socket
@@ -28,16 +27,19 @@ import com.hyperdev.tungguin.model.detailorder.DesignerData
 import com.hyperdev.tungguin.network.BaseApiService
 import com.hyperdev.tungguin.network.NetworkClient
 import com.hyperdev.tungguin.presenter.ChatPresenter
-import com.hyperdev.tungguin.repository.chat.ChatRepositoryImp
-import com.hyperdev.tungguin.utils.AppSchedulerProvider
 import com.hyperdev.tungguin.ui.view.ChatView
+import com.hyperdev.tungguin.utils.AppSchedulerProvider
 import com.hyperdev.tungguin.utils.UtilsConstant.Companion.HASHED_ID
 import com.miguelbcr.ui.rx_paparazzo2.RxPaparazzo
 import com.miguelbcr.ui.rx_paparazzo2.entities.FileData
+import com.shashank.sony.fancytoastlib.FancyToast
 import kotlinx.android.synthetic.main.activity_chat.*
+import kotlinx.android.synthetic.main.chat_appbar.*
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
+import okhttp3.RequestBody.Companion.asRequestBody
+import okhttp3.RequestBody.Companion.toRequestBody
 import org.json.JSONException
 import org.json.JSONObject
 import java.net.URISyntaxException
@@ -54,7 +56,7 @@ class ChatActivity : AppCompatActivity(), ChatView.View {
     private lateinit var orderId: String
     private lateinit var chatData: ChatData
     private lateinit var designerName: String
-    private var page by Delegates.notNull<Int>()
+    private var page = 1
     private var isLoading by Delegates.notNull<Boolean>()
     private lateinit var requestFile: RequestBody
     private lateinit var requestMessage: RequestBody
@@ -88,17 +90,17 @@ class ChatActivity : AppCompatActivity(), ChatView.View {
         initSocket()
         initData()
 
-        send_chat.setOnClickListener {
+        btn_send_message.setOnClickListener {
 
             //Menyembunyikan keyboard saat tombol Kirim Pesan Diklik
             val imm: InputMethodManager = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-            imm.hideSoftInputFromWindow(chat_layout.windowToken, 0)
-            sendMessage(chat_input.text.toString())
-            chat_input.setText("")
+            imm.hideSoftInputFromWindow(swipe_refresh.windowToken, 0)
+            sendMessage(input_message.text.toString())
+            input_message.setText("")
 
         }
 
-        attach_file.setOnClickListener {
+        btn_attach_file.setOnClickListener {
             if (ContextCompat.checkSelfPermission(
                     this@ChatActivity, android.Manifest.permission.READ_EXTERNAL_STORAGE
                 ) != PackageManager.PERMISSION_GRANTED && ContextCompat.checkSelfPermission(
@@ -121,7 +123,7 @@ class ChatActivity : AppCompatActivity(), ChatView.View {
 
         initListener()
 
-        chat_input.addTextChangedListener(object : TextWatcher {
+        input_message.addTextChangedListener(object : TextWatcher {
 
             override fun afterTextChanged(s: Editable?) {}
 
@@ -129,11 +131,11 @@ class ChatActivity : AppCompatActivity(), ChatView.View {
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 if (s.toString().isEmpty()) {
-                    send_chat.isEnabled = false
-                    send_chat.setBackgroundResource(R.drawable.menu_round_no_hover2)
+                    btn_send_message.isEnabled = false
+                    btn_send_message.setBackgroundResource(R.drawable.btn_round_no_hover)
                 } else {
-                    send_chat.isEnabled = true
-                    send_chat.setBackgroundResource(R.drawable.ref_round_button)
+                    btn_send_message.isEnabled = true
+                    btn_send_message.setBackgroundResource(R.drawable.btn_green_round_hover)
                 }
             }
 
@@ -154,12 +156,11 @@ class ChatActivity : AppCompatActivity(), ChatView.View {
     }
 
     private fun initListener() {
-        list_chat.addOnScrollListener(scrollListener)
+        rv_chat_list.addOnScrollListener(scrollListener)
     }
 
     private fun initData() {
         swipe_refresh.isEnabled = false
-        page = 1
 
         RxPaparazzo.register(application)
 
@@ -175,23 +176,22 @@ class ChatActivity : AppCompatActivity(), ChatView.View {
             .create(BaseApiService::class.java)
 
         val layout = LinearLayoutManager(this@ChatActivity)
-        list_chat.layoutManager = layout
-        list_chat.setHasFixedSize(true)
+        rv_chat_list.layoutManager = layout
+        rv_chat_list.setHasFixedSize(true)
 
-        val request = ChatRepositoryImp(baseApiService)
         val scheduler = AppSchedulerProvider()
-        presenter = ChatPresenter(this, this@ChatActivity, request, scheduler)
+        presenter = ChatPresenter(this, this@ChatActivity, baseApiService, scheduler)
 
         adapter = MessageAdapter(this@ChatActivity, listChatItem)
 
         presenter.getChatData("Bearer $token", orderId, page = page)
         presenter.getDetailOrder("Bearer $token", orderId)
 
-        list_chat.adapter = adapter
+        rv_chat_list.adapter = adapter
     }
 
     private fun setRequestBody(data: String): RequestBody {
-        return RequestBody.create("text/plain".toMediaTypeOrNull(), data)
+        return data.toRequestBody("text/plain".toMediaTypeOrNull())
     }
 
     private fun sendMessage(message: String) {
@@ -233,7 +233,7 @@ class ChatActivity : AppCompatActivity(), ChatView.View {
                                 ChatData(TYPE_MESSAGE_RECEIVED, text, file, date, sender, fileType)
                             }
                             adapter.addMessage(chatData)
-                            list_chat.post { list_chat.smoothScrollToPosition(adapter.itemCount - 1) }
+                            rv_chat_list.post { rv_chat_list.smoothScrollToPosition(adapter.itemCount - 1) }
                         }
                     }
                 }
@@ -249,7 +249,7 @@ class ChatActivity : AppCompatActivity(), ChatView.View {
     }
 
     override fun noInternetConnection(message: String) {
-        Toast.makeText(this@ChatActivity, message, Toast.LENGTH_SHORT).show()
+        FancyToast.makeText(this, message, FancyToast.ERROR, FancyToast.LENGTH_SHORT, false).show()
     }
 
     override fun showChatData(historiItem: HistoriItem?) {
@@ -258,7 +258,7 @@ class ChatActivity : AppCompatActivity(), ChatView.View {
     }
 
     override fun loadFile(file: FileData?) {
-        requestFile = RequestBody.create("application/x-www-form-urlencoded".toMediaTypeOrNull(), file?.file!!)
+        requestFile = file?.file!!.asRequestBody("application/x-www-form-urlencoded".toMediaTypeOrNull())
         fileBody = MultipartBody.Part.createFormData("file", file.filename, requestFile)
         sendMessage("null")
     }
@@ -280,11 +280,11 @@ class ChatActivity : AppCompatActivity(), ChatView.View {
 
     override fun profileDesigner(designer: DesignerData) {
         designerName = designer.name.toString()
-        designer_name.text = designerName
+        tv_designer_name.text = designerName
         GlideApp.with(this@ChatActivity)
             .load(designer.photoUrl.toString())
             .placeholder(R.drawable.circle_profil)
-            .into(photo)
+            .into(tv_designer_photo)
     }
 
     override fun onDestroy() {
@@ -295,9 +295,9 @@ class ChatActivity : AppCompatActivity(), ChatView.View {
     }
 
     override fun showChatItem(chatlist: MutableList<ChatData>) {
-        if(page == 1){
+        if (page == 1) {
             adapter.setData(chatlist)
-        }else{
+        } else {
             adapter.refreshAdapter(chatlist)
         }
     }

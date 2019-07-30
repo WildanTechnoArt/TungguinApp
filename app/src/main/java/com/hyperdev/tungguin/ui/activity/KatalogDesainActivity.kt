@@ -11,11 +11,10 @@ import com.hyperdev.tungguin.database.SharedPrefManager
 import com.hyperdev.tungguin.model.katalogdesain.KatalogItem
 import com.hyperdev.tungguin.network.BaseApiService
 import com.hyperdev.tungguin.network.NetworkClient
-import com.hyperdev.tungguin.presenter.KatalogDesainPresenter
-import com.hyperdev.tungguin.repository.product.ProductRepositoryImpl
+import com.hyperdev.tungguin.presenter.CataloguePresenter
 import com.hyperdev.tungguin.utils.AppSchedulerProvider
 import com.hyperdev.tungguin.ui.view.KatalogDesainView
-import kotlinx.android.synthetic.main.activity_katalog_desain.*
+import kotlinx.android.synthetic.main.activity_catalogue_desain.*
 import kotlin.properties.Delegates
 
 class KatalogDesainActivity : AppCompatActivity(), KatalogDesainView.View {
@@ -29,13 +28,15 @@ class KatalogDesainActivity : AppCompatActivity(), KatalogDesainView.View {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_katalog_desain)
+        setContentView(R.layout.activity_catalogue_desain)
         requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
 
         setSupportActionBar(toolbar)
-        supportActionBar?.setDisplayShowHomeEnabled(true)
-        supportActionBar?.setHomeButtonEnabled(true)
-        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        supportActionBar?.apply {
+            setDisplayShowHomeEnabled(true)
+            setHomeButtonEnabled(true)
+            setDisplayHomeAsUpEnabled(true)
+        }
 
         loadData()
 
@@ -45,24 +46,23 @@ class KatalogDesainActivity : AppCompatActivity(), KatalogDesainView.View {
     }
 
     private fun loadData() {
-        token = SharedPrefManager.getInstance(this@KatalogDesainActivity).token.toString()
+        token = SharedPrefManager.getInstance(this).token.toString()
 
-        baseApiService = NetworkClient.getClient(this@KatalogDesainActivity)!!
+        baseApiService = NetworkClient.getClient(this)!!
             .create(BaseApiService::class.java)
 
         val layout = LinearLayoutManager(this@KatalogDesainActivity)
-        rv_katalog.layoutManager = layout
-        rv_katalog.setHasFixedSize(true)
+        rv_catalogue.layoutManager = layout
+        rv_catalogue.setHasFixedSize(true)
 
-        val request = ProductRepositoryImpl(baseApiService)
         val scheduler = AppSchedulerProvider()
-        presenter = KatalogDesainPresenter(this, this@KatalogDesainActivity, request, scheduler)
+        presenter = CataloguePresenter(this, this, baseApiService, scheduler)
 
-        adapter = KatalogDesainAdapter(listKatalogItem as ArrayList<KatalogItem>, this@KatalogDesainActivity)
+        adapter = KatalogDesainAdapter(listKatalogItem as ArrayList<KatalogItem>, this)
 
         presenter.getKatalogDesain("Bearer $token")
 
-        rv_katalog.adapter = adapter
+        rv_catalogue.adapter = adapter
     }
 
     override fun showKatalogItemList(katalogItem: List<KatalogItem>) {
@@ -75,12 +75,12 @@ class KatalogDesainActivity : AppCompatActivity(), KatalogDesainView.View {
 
     override fun displayProgress() {
         swipe_refresh.isRefreshing = true
-        rv_katalog.visibility = View.GONE
+        rv_catalogue.visibility = View.GONE
     }
 
     override fun hideProgress() {
         swipe_refresh.isRefreshing = false
-        rv_katalog.visibility = View.VISIBLE
+        rv_catalogue.visibility = View.VISIBLE
     }
 
     override fun onSupportNavigateUp(): Boolean {

@@ -5,9 +5,7 @@
         xmlns:app="http://schemas.android.com/apk/res-auto"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context=".ui.activity.DetailProductActivity"
-        android:background="#FFFFFF"
->
+        tools:context=".ui.activity.DetailProductActivity" android:background="@color/white">
 
     <com.google.android.material.appbar.AppBarLayout
             android:id="@+id/appbar"
@@ -35,11 +33,14 @@
             android:id="@+id/swipe_refresh"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            app:layout_constraintBottom_toBottomOf="parent" app:layout_constraintStart_toStartOf="parent"
+            android:layout_marginStart="@dimen/layout_margin"
+            android:layout_marginTop="@dimen/layout_margin"
+            android:layout_marginEnd="@dimen/layout_margin"
+            android:layout_marginBottom="@dimen/layout_margin"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/appbar" android:layout_marginStart="14dp"
-            android:layout_marginTop="14dp" android:layout_marginEnd="14dp" android:layout_marginBottom="14dp"
-    >
+            app:layout_constraintTop_toBottomOf="@+id/appbar">
 
         <ScrollView
                 android:layout_width="match_parent"
@@ -47,8 +48,7 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/appbar"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-        >
+                app:layout_constraintStart_toStartOf="parent">
 
             <LinearLayout
                     android:orientation="vertical"
@@ -60,10 +60,10 @@
                     tools:ignore="WebViewLayout">
 
                 <TextView
+                        android:id="@+id/tv_product_name"
                         android:text="@string/productNameExample"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:id="@+id/tv_product_name"
                         android:textStyle="bold"
                         android:textColor="#000000"
                         android:textSize="15sp"/>
@@ -72,63 +72,68 @@
                         android:id="@+id/img_slider_product"
                         android:layout_width="match_parent"
                         android:layout_height="200dp"
+                        android:layout_marginTop="@dimen/normal_size_margin"
                         app:fillColor="#FFFFFFFF"
                         app:pageColor="#00000000"
                         app:radius="6dp"
                         app:slideInterval="3000"
                         app:strokeColor="#FF777777"
-                        app:strokeWidth="1dp"
-                        android:layout_marginTop="8dp">
+                        app:strokeWidth="1dp">
+
                 </com.synnapps.carouselview.CarouselView>
 
                 <TextView
                         android:text="@string/image_ilustration"
                         android:layout_width="match_parent"
                         android:gravity="center"
-                        android:textStyle="italic" android:layout_marginTop="8dp" android:layout_height="wrap_content"/>
+                        android:textStyle="italic"
+                        android:layout_marginTop="@dimen/normal_size_margin"
+                        android:layout_height="wrap_content"/>
+
                 <TextView
-                        android:text="Deskripsi"
+                        android:id="@+id/tv_description"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:textColor="#000000"
+                        android:text="@string/descriptioni"
+                        android:textColor="@android:color/black"
                         android:textStyle="bold"
                         android:textSize="15sp"
-                        android:layout_marginTop="8dp"
-                        tools:ignore="HardcodedText" android:id="@+id/tv_description"/>
+                        android:layout_marginTop="@dimen/normal_size_margin"/>
 
                 <View
                         android:id="@+id/line"
                         android:layout_width="match_parent"
                         android:layout_height="1dp"
-                        android:layout_marginTop="8dp"
+                        android:layout_marginTop="@dimen/normal_size_margin"
                         android:background="#FFB7B7B7"/>
+
                 <WebView
+                        android:id="@+id/product_description"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:id="@+id/product_description"
-                        android:layout_marginTop="8dp"/>
+                        android:layout_marginTop="@dimen/normal_size_margin"/>
 
                 <View
-                        android:id="@+id/view2"
+                        android:id="@+id/line_two"
                         android:layout_width="match_parent"
                         android:layout_height="1dp"
-                        android:layout_marginTop="8dp"
+                        android:layout_marginTop="@dimen/normal_size_margin"
                         android:background="#FFB7B7B7"/>
 
                 <Button
-                        android:text="Pesan"
+                        android:id="@+id/btn_order"
                         android:elevation="6dp"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:id="@+id/btn_order"
-                        android:layout_marginTop="16dp"
-                        android:textColor="#FFFFFF"
-                        android:background="@drawable/primary_round_button"
-                        android:layout_marginBottom="4dp"
-                        android:layout_marginEnd="4dp"
-                        android:layout_marginStart="4dp"
-                        tools:targetApi="lollipop"
-                        tools:ignore="HardcodedText" android:textStyle="bold"/>
+                        android:layout_marginBottom="@dimen/small_size_margin"
+                        android:layout_marginEnd="@dimen/small_size_margin"
+                        android:layout_marginStart="@dimen/small_size_margin"
+                        android:layout_marginTop="@dimen/layout_margin"
+                        android:text="@string/message"
+                        android:textColor="@android:color/white"
+                        android:textStyle="bold"
+                        android:background="@drawable/btn_primary_round_hover"
+                        tools:targetApi="lollipop"/>
 
             </LinearLayout>
         </ScrollView>

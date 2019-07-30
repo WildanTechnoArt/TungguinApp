@@ -4,9 +4,9 @@ import android.content.Context
 import android.widget.Toast
 import com.google.gson.Gson
 import com.hyperdev.tungguin.model.authentication.LoginResponse
+import com.hyperdev.tungguin.network.BaseApiService
 import com.hyperdev.tungguin.network.ConnectivityStatus
 import com.hyperdev.tungguin.network.Response
-import com.hyperdev.tungguin.repository.other.ForgotPassRepositoryImpl
 import com.hyperdev.tungguin.ui.view.ForgotPassView
 import com.hyperdev.tungguin.utils.SchedulerProvider
 import io.reactivex.Observer
@@ -19,7 +19,7 @@ import java.net.SocketTimeoutException
 class ForgotPassPresenter(
     private val context: Context,
     private val view: ForgotPassView.View,
-    private val pass: ForgotPassRepositoryImpl,
+    private val baseApiService: BaseApiService,
     private val scheduler: SchedulerProvider
 ) : ForgotPassView.Presenter {
 
@@ -27,7 +27,7 @@ class ForgotPassPresenter(
 
     override fun forgotPassword(email: String) {
         view.showProgressBar()
-        pass.forgotPassword("application/json", email)
+        baseApiService.forgotPassword("application/json", email)
             .observeOn(AndroidSchedulers.mainThread())
             .subscribeOn(scheduler.io())
             .unsubscribeOn(scheduler.io())

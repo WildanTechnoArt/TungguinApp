@@ -8,17 +8,17 @@
         tools:context=".ui.activity.TestimoniActivity">
 
     <ScrollView
+            android:id="@+id/scroll_view"
             android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_marginTop="4dp"
+            android:layout_marginBottom="4dp"
+            android:layout_marginStart="4dp"
+            android:layout_marginEnd="4dp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
-            android:layout_marginBottom="4dp"
-            android:layout_marginLeft="4dp"
-            android:layout_marginStart="4dp"
-            android:layout_marginEnd="4dp"
-            android:layout_marginRight="4dp"
-            android:layout_height="0dp" android:id="@+id/scroll_view"
-            app:layout_constraintTop_toTopOf="parent" android:layout_marginTop="4dp">
+            app:layout_constraintTop_toTopOf="parent">
 
         <LinearLayout
                 android:layout_width="match_parent"
@@ -33,7 +33,7 @@
                     android:layout_height="match_parent">
 
                 <TextView
-                        android:text="............."
+                        android:text="@string/none"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:id="@+id/tv_designer_name"
@@ -45,20 +45,21 @@
                         android:textColor="@color/colorPrimary"
                         android:textSize="14sp"
                         android:layout_marginEnd="8dp"
-                        app:layout_constraintEnd_toStartOf="@+id/date_order"
-                        tools:ignore="HardcodedText"
-                        app:layout_constraintHorizontal_bias="0.0"/>
+                        app:layout_constraintEnd_toStartOf="@+id/date_order"/>
+
                 <TextView
-                        android:text="...................."
+                        android:text="@string/none"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:id="@+id/date_order"
-                        tools:ignore="HardcodedText" app:layout_constraintEnd_toEndOf="parent"
+                        tools:ignore="HardcodedText"
+                        app:layout_constraintEnd_toEndOf="parent"
                         android:layout_marginEnd="12dp"
                         android:layout_marginTop="12dp"
                         app:layout_constraintTop_toTopOf="parent"/>
+
                 <TextView
-                        android:text=".........."
+                        android:text="@string/none"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:id="@+id/order_id"
@@ -76,19 +77,21 @@
                         app:layout_constraintTop_toBottomOf="@+id/tv_designer_name"
                         android:textColor="@color/azure.primary_dark"
                         android:textStyle="bold" tools:ignore="HardcodedText"/>
+
             </androidx.constraintlayout.widget.ConstraintLayout>
+
             <View
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
                     android:background="#FFDADADA"
-                    android:id="@+id/line1"
+                    android:id="@+id/line_one"
                     android:layout_marginTop="12dp"/>
 
             <TextView
                     android:text="Seberapa puas Anda dengan pelayanan pada order ini?"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:id="@+id/textView1"
+                    android:id="@+id/tv_text_one"
                     android:layout_marginTop="24dp"
                     android:textColor="#000000"
                     android:textStyle="bold"
@@ -109,14 +112,14 @@
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
                     android:background="#FFDADADA"
-                    android:id="@+id/line2"
+                    android:id="@+id/line_two"
                     android:layout_marginTop="16dp"/>
 
             <TextView
                     android:text="Mau beri tip untuk designer?"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:id="@+id/textView2"
+                    android:id="@+id/tv_text_two"
                     android:layout_marginTop="8dp"
                     android:textColor="#000000"
                     android:textStyle="bold"
@@ -127,7 +130,7 @@
                     android:text="Enter Amount"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:id="@+id/textView5"
+                    android:id="@+id/tv_text_three"
                     android:textStyle="bold"
                     android:gravity="center"
                     android:layout_marginTop="8dp"
@@ -138,7 +141,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:ems="10"
-                    android:id="@+id/inputAmount"
+                    android:id="@+id/input_amount"
                     android:textStyle="bold"
                     android:textColor="#FF818181"
                     android:gravity="center"
@@ -240,7 +243,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
                     android:background="#FFDADADA"
-                    android:id="@+id/line3"
+                    android:id="@+id/line_three"
                     tools:layout_editor_absoluteY="211dp"
                     android:layout_marginTop="8dp"/>
 
@@ -253,7 +256,7 @@
                     android:layout_marginTop="8dp"
                     android:textSize="14sp"
                     tools:ignore="HardcodedText"
-                    android:id="@+id/textView3"
+                    android:id="@+id/tv_text_four"
                     android:layout_marginStart="8dp"/>
 
             <EditText
@@ -262,7 +265,7 @@
                     android:inputType="textMultiLine"
                     android:background="@drawable/input_layout"
                     android:ems="10"
-                    android:id="@+id/testimoni_designer"
+                    android:id="@+id/input_testimoni_designer"
                     android:minHeight="100dp"
                     android:layout_marginTop="8dp"
                     android:hint="Misal: Designer baik dan fast response"
@@ -282,7 +285,7 @@
                     android:layout_marginTop="8dp"
                     android:textSize="14sp"
                     tools:ignore="HardcodedText"
-                    android:id="@+id/textView4"
+                    android:id="@+id/tv_text_five"
                     android:layout_marginStart="8dp"/>
 
             <EditText
@@ -291,7 +294,7 @@
                     android:inputType="textMultiLine"
                     android:background="@drawable/input_layout"
                     android:ems="10"
-                    android:id="@+id/testimoni_app"
+                    android:id="@+id/input_testimoni_app"
                     android:minHeight="100dp"
                     android:layout_marginTop="8dp"
                     android:hint="Misal: Aplikasinya bagus, cepat dan mudah digunakan"
@@ -308,7 +311,7 @@
                     android:elevation="6dp"
                     android:layout_height="wrap_content"
                     android:id="@+id/btn_send"
-                    android:background="@drawable/login_round_button"
+                    android:background="@drawable/btn_green_round_hover"
                     android:textColor="#FFFFFF"
                     android:textStyle="bold"
                     tools:ignore="HardcodedText"

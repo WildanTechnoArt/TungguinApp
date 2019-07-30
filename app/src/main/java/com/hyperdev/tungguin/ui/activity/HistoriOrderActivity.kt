@@ -15,10 +15,9 @@ import com.hyperdev.tungguin.model.historiorder.OrderItem
 import com.hyperdev.tungguin.network.BaseApiService
 import com.hyperdev.tungguin.network.NetworkClient
 import com.hyperdev.tungguin.presenter.OrderHistoriPresenter
-import com.hyperdev.tungguin.repository.order.OrderRepositoryImp
 import com.hyperdev.tungguin.utils.AppSchedulerProvider
 import com.hyperdev.tungguin.ui.view.HistoriOrderView
-import kotlinx.android.synthetic.main.activity_histori_order.*
+import kotlinx.android.synthetic.main.activity_history_order.*
 import kotlin.properties.Delegates
 
 class HistoriOrderActivity : AppCompatActivity(), HistoriOrderView.View {
@@ -30,30 +29,30 @@ class HistoriOrderActivity : AppCompatActivity(), HistoriOrderView.View {
     private lateinit var baseApiService: BaseApiService
     private val TAG = javaClass.simpleName
     private var adapter by Delegates.notNull<OrderHistoriAdapter>()
-    private var page by Delegates.notNull<Int>()
+    private var page = 1
     private lateinit var nextPageURL: String
     private var isLoading by Delegates.notNull<Boolean>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_histori_order)
+        setContentView(R.layout.activity_history_order)
         requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
 
         //Inisialisasi Toolbar dan Menampilkan Menu Home pada Toolbar
         setSupportActionBar(toolbar)
-        supportActionBar?.setDisplayShowHomeEnabled(true)
-        supportActionBar?.setHomeButtonEnabled(true)
-        supportActionBar?.setDisplayHomeAsUpEnabled(true)
-
-        page = 1
+        supportActionBar?.apply {
+            setDisplayShowHomeEnabled(true)
+            setHomeButtonEnabled(true)
+            setDisplayHomeAsUpEnabled(true)
+        }
 
         loadData()
 
-        historiList.adapter = adapter
+        rv_history_list.adapter = adapter
 
         initListener()
 
-        refreshLayout.setOnRefreshListener {
+        swipe_refresh.setOnRefreshListener {
             loadData()
         }
     }
@@ -65,19 +64,18 @@ class HistoriOrderActivity : AppCompatActivity(), HistoriOrderView.View {
             .create(BaseApiService::class.java)
 
         val layout = LinearLayoutManager(this@HistoriOrderActivity)
-        historiList.layoutManager = layout
-        historiList.setHasFixedSize(true)
+        rv_history_list.layoutManager = layout
+        rv_history_list.setHasFixedSize(true)
 
-        val request = OrderRepositoryImp(baseApiService)
         val scheduler = AppSchedulerProvider()
-        presenter = OrderHistoriPresenter(this, this@HistoriOrderActivity, request, scheduler)
-        adapter = OrderHistoriAdapter(this@HistoriOrderActivity, listOrder as ArrayList<OrderItem>)
+        presenter = OrderHistoriPresenter(this, this, baseApiService, scheduler)
+        adapter = OrderHistoriAdapter(this, listOrder as ArrayList<OrderItem>)
 
         presenter.getOrderHistory("Bearer $token", page = page)
     }
 
     private fun initListener() {
-        historiList.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+        rv_history_list.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 val linearLayoutManager = recyclerView.layoutManager as LinearLayoutManager
                 val countItem = linearLayoutManager.itemCount
@@ -108,28 +106,28 @@ class HistoriOrderActivity : AppCompatActivity(), HistoriOrderView.View {
             adapter.refreshAdapter(data)
         }
 
-        if (adapter.itemCount.toString() != "0") {
-            txt_img_not_found.visibility = View.GONE
-            historiList.visibility = View.VISIBLE
+        if (adapter.itemCount != 0) {
+            tv_img_not_found.visibility = View.GONE
+            rv_history_list.visibility = View.VISIBLE
         } else {
-            txt_img_not_found.visibility = View.VISIBLE
-            historiList.visibility = View.GONE
+            tv_img_not_found.visibility = View.VISIBLE
+            rv_history_list.visibility = View.GONE
         }
 
     }
 
     override fun onSuccess() {
-        refreshLayout.isRefreshing = false
+        swipe_refresh.isRefreshing = false
         isLoading = false
     }
 
     override fun displayProgress() {
-        refreshLayout.isRefreshing = true
+        swipe_refresh.isRefreshing = true
         isLoading = true
     }
 
     override fun hideProgress() {
-        refreshLayout.isRefreshing = false
+        swipe_refresh.isRefreshing = false
         isLoading = false
     }
 

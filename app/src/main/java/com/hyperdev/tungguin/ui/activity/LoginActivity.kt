@@ -2,19 +2,18 @@ package com.hyperdev.tungguin.ui.activity
 
 import android.content.Intent
 import android.content.pm.ActivityInfo
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import com.google.android.material.snackbar.Snackbar
 import android.view.View
+import androidx.appcompat.app.AppCompatActivity
 import com.hyperdev.tungguin.R
 import com.hyperdev.tungguin.network.BaseApiService
 import com.hyperdev.tungguin.network.NetworkClient
 import com.hyperdev.tungguin.presenter.LoginPresenter
-import com.hyperdev.tungguin.repository.authentication.AuthRepositoryImp
 import com.hyperdev.tungguin.ui.view.LoginView
 import com.hyperdev.tungguin.utils.AppSchedulerProvider
 import com.hyperdev.tungguin.utils.Validation.Companion.validateEmail
 import com.hyperdev.tungguin.utils.Validation.Companion.validateFields
+import com.shashank.sony.fancytoastlib.FancyToast
 import kotlinx.android.synthetic.main.activity_login_page.*
 
 class LoginActivity : AppCompatActivity(), LoginView.View {
@@ -33,34 +32,33 @@ class LoginActivity : AppCompatActivity(), LoginView.View {
         baseApiService = NetworkClient.getClient(this@LoginActivity)!!
             .create(BaseApiService::class.java)
 
-        val loginRepository = AuthRepositoryImp(baseApiService)
         val scheduler = AppSchedulerProvider()
-        presenter = LoginPresenter(this@LoginActivity, this, loginRepository, scheduler)
+        presenter = LoginPresenter(this@LoginActivity, this, baseApiService, scheduler)
 
-        btnLogin.setOnClickListener {
+        btn_login.setOnClickListener {
             login()
         }
 
-        forgot_pass.setOnClickListener {
+        tv_forgot_pass.setOnClickListener {
             startActivity(Intent(this@LoginActivity, ForgotPassActivity::class.java))
         }
     }
 
     private fun login() {
 
-        emailUser = email.text.toString()
-        passUser = pass.text.toString()
+        emailUser = input_email.text.toString()
+        passUser = input_pass.text.toString()
 
         var err = 0
 
         if (!validateEmail(emailUser)) {
             err++
-            email.error = "Email tidak valid !"
+            input_email.error = "Email tidak valid !"
         }
 
         if (!validateFields(passUser)) {
             err++
-            pass.error = "Password tidak boleh kosong !"
+            input_pass.error = "Password tidak boleh kosong !"
         }
 
         if (err == 0) {
@@ -71,17 +69,17 @@ class LoginActivity : AppCompatActivity(), LoginView.View {
     override fun showProgressBar() {
         shadow.visibility = View.VISIBLE
         progress_bar.visibility = View.VISIBLE
-        btnLogin.isEnabled = false
-        email.isEnabled = false
-        pass.isEnabled = false
+        btn_login.isEnabled = false
+        input_email.isEnabled = false
+        input_pass.isEnabled = false
     }
 
     override fun hideProgressBar() {
         shadow.visibility = View.GONE
         progress_bar.visibility = View.GONE
-        btnLogin.isEnabled = true
-        email.isEnabled = true
-        pass.isEnabled = true
+        btn_login.isEnabled = true
+        input_email.isEnabled = true
+        input_pass.isEnabled = true
     }
 
     override fun onSuccess() {
@@ -90,6 +88,6 @@ class LoginActivity : AppCompatActivity(), LoginView.View {
     }
 
     override fun noInternetConnection(message: String) {
-        Snackbar.make(login_page, message, Snackbar.LENGTH_SHORT).show()
+        FancyToast.makeText(this, message, FancyToast.LENGTH_SHORT, FancyToast.ERROR, false).show()
     }
 }

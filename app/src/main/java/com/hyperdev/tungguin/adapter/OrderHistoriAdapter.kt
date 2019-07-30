@@ -4,29 +4,19 @@ import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
-import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
-import android.widget.TextView
+import androidx.recyclerview.widget.RecyclerView
 import com.hyperdev.tungguin.R
 import com.hyperdev.tungguin.model.historiorder.OrderItem
 import com.hyperdev.tungguin.ui.activity.DetailOrderActivity
 import com.hyperdev.tungguin.ui.activity.SearchDesignerActivity
+import com.hyperdev.tungguin.utils.UtilsConstant.Companion.HASHED_ID
+import kotlinx.android.synthetic.main.histori_order_layout.view.*
 
 class OrderHistoriAdapter(private var context: Context?, private var orderList: ArrayList<OrderItem>) :
     RecyclerView.Adapter<OrderHistoriAdapter.ViewHolder>() {
-
-    inner class ViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
-
-        //Deklarasi View
-        val getListFormattedID: TextView = itemView.findViewById(R.id.listFormattedID)
-        val getListFormattedStatus: TextView = itemView.findViewById(R.id.listFormattedStatus)
-        val getListFormattedAmount: TextView = itemView.findViewById(R.id.listFormattedAmount)
-        val btnDetailOrder: Button = itemView.findViewById(R.id.btn_detail)
-        val btnPayment: Button = itemView.findViewById(R.id.btn_pay)
-    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val v = LayoutInflater.from(parent.context).inflate(R.layout.histori_order_layout, parent, false)
@@ -49,50 +39,52 @@ class OrderHistoriAdapter(private var context: Context?, private var orderList: 
         val getStatus = orderList[position].statusFormatted?.status.toString()
         val getHasherId = orderList[position].hashedId.toString()
 
-        holder.getListFormattedID.text = getFormattedID
-        holder.getListFormattedStatus.text = getLabelOrder
-        holder.getListFormattedAmount.text = getFormattedAmount
+        holder.itemView.listFormattedID.text = getFormattedID
+        holder.itemView.listFormattedStatus.text = getLabelOrder
+        holder.itemView.listFormattedAmount.text = getFormattedAmount
         when (getStatus) {
             "pending" -> {
-                holder.getListFormattedStatus.setBackgroundResource(R.drawable.orange_round_no_hover)
-                holder.btnPayment.visibility = View.VISIBLE
-                holder.btnPayment.setOnClickListener {
+                holder.itemView.listFormattedStatus.setBackgroundResource(R.drawable.orange_round_no_hover)
+                holder.itemView.btn_pay.visibility = View.VISIBLE
+                holder.itemView.btn_pay.setOnClickListener {
                     val intent = Intent(context, DetailOrderActivity::class.java)
-                    intent.putExtra("sendOrderID", getHasherId)
+                    intent.putExtra(HASHED_ID, getHasherId)
                     context?.startActivity(intent)
                     (context as Activity)
                 }
             }
             "expired" -> {
-                holder.getListFormattedStatus.setBackgroundResource(R.drawable.red_round_no_hover)
-                holder.btnDetailOrder.visibility = View.VISIBLE
-                holder.btnDetailOrder.setOnClickListener {
+                holder.itemView.listFormattedStatus.setBackgroundResource(R.drawable.btn_red_round_no_hover)
+                holder.itemView.btn_detail.visibility = View.VISIBLE
+                holder.itemView.btn_detail.setOnClickListener {
                     val intent = Intent(context, DetailOrderActivity::class.java)
-                    intent.putExtra("sendOrderID", getHasherId)
+                    intent.putExtra(HASHED_ID, getHasherId)
                     context?.startActivity(intent)
                     (context as Activity)
                 }
             }
             "searching_designer" -> {
-                holder.getListFormattedStatus.setBackgroundResource(R.drawable.order_round_no_hover)
-                holder.btnDetailOrder.visibility = View.VISIBLE
-                holder.btnDetailOrder.setOnClickListener {
+                holder.itemView.listFormattedStatus.setBackgroundResource(R.drawable.order_round_no_hover)
+                holder.itemView.btn_detail.visibility = View.VISIBLE
+                holder.itemView.btn_detail.setOnClickListener {
                     val intent = Intent(context, SearchDesignerActivity::class.java)
-                    intent.putExtra("sendOrderID", getHasherId)
+                    intent.putExtra(HASHED_ID, getHasherId)
                     context?.startActivity(intent)
                     (context as Activity)
                 }
             }
             else -> {
-                holder.getListFormattedStatus.setBackgroundResource(R.drawable.order_round_no_hover)
-                holder.btnDetailOrder.visibility = View.VISIBLE
-                holder.btnDetailOrder.setOnClickListener {
+                holder.itemView.listFormattedStatus.setBackgroundResource(R.drawable.order_round_no_hover)
+                holder.itemView.btn_detail.visibility = View.VISIBLE
+                holder.itemView.btn_detail.setOnClickListener {
                     val intent = Intent(context, DetailOrderActivity::class.java)
-                    intent.putExtra("sendOrderID", getHasherId)
+                    intent.putExtra(HASHED_ID, getHasherId)
                     context?.startActivity(intent)
                     (context as Activity)
                 }
             }
         }
     }
+
+    inner class ViewHolder(val view: View) : RecyclerView.ViewHolder(view)
 }

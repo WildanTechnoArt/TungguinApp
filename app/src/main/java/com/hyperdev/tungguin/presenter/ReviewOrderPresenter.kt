@@ -4,10 +4,10 @@ import android.content.Context
 import android.widget.Toast
 import com.google.gson.Gson
 import com.hyperdev.tungguin.model.detailorder.DetailOrderResponse
+import com.hyperdev.tungguin.network.BaseApiService
 import com.hyperdev.tungguin.network.ConnectivityStatus
 import com.hyperdev.tungguin.network.HandleError
 import com.hyperdev.tungguin.network.Response
-import com.hyperdev.tungguin.repository.order.ReviewOrderRepositoryImpl
 import com.hyperdev.tungguin.utils.SchedulerProvider
 import com.hyperdev.tungguin.ui.view.ReviewOrderView
 import io.reactivex.Observer
@@ -21,7 +21,7 @@ import java.net.SocketTimeoutException
 class ReviewOrderPresenter(
     private val view: ReviewOrderView.View,
     private val context: Context,
-    private val detail: ReviewOrderRepositoryImpl,
+    private val baseApiService: BaseApiService,
     private val scheduler: SchedulerProvider
 ) : ReviewOrderView.Presenter {
 
@@ -37,7 +37,7 @@ class ReviewOrderPresenter(
 
         view.displayProgress()
 
-        detail.sendTestimoni(token, accept, hashed_id, star, designer_testi, app_testi, tip)
+        baseApiService.sendReview(token, accept, hashed_id, star, designer_testi, app_testi, tip)
             .observeOn(AndroidSchedulers.mainThread())
             .subscribeOn(scheduler.io())
             .unsubscribeOn(scheduler.io())
@@ -81,7 +81,7 @@ class ReviewOrderPresenter(
         view.displayProgress()
 
         compositeDisposable.add(
-            detail.getOrderDetail(token, "application/json", id)
+            baseApiService.getOrderDetail(token, "application/json", id)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(scheduler.io())
                 .subscribeWith(object : ResourceSubscriber<DetailOrderResponse>() {

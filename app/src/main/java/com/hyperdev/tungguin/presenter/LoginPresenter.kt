@@ -5,9 +5,9 @@ import android.widget.Toast
 import com.google.gson.Gson
 import com.hyperdev.tungguin.database.SharedPrefManager
 import com.hyperdev.tungguin.model.authentication.LoginResponse
+import com.hyperdev.tungguin.network.BaseApiService
 import com.hyperdev.tungguin.network.ConnectivityStatus
 import com.hyperdev.tungguin.network.Response
-import com.hyperdev.tungguin.repository.authentication.AuthRepositoryImp
 import com.hyperdev.tungguin.utils.SchedulerProvider
 import com.hyperdev.tungguin.ui.view.LoginView
 import io.reactivex.Observer
@@ -20,7 +20,7 @@ import java.net.SocketTimeoutException
 class LoginPresenter(
     private val context: Context,
     private val view: LoginView.View,
-    private val login: AuthRepositoryImp,
+    private val baseApiService: BaseApiService,
     private val scheduler: SchedulerProvider
 ) : LoginView.Presenter {
 
@@ -28,7 +28,7 @@ class LoginPresenter(
 
     override fun loginUser(email: String, password: String) {
         view.showProgressBar()
-        login.loginRequest("application/json", email, password)
+        baseApiService.loginRequest("application/json", email, password)
             .observeOn(AndroidSchedulers.mainThread())
             .subscribeOn(scheduler.io())
             .unsubscribeOn(scheduler.io())

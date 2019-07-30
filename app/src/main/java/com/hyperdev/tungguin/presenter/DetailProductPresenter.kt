@@ -3,9 +3,9 @@ package com.hyperdev.tungguin.presenter
 import android.content.Context
 import android.widget.Toast
 import com.hyperdev.tungguin.model.detailproduct.DetailProductResponse
+import com.hyperdev.tungguin.network.BaseApiService
 import com.hyperdev.tungguin.network.ConnectivityStatus
 import com.hyperdev.tungguin.network.HandleError
-import com.hyperdev.tungguin.repository.product.ProductRepositoryImpl
 import com.hyperdev.tungguin.utils.SchedulerProvider
 import com.hyperdev.tungguin.ui.view.DetailProductView
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -17,7 +17,7 @@ import java.net.SocketTimeoutException
 class DetailProductPresenter(
     private val view: DetailProductView.View,
     private val context: Context,
-    private val detail: ProductRepositoryImpl,
+    private val baseApiService: BaseApiService,
     private val scheduler: SchedulerProvider
 ) : DetailProductView.Presenter {
 
@@ -27,7 +27,7 @@ class DetailProductPresenter(
         view.displayProgress()
 
         compositeDisposable.add(
-            detail.getDetailProduct(token, "application/json", hashed_id)
+            baseApiService.getDetailProduct(token, "application/json", hashed_id)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(scheduler.io())
                 .subscribeWith(object : ResourceSubscriber<DetailProductResponse>() {

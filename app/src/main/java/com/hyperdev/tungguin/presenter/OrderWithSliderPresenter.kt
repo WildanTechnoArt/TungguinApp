@@ -4,10 +4,9 @@ import android.content.Context
 import android.widget.Toast
 import com.hyperdev.tungguin.model.orderlandingpage.OrderLandingPageResponse
 import com.hyperdev.tungguin.model.profile.ProfileResponse
+import com.hyperdev.tungguin.network.BaseApiService
 import com.hyperdev.tungguin.network.ConnectivityStatus
 import com.hyperdev.tungguin.network.HandleError
-import com.hyperdev.tungguin.repository.order.OrderRepositoryImp
-import com.hyperdev.tungguin.repository.profile.ProfileRepositoryImpl
 import com.hyperdev.tungguin.utils.SchedulerProvider
 import com.hyperdev.tungguin.ui.view.OrderWithSliderView
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -19,8 +18,7 @@ import java.net.SocketTimeoutException
 class OrderWithSliderPresenter(
     private val view: OrderWithSliderView.View,
     private val context: Context,
-    private val orderData: OrderRepositoryImp,
-    private val profile: ProfileRepositoryImpl,
+    private val baseApiService: BaseApiService,
     private val scheduler: SchedulerProvider
 ) : OrderWithSliderView.Presenter {
 
@@ -28,8 +26,9 @@ class OrderWithSliderPresenter(
 
     override fun getOrderWithSlider(token: String) {
         view.displayProgress()
+
         compositeDisposable.add(
-            orderData.getOrderWithSlider(token)
+            baseApiService.getOrderWithSlider(token)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(scheduler.io())
                 .subscribeWith(object : ResourceSubscriber<OrderLandingPageResponse>() {
@@ -55,7 +54,7 @@ class OrderWithSliderPresenter(
 
     override fun getUserProfile(token: String) {
         compositeDisposable.add(
-            profile.getProfile(token, "application/json")
+            baseApiService.getProfile(token, "application/json")
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(scheduler.io())
                 .subscribeWith(object : ResourceSubscriber<ProfileResponse>() {

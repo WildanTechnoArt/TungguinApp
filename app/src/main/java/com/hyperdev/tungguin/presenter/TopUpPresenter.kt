@@ -5,10 +5,9 @@ import android.widget.Toast
 import com.google.gson.Gson
 import com.hyperdev.tungguin.model.profile.ProfileResponse
 import com.hyperdev.tungguin.model.transaction.TopUpResponse
+import com.hyperdev.tungguin.network.BaseApiService
 import com.hyperdev.tungguin.network.ConnectivityStatus
 import com.hyperdev.tungguin.network.Response
-import com.hyperdev.tungguin.repository.profile.ProfileRepositoryImpl
-import com.hyperdev.tungguin.repository.transaction.TransactionRepositoryImp
 import com.hyperdev.tungguin.utils.SchedulerProvider
 import com.hyperdev.tungguin.ui.view.TopUpView
 import io.reactivex.Observer
@@ -22,8 +21,7 @@ import java.net.SocketTimeoutException
 class TopUpPresenter(
     private val view: TopUpView.View,
     private val context: Context,
-    private val profile: ProfileRepositoryImpl,
-    private val topup: TransactionRepositoryImp,
+    private val baseApiService: BaseApiService,
     private val scheduler: SchedulerProvider
 ) : TopUpView.Presenter {
 
@@ -32,7 +30,7 @@ class TopUpPresenter(
     override fun topUpMoney(token: String, accept: String, amount: String) {
         view.showProgressBar()
 
-        topup.topUpMoney(token, accept, amount)
+        baseApiService.topUpMoney(token, accept, amount)
             .observeOn(AndroidSchedulers.mainThread())
             .subscribeOn(scheduler.io())
             .unsubscribeOn(scheduler.io())
@@ -76,7 +74,7 @@ class TopUpPresenter(
         view.showProgressBar()
 
         compositeDisposable.add(
-            profile.getProfile(token, "application/json")
+            baseApiService.getProfile(token, "application/json")
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(scheduler.io())
                 .subscribeWith(object : ResourceSubscriber<ProfileResponse>() {

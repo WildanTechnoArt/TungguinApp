@@ -6,9 +6,9 @@ import com.hyperdev.tungguin.model.dashboard.AnnouncementResponse
 import com.hyperdev.tungguin.model.dashboard.DashboardResponse
 import com.hyperdev.tungguin.model.dashboard.FCMResponse
 import com.hyperdev.tungguin.model.profile.ProfileResponse
+import com.hyperdev.tungguin.network.BaseApiService
 import com.hyperdev.tungguin.network.ConnectivityStatus
 import com.hyperdev.tungguin.network.HandleError
-import com.hyperdev.tungguin.repository.dashboard.DashboardRepositoryImp
 import com.hyperdev.tungguin.utils.SchedulerProvider
 import com.hyperdev.tungguin.ui.view.DashboardView
 import io.reactivex.Observer
@@ -22,14 +22,14 @@ import java.net.SocketTimeoutException
 class DashboardPresenter(
     private val view: DashboardView.View,
     private val context: Context,
-    private val dashboard: DashboardRepositoryImp,
+    private val baseApiService: BaseApiService,
     private val scheduler: SchedulerProvider
 ) : DashboardView.Presenter {
 
     private val compositeDisposable = CompositeDisposable()
 
     override fun sendTokenFcm(token: String, accept: String, tokenFcm: String?) {
-        dashboard.postTokenFcm(token, accept, tokenFcm)
+        baseApiService.fcmRequest(token, accept, tokenFcm)
             .observeOn(AndroidSchedulers.mainThread())
             .subscribeOn(scheduler.io())
             .unsubscribeOn(scheduler.io())
@@ -52,7 +52,7 @@ class DashboardPresenter(
     override fun resetTokenFcm(token: String, accept: String, tokenFcm: String?) {
         view.showProgressBar()
 
-        dashboard.postTokenFcm(token, accept, tokenFcm)
+        baseApiService.fcmRequest(token, accept, tokenFcm)
             .observeOn(AndroidSchedulers.mainThread())
             .subscribeOn(scheduler.io())
             .unsubscribeOn(scheduler.io())
@@ -77,7 +77,7 @@ class DashboardPresenter(
 
     override fun getSliderImage(token: String) {
         compositeDisposable.add(
-            dashboard.getImageSlider(token)
+            baseApiService.getDashboardSlider(token)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(scheduler.io())
                 .subscribeWith(object : ResourceSubscriber<DashboardResponse>() {
@@ -102,7 +102,7 @@ class DashboardPresenter(
         view.showProgressBar()
 
         compositeDisposable.add(
-            dashboard.getProfile(token, "application/json")
+            baseApiService.getProfile(token, "application/json")
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(scheduler.io())
                 .subscribeWith(object : ResourceSubscriber<ProfileResponse>() {
@@ -139,7 +139,7 @@ class DashboardPresenter(
 
     override fun getAnnouncementData(token: String) {
         compositeDisposable.add(
-            dashboard.announcementDesigner(token)
+            baseApiService.announcementDesigner(token)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(scheduler.io())
                 .subscribeWith(object : ResourceSubscriber<AnnouncementResponse>() {

@@ -6,17 +6,18 @@ import android.app.NotificationManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
+import android.os.Build
 import android.util.Log
+import androidx.core.app.NotificationCompat
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
 import com.hyperdev.tungguin.R
 import com.hyperdev.tungguin.database.SharedPrefManager
-import com.hyperdev.tungguin.ui.activity.HistoryActivity
-import android.os.Build
-import androidx.core.app.NotificationCompat
 import com.hyperdev.tungguin.ui.activity.ChatActivity
 import com.hyperdev.tungguin.ui.activity.DetailOrderActivity
+import com.hyperdev.tungguin.ui.activity.HistoryActivity
 import com.hyperdev.tungguin.ui.activity.TestimoniActivity
+import com.hyperdev.tungguin.utils.UtilsConstant.Companion.HASHED_ID
 
 class MyFirebaseMessagingService : FirebaseMessagingService() {
 
@@ -43,19 +44,19 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
             "order_finish" -> {
                 val intent = Intent(this, TestimoniActivity::class.java)
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-                intent.putExtra("sendOrderID", typeId)
+                intent.putExtra(HASHED_ID, typeId)
                 notificationProperties(title, message, intent)
             }
             "payment_order_success" -> {
                 val intent = Intent(this, DetailOrderActivity::class.java)
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-                intent.putExtra("sendOrderID", typeId)
+                intent.putExtra(HASHED_ID, typeId)
                 notificationProperties(title, message, intent)
             }
             "payment_order_expired" -> {
                 val intent = Intent(this, DetailOrderActivity::class.java)
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-                intent.putExtra("sendOrderID", typeId)
+                intent.putExtra(HASHED_ID, typeId)
                 notificationProperties(title, message, intent)
             }
             "new_order_message" -> {
@@ -67,7 +68,7 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
             "designerFound" -> {
                 val intent = Intent(this, DetailOrderActivity::class.java)
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-                intent.putExtra("sendOrderID", typeId)
+                intent.putExtra(HASHED_ID, typeId)
                 notificationProperties(title, message, intent)
             }
         }

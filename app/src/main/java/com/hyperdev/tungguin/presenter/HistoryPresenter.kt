@@ -3,9 +3,9 @@ package com.hyperdev.tungguin.presenter
 import android.content.Context
 import android.widget.Toast
 import com.hyperdev.tungguin.model.transaction.TransactionResponse
+import com.hyperdev.tungguin.network.BaseApiService
 import com.hyperdev.tungguin.network.ConnectivityStatus
 import com.hyperdev.tungguin.network.HandleError
-import com.hyperdev.tungguin.repository.transaction.TransactionRepositoryImp
 import com.hyperdev.tungguin.utils.SchedulerProvider
 import com.hyperdev.tungguin.ui.view.BalanceView
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -14,11 +14,10 @@ import io.reactivex.subscribers.ResourceSubscriber
 import retrofit2.HttpException
 import java.net.SocketTimeoutException
 
-//Digunakan untuk menjembatani Model dengan View pada Fragment
 class HistoryPresenter(
     private val view: BalanceView.View,
     private val context: Context,
-    private val history: TransactionRepositoryImp,
+    private val baseApiService: BaseApiService,
     private val scheduler: SchedulerProvider
 ) : BalanceView.Presenter {
 
@@ -28,7 +27,7 @@ class HistoryPresenter(
         view.showProgressBar()
 
         compositeDisposable.add(
-            history.getTransactionBalance(token, "application/json")
+            baseApiService.getTransactionBalance(token, "application/json")
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(scheduler.io())
                 .subscribeWith(object : ResourceSubscriber<TransactionResponse>() {

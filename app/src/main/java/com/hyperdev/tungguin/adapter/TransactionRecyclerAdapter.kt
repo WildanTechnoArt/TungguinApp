@@ -1,24 +1,16 @@
 package com.hyperdev.tungguin.adapter
 
 import android.annotation.SuppressLint
-import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
+import androidx.recyclerview.widget.RecyclerView
 import com.hyperdev.tungguin.R
 import com.hyperdev.tungguin.model.transaction.ListTransaction
+import kotlinx.android.synthetic.main.histori_transaction_item.view.*
 
 class TransactionRecyclerAdapter(private val transactionList: ArrayList<ListTransaction>) :
     RecyclerView.Adapter<TransactionRecyclerAdapter.ViewHolder>() {
-
-    inner class ViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
-
-        //Deklarasi View
-        val getListFormattedID: TextView = view.findViewById(R.id.listFormattedID)
-        val getListFormattedAmount: TextView = view.findViewById(R.id.listFormattedAmount)
-        val getListFormattedDate: TextView = view.findViewById(R.id.listFormattedDate)
-    }
 
     override fun onCreateViewHolder(parent: ViewGroup, p1: Int): ViewHolder {
         val v = LayoutInflater.from(parent.context).inflate(R.layout.histori_transaction_item, parent, false)
@@ -42,12 +34,16 @@ class TransactionRecyclerAdapter(private val transactionList: ArrayList<ListTran
         val getListFormattedType = transactionList[position].type.toString()
 
         //set data dari ListTopUp pada View
-        holder.getListFormattedID.text = getFormattedID
+        holder.itemView.listFormattedID.text = getFormattedID
+
         if (getListFormattedType == "deposit") {
-            holder.getListFormattedAmount.text = "+ $getFormattedAmount"
+            holder.itemView.listFormattedAmount.text = "+ $getFormattedAmount"
         } else if (getListFormattedType == "withdraw") {
-            holder.getListFormattedAmount.text = "- $getFormattedAmount"
+            holder.itemView.listFormattedAmount.text = "- $getFormattedAmount"
         }
-        holder.getListFormattedDate.text = getFormattedDate
+
+        holder.itemView.listFormattedDate.text = getFormattedDate
     }
+
+    inner class ViewHolder(val view: View) : RecyclerView.ViewHolder(view)
 }

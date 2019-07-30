@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
+<LinearLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
         xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context=".ui.activity.ContactUsActivity" android:id="@+id/contact_layout" android:background="#FFFFFF">
+        android:orientation="vertical"
+        tools:context=".ui.activity.ContactUsActivity" android:background="@color/white">
 
     <com.google.android.material.appbar.AppBarLayout
             android:id="@+id/appbar"
@@ -29,114 +30,96 @@
 
     </com.google.android.material.appbar.AppBarLayout>
 
-    <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:orientation="vertical"
-            android:padding="6dp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/appbar"
-            app:layout_constraintBottom_toTopOf="@+id/send_request" android:id="@+id/linearLayout">
-
-        <androidx.cardview.widget.CardView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="8dp"
-                app:cardCornerRadius="6dp"
-                app:cardElevation="3dp">
-
-            <FrameLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent" android:layout_margin="4dp">
-
-                <EditText
-                        android:id="@+id/title_request"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_margin="4dp"
-                        android:background="@android:color/transparent"
-                        android:ems="10"
-                        android:hint="@string/titleContact"
-                        android:inputType="text"
-                        android:textSize="16sp"
-                        android:importantForAutofill="no"
-                        tools:targetApi="o"/>
-            </FrameLayout>
-
-        </androidx.cardview.widget.CardView>
-
-        <androidx.cardview.widget.CardView
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_margin="8dp"
-                app:cardElevation="3dp" app:cardCornerRadius="6dp">
-
-            <FrameLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent" android:padding="4dp">
-
-                <EditText
-                        android:id="@+id/request_content"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_margin="8dp"
-                        android:background="@android:color/transparent"
-                        android:ems="10"
-                        android:hint="@string/content"
-                        android:inputType="textMultiLine"
-                        android:textSize="16sp"
-                        android:importantForAutofill="no"
-                        tools:targetApi="o"/>
-
-            </FrameLayout>
-        </androidx.cardview.widget.CardView>
-
-    </LinearLayout>
-
-    <Button
-            android:id="@+id/send_request"
-            style="@style/Widget.AppCompat.Button.Borderless.Colored"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="16dp"
-            android:layout_marginStart="16dp"
-            android:layout_marginEnd="16dp"
-            android:layout_marginBottom="16dp"
-            android:background="@drawable/primary_round_button"
-            android:elevation="6dp"
-            android:text="Kirim Pesan"
-            android:textAllCaps="false"
-            android:textColor="@android:color/white"
-            android:textSize="17sp"
-            android:textStyle="bold"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            tools:ignore="HardcodedText"
-            tools:targetApi="lollipop"/>
-
-    <ProgressBar
-            style="?android:attr/progressBarStyle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/progress_bar"
-            app:layout_constraintTop_toTopOf="@+id/linearLayout"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent" android:visibility="gone"/>
-
-    <FrameLayout
+    <ScrollView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="#4B7B7B7B"
-            android:id="@+id/shadow"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            android:visibility="gone">
+            android:fillViewport="true">
 
-    </FrameLayout>
+        <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+            <ProgressBar
+                    android:id="@+id/progress_bar"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    android:visibility="gone"/>
+
+            <FrameLayout
+                    android:id="@+id/shadow"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="#4B7B7B7B"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    android:visibility="gone">
+
+            </FrameLayout>
+
+            <EditText
+                    android:id="@+id/input_title_request"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="@dimen/layout_margin"
+                    android:layout_marginTop="@dimen/layout_margin"
+                    android:layout_marginStart="@dimen/layout_margin"
+                    android:autofillHints="@string/titleContact"
+                    android:background="@drawable/input_layout"
+                    android:padding="@dimen/layout_padding"
+                    android:hint="@string/titleContact"
+                    android:inputType="text"
+                    android:textSize="16sp"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    tools:targetApi="o"/>
+
+            <EditText
+                    android:id="@+id/input_request_content"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/layout_margin"
+                    android:layout_marginEnd="@dimen/layout_margin"
+                    android:layout_marginStart="@dimen/layout_margin"
+                    android:autofillHints="@string/content"
+                    android:background="@drawable/input_layout"
+                    android:hint="@string/content"
+                    android:inputType="textMultiLine"
+                    android:textSize="16sp"
+                    android:padding="@dimen/layout_padding"
+                    android:minHeight="200dp"
+                    android:gravity="start"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/input_title_request"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    tools:targetApi="o"/>
+
+            <Button
+                    android:id="@+id/send_request"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/layout_margin"
+                    android:layout_marginStart="@dimen/layout_margin"
+                    android:layout_marginEnd="@dimen/layout_margin"
+                    android:background="@drawable/btn_primary_round_hover"
+                    android:elevation="6dp"
+                    android:text="@string/send_contact_us"
+                    android:textAllCaps="false"
+                    android:textColor="@android:color/white"
+                    android:textSize="17sp"
+                    android:textStyle="bold"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/input_request_content"
+                    tools:targetApi="lollipop"/>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </ScrollView>
+
+</LinearLayout>

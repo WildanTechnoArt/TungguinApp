@@ -3,9 +3,9 @@ package com.hyperdev.tungguin.presenter
 import android.content.Context
 import android.widget.Toast
 import com.hyperdev.tungguin.model.transaction.HistoriTopUpResponse
+import com.hyperdev.tungguin.network.BaseApiService
 import com.hyperdev.tungguin.network.ConnectivityStatus
 import com.hyperdev.tungguin.network.HandleError
-import com.hyperdev.tungguin.repository.transaction.TransactionRepositoryImp
 import com.hyperdev.tungguin.utils.SchedulerProvider
 import com.hyperdev.tungguin.ui.view.HistoriTopUpView
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -17,7 +17,7 @@ import java.net.SocketTimeoutException
 class TopUpHistoriPresenter(
     private val view: HistoriTopUpView.View,
     private val context: Context,
-    private val history: TransactionRepositoryImp,
+    private val baseApiService: BaseApiService,
     private val scheduler: SchedulerProvider
 ) : HistoriTopUpView.Presenter {
 
@@ -27,7 +27,7 @@ class TopUpHistoriPresenter(
         view.displayProgress()
 
         compositeDisposable.add(
-            history.getTopUpHistory(token, "application/json", page)
+            baseApiService.getTopUpHistory(token, "application/json", page)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(scheduler.io())
                 .subscribeWith(object : ResourceSubscriber<HistoriTopUpResponse>() {

@@ -3,9 +3,9 @@ package com.hyperdev.tungguin.presenter
 import android.content.Context
 import android.widget.Toast
 import com.hyperdev.tungguin.model.historiorder.HistoriOrderResponse
+import com.hyperdev.tungguin.network.BaseApiService
 import com.hyperdev.tungguin.network.ConnectivityStatus
 import com.hyperdev.tungguin.network.HandleError
-import com.hyperdev.tungguin.repository.order.OrderRepositoryImp
 import com.hyperdev.tungguin.utils.SchedulerProvider
 import com.hyperdev.tungguin.ui.view.HistoriOrderView
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -17,7 +17,7 @@ import java.net.SocketTimeoutException
 class OrderHistoriPresenter(
     private val view: HistoriOrderView.View,
     private val context: Context,
-    private val history: OrderRepositoryImp,
+    private val baseApiService: BaseApiService,
     private val scheduler: SchedulerProvider
 ) : HistoriOrderView.Presenter {
 
@@ -27,7 +27,7 @@ class OrderHistoriPresenter(
         view.displayProgress()
 
         compositeDisposable.add(
-            history.getOrderHistory(token, "application/json", page)
+            baseApiService.getOrderHistori(token, "application/json", page)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(scheduler.io())
                 .subscribeWith(object : ResourceSubscriber<HistoriOrderResponse>() {

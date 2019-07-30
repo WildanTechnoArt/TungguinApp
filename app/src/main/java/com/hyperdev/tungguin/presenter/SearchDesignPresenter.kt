@@ -3,9 +3,9 @@ package com.hyperdev.tungguin.presenter
 import android.content.Context
 import android.widget.Toast
 import com.hyperdev.tungguin.model.detailorder.DetailOrderResponse
+import com.hyperdev.tungguin.network.BaseApiService
 import com.hyperdev.tungguin.network.ConnectivityStatus
 import com.hyperdev.tungguin.network.HandleError
-import com.hyperdev.tungguin.repository.order.OrderRepositoryImp
 import com.hyperdev.tungguin.utils.SchedulerProvider
 import com.hyperdev.tungguin.ui.view.SearchDesignerView
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -17,7 +17,7 @@ import java.net.SocketTimeoutException
 class SearchDesignPresenter(
     private val view: SearchDesignerView.View,
     private val context: Context,
-    private val detail: OrderRepositoryImp,
+    private val baseApiService: BaseApiService,
     private val scheduler: SchedulerProvider
 ) : SearchDesignerView.Presenter {
 
@@ -27,7 +27,7 @@ class SearchDesignPresenter(
         view.displayProgress()
 
         compositeDisposable.add(
-            detail.getOrderDetail(token, "application/json", id)
+            baseApiService.getOrderDetail(token, "application/json", id)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(scheduler.io())
                 .subscribeWith(object : ResourceSubscriber<DetailOrderResponse>() {

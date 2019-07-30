@@ -4,9 +4,9 @@ import android.content.Context
 import android.widget.Toast
 import com.google.gson.Gson
 import com.hyperdev.tungguin.model.profile.ProfileResponse
+import com.hyperdev.tungguin.network.BaseApiService
 import com.hyperdev.tungguin.network.ConnectivityStatus
 import com.hyperdev.tungguin.network.Response
-import com.hyperdev.tungguin.repository.profile.ProfileRepositoryImpl
 import com.hyperdev.tungguin.utils.SchedulerProvider
 import com.hyperdev.tungguin.ui.view.ProfileUpdateView
 import io.reactivex.Observer
@@ -19,7 +19,7 @@ import java.net.SocketTimeoutException
 class ProfileUpdatePresenter(
     private val context: Context,
     private val view: ProfileUpdateView.View,
-    private val update: ProfileRepositoryImpl,
+    private val baseApiService: BaseApiService,
     private val scheduler: SchedulerProvider
 ) : ProfileUpdateView.Presenter {
 
@@ -31,7 +31,7 @@ class ProfileUpdatePresenter(
         phone: String, province: String, city: String
     ) {
         view.showProgressBar()
-        update.updateProfile(token, accept, name, email, phone, province, city)
+        baseApiService.updateProfile(token, accept, name, email, phone, province, city)
             .observeOn(AndroidSchedulers.mainThread())
             .subscribeOn(scheduler.io())
             .unsubscribeOn(scheduler.io())
@@ -75,7 +75,7 @@ class ProfileUpdatePresenter(
         city: String, password: String, c_password: String
     ) {
         view.showProgressBar()
-        update.updatePassword(token, accept, name, email, phone, province, city, password, c_password)
+        baseApiService.updatePassword(token, accept, name, email, phone, province, city, password, c_password)
             .observeOn(AndroidSchedulers.mainThread())
             .subscribeOn(scheduler.io())
             .unsubscribeOn(scheduler.io())

@@ -3,9 +3,9 @@ package com.hyperdev.tungguin.presenter
 import android.content.Context
 import android.widget.Toast
 import com.hyperdev.tungguin.model.searchproduct.SearchProductResponse
+import com.hyperdev.tungguin.network.BaseApiService
 import com.hyperdev.tungguin.network.ConnectivityStatus
 import com.hyperdev.tungguin.network.HandleError
-import com.hyperdev.tungguin.repository.product.ProductRepositoryImpl
 import com.hyperdev.tungguin.utils.SchedulerProvider
 import com.hyperdev.tungguin.ui.view.SearchProductView
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -18,7 +18,7 @@ import java.util.*
 class SearchProductPresenter(
     private val view: SearchProductView.View,
     private val context: Context,
-    private val product: ProductRepositoryImpl?,
+    private val baseApiService: BaseApiService?,
     private val scheduler: SchedulerProvider
 ) : SearchProductView.Presenter {
 
@@ -27,7 +27,7 @@ class SearchProductPresenter(
     override fun getProductByName(token: String, name: String?) {
         view.showSearchProgressBar()
 
-        product?.searchProuctByName(token, "application/json", name.toString())
+        baseApiService?.searchProuctByName(token, "application/json", name.toString())
             ?.observeOn(AndroidSchedulers.mainThread())
             ?.subscribeOn(scheduler.io())
             ?.subscribeWith(object : ResourceSubscriber<SearchProductResponse>() {
@@ -70,7 +70,7 @@ class SearchProductPresenter(
     override fun getProductByPage(token: String, page: Int?) {
         view.showSearchProgressBar()
 
-        product?.searchProuctByPage(token, "application/json", page!!)
+        baseApiService?.searchProuctByPage(token, "application/json", page!!)
             ?.observeOn(AndroidSchedulers.mainThread())
             ?.subscribeOn(scheduler.io())
             ?.subscribeWith(object : ResourceSubscriber<SearchProductResponse>() {

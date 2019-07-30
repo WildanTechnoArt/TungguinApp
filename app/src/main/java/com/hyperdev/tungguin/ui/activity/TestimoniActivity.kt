@@ -3,22 +3,22 @@ package com.hyperdev.tungguin.ui.activity
 import android.annotation.SuppressLint
 import android.content.pm.ActivityInfo
 import android.graphics.Color
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.View
 import android.widget.RatingBar
-import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import com.hyperdev.tungguin.R
 import com.hyperdev.tungguin.database.SharedPrefManager
 import com.hyperdev.tungguin.model.detailorder.DetailOrderData
 import com.hyperdev.tungguin.network.BaseApiService
 import com.hyperdev.tungguin.network.NetworkClient
 import com.hyperdev.tungguin.presenter.ReviewOrderPresenter
-import com.hyperdev.tungguin.repository.order.ReviewOrderRepositoryImpl
-import com.hyperdev.tungguin.utils.AppSchedulerProvider
 import com.hyperdev.tungguin.ui.view.ReviewOrderView
+import com.hyperdev.tungguin.utils.AppSchedulerProvider
+import com.hyperdev.tungguin.utils.UtilsConstant.Companion.HASHED_ID
+import com.shashank.sony.fancytoastlib.FancyToast
 import kotlinx.android.synthetic.main.activity_testimoni.*
 
 class TestimoniActivity : AppCompatActivity(), ReviewOrderView.View {
@@ -39,15 +39,14 @@ class TestimoniActivity : AppCompatActivity(), ReviewOrderView.View {
         setContentView(R.layout.activity_testimoni)
         requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
 
-        orderId = intent?.getStringExtra("sendOrderID").toString()
-        token = SharedPrefManager.getInstance(this@TestimoniActivity).token.toString()
+        orderId = intent?.getStringExtra(HASHED_ID).toString()
+        token = SharedPrefManager.getInstance(this).token.toString()
 
-        baseApiService = NetworkClient.getClient(this@TestimoniActivity)!!
+        baseApiService = NetworkClient.getClient(this)!!
             .create(BaseApiService::class.java)
 
-        val request = ReviewOrderRepositoryImpl(baseApiService)
         val scheduler = AppSchedulerProvider()
-        presenter = ReviewOrderPresenter(this@TestimoniActivity, this, request, scheduler)
+        presenter = ReviewOrderPresenter(this, this, baseApiService, scheduler)
         presenter.getDetailOrder("Bearer $token", orderId)
 
         btn_send.setOnClickListener {
@@ -57,7 +56,7 @@ class TestimoniActivity : AppCompatActivity(), ReviewOrderView.View {
         rating_bar.onRatingBarChangeListener = RatingBar
             .OnRatingBarChangeListener { _, rating, _ -> starCount = rating }
 
-        inputAmount!!.addTextChangedListener(object : TextWatcher {
+        input_amount!!.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(s: Editable?) {
 
             }
@@ -69,7 +68,7 @@ class TestimoniActivity : AppCompatActivity(), ReviewOrderView.View {
             @SuppressLint("SetTextI18n")
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 try {
-                    customAmount = inputAmount.text.toString()
+                    customAmount = input_amount.text.toString()
                     tipPrice = customAmount.toInt()
                 } catch (ex: NumberFormatException) {
                     ex.printStackTrace()
@@ -83,8 +82,8 @@ class TestimoniActivity : AppCompatActivity(), ReviewOrderView.View {
 
     private fun sendReview() {
 
-        designerTesti = testimoni_designer.text.toString()
-        appTesti = testimoni_app.text.toString()
+        designerTesti = input_testimoni_designer.text.toString()
+        appTesti = input_testimoni_app.text.toString()
 
         presenter.sendTestimoni(
             "Bearer $token", "application/json", orderId, starCount.toString(),
@@ -98,37 +97,37 @@ class TestimoniActivity : AppCompatActivity(), ReviewOrderView.View {
         btn_tipsatu.setOnClickListener {
             tipButton(tip1 = true, tip2 = false, tip3 = false, tip4 = false, tip5 = false, tip6 = false)
             tipPrice = 1000
-            inputAmount.setText(tipPrice.toString())
+            input_amount.setText(tipPrice.toString())
         }
 
         btn_tipdua.setOnClickListener {
             tipButton(tip1 = false, tip2 = true, tip3 = false, tip4 = false, tip5 = false, tip6 = false)
             tipPrice = 2500
-            inputAmount.setText(tipPrice.toString())
+            input_amount.setText(tipPrice.toString())
         }
 
         btn_tiptiga.setOnClickListener {
             tipButton(tip1 = false, tip2 = false, tip3 = true, tip4 = false, tip5 = false, tip6 = false)
             tipPrice = 4000
-            inputAmount.setText(tipPrice.toString())
+            input_amount.setText(tipPrice.toString())
         }
 
         btn_tipempat.setOnClickListener {
             tipButton(tip1 = false, tip2 = false, tip3 = false, tip4 = true, tip5 = false, tip6 = false)
             tipPrice = 6000
-            inputAmount.setText(tipPrice.toString())
+            input_amount.setText(tipPrice.toString())
         }
 
         btn_tiplima.setOnClickListener {
             tipButton(tip1 = false, tip2 = false, tip3 = false, tip4 = false, tip5 = true, tip6 = false)
             tipPrice = 7500
-            inputAmount.setText(tipPrice.toString())
+            input_amount.setText(tipPrice.toString())
         }
 
         btn_tipenam.setOnClickListener {
             tipButton(tip1 = false, tip2 = false, tip3 = false, tip4 = false, tip5 = false, tip6 = true)
             tipPrice = 10000
-            inputAmount.setText(tipPrice.toString())
+            input_amount.setText(tipPrice.toString())
         }
     }
 
@@ -213,12 +212,24 @@ class TestimoniActivity : AppCompatActivity(), ReviewOrderView.View {
 
 
     override fun onSuccessSend() {
-        Toast.makeText(this@TestimoniActivity, "Terimakasih atas ulasan Anda", Toast.LENGTH_SHORT).show()
+        FancyToast.makeText(
+            this,
+            "Terimakasih atas ulasan Anda",
+            FancyToast.LENGTH_SHORT,
+            FancyToast.INFO,
+            false
+        ).show()
         finish()
     }
 
     override fun noInternetConnection(message: String) {
-        Toast.makeText(this@TestimoniActivity, message, Toast.LENGTH_SHORT).show()
+        FancyToast.makeText(
+            this,
+            message,
+            FancyToast.LENGTH_SHORT,
+            FancyToast.ERROR,
+            false
+        ).show()
     }
 
     override fun onDestroy() {

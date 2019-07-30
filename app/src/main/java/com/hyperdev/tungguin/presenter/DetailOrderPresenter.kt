@@ -4,9 +4,9 @@ import android.content.Context
 import android.widget.Toast
 import com.hyperdev.tungguin.model.detailorder.DetailOrderResponse
 import com.hyperdev.tungguin.model.profile.ProfileResponse
+import com.hyperdev.tungguin.network.BaseApiService
 import com.hyperdev.tungguin.network.ConnectivityStatus
 import com.hyperdev.tungguin.network.HandleError
-import com.hyperdev.tungguin.repository.order.OrderRepositoryImp
 import com.hyperdev.tungguin.utils.SchedulerProvider
 import com.hyperdev.tungguin.ui.view.DetailOrderView
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -18,7 +18,7 @@ import java.net.SocketTimeoutException
 class DetailOrderPresenter(
     private val view: DetailOrderView.View,
     private val context: Context,
-    private val detail: OrderRepositoryImp,
+    private val baseApiService: BaseApiService,
     private val scheduler: SchedulerProvider
 ) : DetailOrderView.Presenter {
 
@@ -27,7 +27,7 @@ class DetailOrderPresenter(
     override fun getUserProfile(token: String) {
 
         compositeDisposable.add(
-            detail.getProfile(token, "application/json")
+            baseApiService.getProfile(token, "application/json")
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(scheduler.io())
                 .subscribeWith(object : ResourceSubscriber<ProfileResponse>() {
@@ -55,7 +55,7 @@ class DetailOrderPresenter(
         view.displayProgress()
 
         compositeDisposable.add(
-            detail.getOrderDetail(token, "application/json", id)
+            baseApiService.getOrderDetail(token, "application/json", id)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(scheduler.io())
                 .subscribeWith(object : ResourceSubscriber<DetailOrderResponse>() {

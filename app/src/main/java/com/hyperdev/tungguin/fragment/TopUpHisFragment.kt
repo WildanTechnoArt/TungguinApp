@@ -18,7 +18,6 @@ import com.hyperdev.tungguin.model.transaction.TopUpData
 import com.hyperdev.tungguin.network.BaseApiService
 import com.hyperdev.tungguin.network.NetworkClient
 import com.hyperdev.tungguin.presenter.TopUpHistoriPresenter
-import com.hyperdev.tungguin.repository.transaction.TransactionRepositoryImp
 import com.hyperdev.tungguin.utils.AppSchedulerProvider
 import com.hyperdev.tungguin.ui.view.HistoriTopUpView
 import kotlin.properties.Delegates
@@ -35,18 +34,16 @@ class TopUpHisFragment : Fragment(), HistoriTopUpView.View {
     private lateinit var baseApiService: BaseApiService
     private val TAG = javaClass.simpleName
     private var adapter by Delegates.notNull<TopUpRecyclerAdapter>()
-    private var page by Delegates.notNull<Int>()
+    private var page:Int = 1
     private lateinit var nextPageURL: String
     private var isLoading by Delegates.notNull<Boolean>()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_top_up_his, container, false)
 
-        page = 1
-
         recycler = view.findViewById(R.id.recyclerTopupList)
         progressBar = view.findViewById(R.id.progress_bar)
-        txtImgNotFound = view.findViewById(R.id.txt_img_not_found)
+        txtImgNotFound = view.findViewById(R.id.tv_img_not_found)
 
         loadData()
 
@@ -67,9 +64,8 @@ class TopUpHisFragment : Fragment(), HistoriTopUpView.View {
         recycler.layoutManager = layout
         recycler.setHasFixedSize(true)
 
-        val request = TransactionRepositoryImp(baseApiService)
         val scheduler = AppSchedulerProvider()
-        presenter = TopUpHistoriPresenter(this, context!!, request, scheduler)
+        presenter = TopUpHistoriPresenter(this, context!!, baseApiService, scheduler)
         adapter = TopUpRecyclerAdapter(context, listTopUp as ArrayList<ListTopUp>)
 
         presenter.getTopUpHistory("Bearer $token", page = page)
@@ -88,7 +84,6 @@ class TopUpHisFragment : Fragment(), HistoriTopUpView.View {
                 if (!isLoading && isLastPosition && nextPageURL != "null") {
                     page = page.plus(1)
                     presenter.getTopUpHistory("Bearer $token", page = page)
-                    recycler.post { recycler.smoothScrollToPosition(adapter.itemCount - 1) }
                 }
             }
         })
@@ -121,7 +116,7 @@ class TopUpHisFragment : Fragment(), HistoriTopUpView.View {
             adapter.refreshAdapter(data)
         }
 
-        if (adapter.itemCount.toString() != "0") {
+        if (adapter.itemCount != 0) {
             txtImgNotFound.visibility = View.GONE
             recycler.visibility = View.VISIBLE
         } else {

@@ -5,14 +5,10 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.graphics.drawable.Drawable
-import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
-import android.widget.ProgressBar
-import android.widget.TextView
+import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions.withCrossFade
@@ -22,19 +18,11 @@ import com.hyperdev.tungguin.GlideApp
 import com.hyperdev.tungguin.R
 import com.hyperdev.tungguin.model.searchproduct.SearchItem
 import com.hyperdev.tungguin.ui.activity.DetailProductActivity
+import com.hyperdev.tungguin.utils.UtilsConstant.Companion.HASHED_ID
+import kotlinx.android.synthetic.main.item_product_list.view.*
 
 class SearchProductAdapter(private var context: Context?, private val productList: ArrayList<SearchItem>) :
     RecyclerView.Adapter<SearchProductAdapter.ViewHolder>() {
-
-    inner class ViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
-
-        // Deklarasi View
-        val getDesignName: TextView = view.findViewById(R.id.design_name)
-        val getBalanceProduct: TextView = view.findViewById(R.id.balance_design)
-        val getImageProduct: ImageView = view.findViewById(R.id.image_product)
-        val getItemSelector: ConstraintLayout = view.findViewById(R.id.item_layout)
-        val progressbar: ProgressBar = view.findViewById(R.id.progress_bar)
-    }
 
     override fun onCreateViewHolder(parent: ViewGroup, p1: Int): ViewHolder {
         val v = LayoutInflater.from(parent.context).inflate(R.layout.item_product_list, parent, false)
@@ -56,20 +44,20 @@ class SearchProductAdapter(private var context: Context?, private val productLis
         val getImageProduct = productList[position].iconUrl.toString()
         val getItemID = productList[position].hashedId.toString()
 
-        holder.getDesignName.text = getNameProduct
-        holder.getBalanceProduct.text = getAmountProduct
+        holder.itemView.design_name.text = getNameProduct
+        holder.itemView.balance_design.text = getAmountProduct
         GlideApp.with(holder.view.context)
             .load(getImageProduct)
-            .override(110,90)
+            .override(110, 90)
             .transition(withCrossFade())
-            .listener(object : RequestListener<Drawable>{
+            .listener(object : RequestListener<Drawable> {
                 override fun onLoadFailed(
                     e: GlideException?,
                     model: Any?,
                     target: Target<Drawable>?,
                     isFirstResource: Boolean
                 ): Boolean {
-                    holder.progressbar.visibility = View.GONE
+                    holder.itemView.progress_bar.visibility = View.GONE
                     return false
                 }
 
@@ -80,18 +68,20 @@ class SearchProductAdapter(private var context: Context?, private val productLis
                     dataSource: DataSource?,
                     isFirstResource: Boolean
                 ): Boolean {
-                    holder.progressbar.visibility = View.GONE
+                    holder.itemView.progress_bar.visibility = View.GONE
                     return false
                 }
 
             })
-            .into(holder.getImageProduct)
+            .into(holder.itemView.image_product)
 
-        holder.getItemSelector.setOnClickListener {
+        holder.itemView.item_layout.setOnClickListener {
             val intent = Intent(context, DetailProductActivity::class.java)
-            intent.putExtra("sendProductID", getItemID)
+            intent.putExtra(HASHED_ID, getItemID)
             context?.startActivity(intent)
             (context as Activity)
         }
     }
+
+    inner class ViewHolder(val view: View) : RecyclerView.ViewHolder(view)
 }

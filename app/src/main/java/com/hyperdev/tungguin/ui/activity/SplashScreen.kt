@@ -5,6 +5,7 @@ import android.content.pm.ActivityInfo
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import com.hyperdev.tungguin.R
+import com.hyperdev.tungguin.utils.UtilsConstant.Companion.HASHED_ID
 
 class SplashScreen : AppCompatActivity() {
 
@@ -40,31 +41,31 @@ class SplashScreen : AppCompatActivity() {
                             }
                             "order_finish" -> {
                                 val intent = Intent(this@SplashScreen, TestimoniActivity::class.java)
-                                intent.putExtra("sendOrderID", getTypeId)
+                                intent.putExtra(HASHED_ID, getTypeId)
                                 startActivity(intent)
                                 finish()
                             }
                             "payment_order_success" -> {
                                 val intent = Intent(this@SplashScreen, DetailOrderActivity::class.java)
-                                intent.putExtra("sendOrderID", getTypeId)
+                                intent.putExtra(HASHED_ID, getTypeId)
                                 startActivity(intent)
                                 finish()
                             }
                             "payment_order_expired" -> {
                                 val intent = Intent(this@SplashScreen, DetailOrderActivity::class.java)
-                                intent.putExtra("sendOrderID", getTypeId)
+                                intent.putExtra(HASHED_ID, getTypeId)
                                 startActivity(intent)
                                 finish()
                             }
                             "new_order_message" -> {
                                 val intent = Intent(this@SplashScreen, ChatActivity::class.java)
-                                intent.putExtra("sendOrderID", getTypeId)
+                                intent.putExtra(HASHED_ID, getTypeId)
                                 startActivity(intent)
                                 finish()
                             }
                             "designerFound" -> {
                                 val intent = Intent(this@SplashScreen, DetailOrderActivity::class.java)
-                                intent.putExtra("sendOrderID", getTypeId)
+                                intent.putExtra(HASHED_ID, getTypeId)
                                 startActivity(intent)
                                 finish()
                             }

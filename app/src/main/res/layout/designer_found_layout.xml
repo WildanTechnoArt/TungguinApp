@@ -81,7 +81,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
-                android:background="@drawable/primary_round_button"
+                android:background="@drawable/btn_primary_round_hover"
                 android:text="Detail Order"
                 android:textAllCaps="false"
                 android:textColor="#FFFFFF"

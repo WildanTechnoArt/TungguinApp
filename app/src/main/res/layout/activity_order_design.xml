@@ -5,9 +5,8 @@
         xmlns:app="http://schemas.android.com/apk/res-auto"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context=".ui.activity.OrderDesignActivity"
-        android:id="@+id/order_desain_layout"
-        android:background="#FFFFFF">
+        android:background="@color/white"
+        tools:context=".ui.activity.OrderDesignActivity">
 
     <com.google.android.material.appbar.AppBarLayout
             android:id="@+id/appbar"
@@ -34,115 +33,112 @@
     <ScrollView
             android:layout_width="match_parent"
             android:layout_height="0dp"
+            android:layout_marginStart="@dimen/layout_padding"
+            android:layout_marginTop="@dimen/layout_padding"
+            android:layout_marginEnd="@dimen/layout_padding"
+            android:layout_marginBottom="@dimen/layout_padding"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/appbar" android:id="@+id/scrollView"
-            android:visibility="visible"
-            android:layout_marginStart="12dp" android:layout_marginTop="12dp" android:layout_marginEnd="12dp"
-            android:layout_marginBottom="12dp">
+            app:layout_constraintTop_toBottomOf="@+id/appbar">
 
         <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-        >
+                android:orientation="vertical">
 
             <TextView
-                    android:text="Jumlah Desain"
+                    android:text="@string/design_count"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:textSize="15sp"
                     android:textStyle="bold"
-                    android:textColor="#000000" tools:ignore="HardcodedText"/>
+                    android:textColor="#000000"/>
 
             <androidx.recyclerview.widget.RecyclerView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:id="@+id/priceList_view">
-            </androidx.recyclerview.widget.RecyclerView>
+                    android:id="@+id/rv_price_list"/>
 
             <ToggleButton
+                    android:id="@+id/toggle_detail_order"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" android:id="@+id/toggle_detail_order"
-                    android:layout_marginTop="8dp"
-                    android:textOff="@string/send_detail_order" android:textAllCaps="false"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/normal_size_margin"
+                    android:textOff="@string/send_detail_order"
+                    android:textAllCaps="false"
                     android:textOn="@string/hide_detail_order"/>
+
             <TextView
-                    android:text="Konsep Desain"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/normal_size_margin"
+                    android:text="@string/design_concept"
                     android:textStyle="bold"
                     android:textColor="#000000"
-                    android:layout_marginTop="8dp"
-                    android:textSize="15sp"
-                    tools:ignore="HardcodedText" android:id="@+id/tv_konsep_desain"/>
+                    android:textSize="15sp" android:id="@+id/tv_concept_design"/>
 
             <EditText
+                    android:id="@+id/input_design_concept"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:inputType="textMultiLine"
+                    android:layout_marginTop="@dimen/normal_size_margin"
+                    android:autofillHints="@string/concept_design_hint"
                     android:background="@drawable/input_layout"
-                    android:ems="10"
-                    android:id="@+id/input_konsep_desain"
-                    android:minHeight="100dp" android:layout_marginTop="8dp"
-                    android:hint="Masukan konsep desain yang anda inginkan disini"
+                    android:inputType="textMultiLine"
+                    android:minHeight="100dp"
+                    android:hint="@string/concept_design_hint"
                     android:textSize="14sp"
-                    android:gravity="fill_horizontal" android:padding="10dp" tools:ignore="Autofill,HardcodedText"
-            />
+                    android:padding="10dp"
+                    android:gravity="start"
+                    tools:targetApi="o"/>
 
             <LinearLayout
-                    android:orientation="vertical"
+                    android:id="@+id/formatted_layout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    tools:ignore="UselessLeaf" android:id="@+id/formatted_layout"/>
+                    android:layout_marginTop="@dimen/normal_size_margin"
+                    android:orientation="vertical"/>
 
             <TextView
-                    android:text="Referensi Desain"
+                    android:text="@string/design_reference"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/normal_size_margin"
                     android:textStyle="bold"
                     android:textColor="#000000"
-                    android:textSize="15sp"
-                    tools:ignore="HardcodedText"
-                    android:layout_marginTop="8dp" android:id="@+id/tv_ref_desain"/>
+                    android:textSize="15sp" android:id="@+id/tv_ref_design"/>
+
             <Button
-                    android:text="(+) Tambah File"
+                    android:id="@+id/btn_add_reference"
                     android:layout_width="wrap_content"
                     android:layout_height="30dp"
-                    android:id="@+id/btn_referensi"
-                    android:background="@drawable/ref_round_button"
                     android:layout_marginTop="10dp"
-                    android:layout_marginBottom="4dp"
-                    android:layout_marginEnd="2dp"
-                    android:layout_marginStart="2dp"
+                    android:layout_marginBottom="@dimen/small_size_margin"
+                    android:background="@drawable/btn_green_round_hover"
+                    android:text="@string/add_reference_file"
                     android:textColor="#FFFFFF"
                     android:elevation="6dp"
-                    android:paddingEnd="12dp"
-                    android:paddingStart="12dp"
+                    android:paddingEnd="@dimen/layout_padding"
+                    android:paddingStart="@dimen/layout_padding"
                     android:textAllCaps="false"
                     android:textSize="13sp"
-                    tools:ignore="HardcodedText"
                     tools:targetApi="lollipop"/>
 
             <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rv_refrence_list"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:id="@+id/image_ref_list"
-                    android:layout_marginTop="4dp"
+                    android:layout_marginTop="@dimen/small_size_margin"
                     android:visibility="gone"/>
 
             <LinearLayout
                     android:orientation="horizontal"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="14dp"
-                    android:padding="10dp"
-                    android:layout_marginEnd="2dp"
-                    android:layout_marginBottom="2dp"
-                    android:layout_marginStart="2dp"
-                    android:background="@drawable/input_layout">
+                    android:layout_marginTop="@dimen/layout_margin"
+                    android:background="@drawable/input_layout"
+                    android:padding="@dimen/layout_padding">
 
                 <LinearLayout
                         android:orientation="vertical"
@@ -151,71 +147,75 @@
                         android:layout_weight="3">
 
                     <TextView
-                            android:text="-"
+                            android:id="@+id/tv_design_name"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:id="@+id/nama_desain"
+                            android:text="@string/none"
                             android:textColor="#000000"
-                            android:textStyle="bold" tools:ignore="HardcodedText"/>
+                            android:textStyle="bold"/>
 
                     <TextView
-                            android:text="0 Desain"
+                            android:id="@+id/tv_design_count"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:id="@+id/jumlah_desain"
-                            android:layout_marginTop="4dp"
-                            android:textStyle="bold" tools:ignore="HardcodedText"/>
+                            android:layout_marginTop="@dimen/small_size_margin"
+                            android:text="@string/nol_desain"
+                            android:textStyle="bold"/>
 
                 </LinearLayout>
 
                 <TextView
-                        android:text="Rp 0"
+                        android:id="@+id/tv_total_price"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:id="@+id/total_harga"
+                        android:text="@string/rp_0"
                         android:layout_weight="3"
                         android:gravity="center|end"
-                        android:textStyle="bold" tools:ignore="HardcodedText"/>
+                        android:textStyle="bold"/>
 
             </LinearLayout>
 
             <Button
-                    android:text="Order Desain"
+                    android:id="@+id/btn_design_order"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:id="@+id/order_desain"
-                    android:layout_marginTop="12dp"
-                    android:background="@drawable/primary_round_button"
+                    android:layout_marginTop="@dimen/layout_padding"
+                    android:layout_marginBottom="@dimen/normal_size_margin"
+                    android:background="@drawable/btn_primary_round_hover"
+                    android:elevation="6dp"
+                    android:text="@string/design_order"
                     android:textColor="#FFFFFF"
                     android:textAllCaps="true"
-                    android:elevation="6dp"
-                    android:layout_marginBottom="8dp"
-                    android:layout_marginEnd="2dp"
-                    android:layout_marginStart="2dp"
-                    tools:ignore="HardcodedText"
-                    tools:targetApi="lollipop" android:textStyle="bold"/>
+                    android:textStyle="bold"
+                    tools:targetApi="lollipop"/>
 
         </LinearLayout>
+
     </ScrollView>
+
     <ProgressBar
-            style="?android:attr/progressBarStyle"
+            android:id="@+id/progress_bar"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/progress_bar" android:layout_marginBottom="8dp"
-            app:layout_constraintBottom_toBottomOf="parent" app:layout_constraintEnd_toEndOf="parent"
-            android:layout_marginEnd="8dp" android:layout_marginTop="8dp"
-            app:layout_constraintStart_toStartOf="parent" android:layout_marginStart="8dp"
-            android:visibility="gone" app:layout_constraintTop_toBottomOf="@+id/appbar"/>
+            android:layout_marginBottom="@dimen/normal_size_margin"
+            android:layout_marginEnd="@dimen/normal_size_margin"
+            android:layout_marginTop="@dimen/normal_size_margin"
+            android:layout_marginStart="@dimen/normal_size_margin"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/appbar"/>
 
     <FrameLayout
+            android:id="@+id/shadow"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="#4B7B7B7B"
-            android:id="@+id/shadow"
+            android:visibility="gone"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            android:visibility="gone"/>
+            app:layout_constraintBottom_toBottomOf="parent"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

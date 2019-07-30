@@ -4,13 +4,11 @@ import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
 import android.graphics.Color
-import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
 import android.widget.Toast
+import androidx.recyclerview.widget.RecyclerView
 import com.hyperdev.tungguin.BuildConfig
 import com.hyperdev.tungguin.R
 import com.hyperdev.tungguin.model.transaction.ListTopUp
@@ -19,19 +17,10 @@ import com.midtrans.sdk.corekit.core.UIKitCustomSetting
 import com.midtrans.sdk.corekit.core.themes.CustomColorTheme
 import com.midtrans.sdk.corekit.models.snap.TransactionResult
 import com.midtrans.sdk.uikit.SdkUIFlowBuilder
+import kotlinx.android.synthetic.main.histori_topup_item.view.*
 
 class TopUpRecyclerAdapter(private var context: Context?, private var topupList: ArrayList<ListTopUp>) :
     RecyclerView.Adapter<TopUpRecyclerAdapter.ViewHolder>() {
-
-    inner class ViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
-        //Deklarasi View
-        val getListFormattedID: TextView = itemView.findViewById(R.id.listFormattedID)
-        val getListFormattedStatus: TextView = itemView.findViewById(R.id.listFormattedStatus)
-        val getListFormattedAmount: TextView = itemView.findViewById(R.id.listFormattedAmount)
-        val getListFormattedDate: TextView = itemView.findViewById(R.id.listType)
-        val getListFormattedExpireAt: TextView = itemView.findViewById(R.id.listFormattedDate)
-        val getListItemView: ConstraintLayout = itemView.findViewById(R.id.itemTopup)
-    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val v = LayoutInflater.from(parent.context).inflate(R.layout.histori_topup_item, parent, false)
@@ -57,13 +46,13 @@ class TopUpRecyclerAdapter(private var context: Context?, private var topupList:
         val getMidtransToken = topupList[position].midtransToken
 
         //set data dari ListTopUp pada View
-        holder.getListFormattedID.text = getFormattedID
-        holder.getListFormattedStatus.setBackgroundColor(Color.parseColor(getColorHex))
-        holder.getListFormattedStatus.text = getFormattedStatus
-        holder.getListFormattedAmount.text = getFormattedAmount
-        holder.getListFormattedDate.text = "Date: $getFormattedDate"
-        holder.getListFormattedExpireAt.text = getFormattedExpireAt
-        holder.getListItemView.setOnClickListener {
+        holder.itemView.listFormattedID.text = getFormattedID
+        holder.itemView.listFormattedStatus.setBackgroundColor(Color.parseColor(getColorHex))
+        holder.itemView.listFormattedStatus.text = getFormattedStatus
+        holder.itemView.listFormattedAmount.text = getFormattedAmount
+        holder.itemView.listType.text = "Date: $getFormattedDate"
+        holder.itemView.listFormattedDate.text = getFormattedExpireAt
+        holder.itemView.itemTopup.setOnClickListener {
 
             @Suppress("SENSELESS_COMPARISON")
             if (getMidtransToken != null) {
@@ -125,4 +114,6 @@ class TopUpRecyclerAdapter(private var context: Context?, private var topupList:
             ) // set theme. it will replace theme on snap theme on MAP ( optional)
             .buildSDK()
     }
+
+    inner class ViewHolder(val view: View) : RecyclerView.ViewHolder(view)
 }

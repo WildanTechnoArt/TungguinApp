@@ -4,46 +4,49 @@ import android.annotation.SuppressLint
 import android.content.Intent
 import android.content.pm.ActivityInfo
 import android.graphics.Color
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import com.google.android.material.snackbar.Snackbar
-import androidx.appcompat.app.AlertDialog
-import androidx.recyclerview.widget.LinearLayoutManager
 import android.view.Menu
 import android.view.MenuItem
-import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.app.AppCompatActivity
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.hyperdev.tungguin.BuildConfig
 import com.hyperdev.tungguin.R
 import com.hyperdev.tungguin.adapter.CartAdapter
 import com.hyperdev.tungguin.database.SharedPrefManager
-import com.hyperdev.tungguin.model.cart.*
+import com.hyperdev.tungguin.model.cart.CartData
+import com.hyperdev.tungguin.model.cart.CartItem
+import com.hyperdev.tungguin.model.cart.CheckoutData
+import com.hyperdev.tungguin.model.cart.DataVoucher
 import com.hyperdev.tungguin.network.BaseApiService
 import com.hyperdev.tungguin.network.NetworkClient
 import com.hyperdev.tungguin.presenter.CartPresenter
-import com.hyperdev.tungguin.repository.cart.CartRepositoryImp
-import com.hyperdev.tungguin.utils.AppSchedulerProvider
 import com.hyperdev.tungguin.ui.view.MyCartView
+import com.hyperdev.tungguin.utils.AppSchedulerProvider
+import com.hyperdev.tungguin.utils.UtilsConstant.Companion.HASHED_ID
 import com.midtrans.sdk.corekit.core.MidtransSDK
 import com.midtrans.sdk.corekit.core.UIKitCustomSetting
 import com.midtrans.sdk.corekit.core.themes.CustomColorTheme
 import com.midtrans.sdk.corekit.models.snap.TransactionResult
 import com.midtrans.sdk.uikit.SdkUIFlowBuilder
+import com.shashank.sony.fancytoastlib.FancyToast
 import kotlinx.android.synthetic.main.activity_cart.*
+import kotlinx.android.synthetic.main.cart_information.*
 import kotlin.properties.Delegates
 
 class CartActivity : AppCompatActivity(), MyCartView.View {
 
-    //Deklarasi Variable
     private var listCartItem: MutableList<CartItem> = mutableListOf()
     private lateinit var presenter: MyCartView.Presenter
     private lateinit var token: String
     private lateinit var baseApiService: BaseApiService
     private var disabledAddCart: Boolean = false
     private var adapter by Delegates.notNull<CartAdapter>()
-    private var condition: Boolean? = null
+    private var condition = false
     private lateinit var hashedId: String
     private lateinit var paymentMethod: String
     private lateinit var tokenMidtrans: String
+    private lateinit var voucherMessage: String
 
     @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -55,15 +58,21 @@ class CartActivity : AppCompatActivity(), MyCartView.View {
 
         initData()
 
-        check.setOnClickListener {
-            if (kode_voucer.text.toString().isEmpty()) {
-                Toast.makeText(this@CartActivity, "Kode Voucher tidak boleh kosong!", Toast.LENGTH_SHORT).show()
+        btn_check_coupon.setOnClickListener {
+            if (input_coupon.text.toString().isEmpty()) {
+                FancyToast.makeText(
+                    this,
+                    "Kode Kupon tidak boleh kosong!",
+                    FancyToast.LENGTH_SHORT,
+                    FancyToast.INFO,
+                    false
+                ).show()
             } else {
-                presenter.checkVoucher("Bearer $token", "application/json", kode_voucer.text.toString())
+                presenter.checkVoucher("Bearer $token", "application/json", input_coupon.text.toString())
             }
         }
 
-        btnPayment.setOnClickListener {
+        btn_payment.setOnClickListener {
             val menuItem = arrayOf("Bayar dengan Tungguin Pay", "Metode Pembayaran Lain")
             val message: AlertDialog.Builder = AlertDialog.Builder(it.context)
                 .setTitle("Pilih Metode Pembayaran")
@@ -75,7 +84,7 @@ class CartActivity : AppCompatActivity(), MyCartView.View {
                                 "Bearer $token",
                                 "application/json",
                                 paymentMethod,
-                                kode_voucer.text.toString()
+                                input_coupon.text.toString()
                             )
                         }
 
@@ -85,7 +94,7 @@ class CartActivity : AppCompatActivity(), MyCartView.View {
                                 "Bearer $token",
                                 "application/json",
                                 paymentMethod,
-                                kode_voucer.text.toString()
+                                input_coupon.text.toString()
                             )
                         }
                     }
@@ -105,37 +114,53 @@ class CartActivity : AppCompatActivity(), MyCartView.View {
                 if (it.response != null) {
                     when (it.status) {
                         TransactionResult.STATUS_SUCCESS -> {
-                            Toast.makeText(
-                                this@CartActivity,
+                            FancyToast.makeText(
+                                this,
                                 "Transaction Finished",
-                                Toast.LENGTH_LONG
+                                FancyToast.LENGTH_SHORT,
+                                FancyToast.SUCCESS,
+                                false
                             ).show()
                             val intent = Intent(this@CartActivity, SearchDesignerActivity::class.java)
-                            intent.putExtra("sendOrderID", hashedId)
+                            intent.putExtra(HASHED_ID, hashedId)
                             startActivity(intent)
                             finish()
                         }
                         TransactionResult.STATUS_PENDING -> {
                             val intent = Intent(this@CartActivity, DetailOrderActivity::class.java)
-                            intent.putExtra("sendOrderID", hashedId)
+                            intent.putExtra(HASHED_ID, hashedId)
                             startActivity(intent)
                             finish()
                         }
-                        TransactionResult.STATUS_FAILED -> Toast.makeText(
-                            this@CartActivity,
+                        TransactionResult.STATUS_FAILED -> FancyToast.makeText(
+                            this,
                             "Transaction Failed",
-                            Toast.LENGTH_LONG
+                            FancyToast.LENGTH_SHORT,
+                            FancyToast.ERROR,
+                            false
                         ).show()
                     }
                     it.response.validationMessages
                 } else if (it.isTransactionCanceled) {
-                    Toast.makeText(this@CartActivity, "Transaction Canceled", Toast.LENGTH_LONG).show()
+                    FancyToast.makeText(this, "Transaction Canceled", FancyToast.LENGTH_SHORT, FancyToast.INFO, false)
+                        .show()
                 } else {
                     if (it.status.equals(TransactionResult.STATUS_INVALID, ignoreCase = true)) {
-                        Toast.makeText(this@CartActivity, "Transaction Invalid", Toast.LENGTH_LONG).show()
+                        FancyToast.makeText(
+                            this,
+                            "Transaction Invalid",
+                            FancyToast.LENGTH_SHORT,
+                            FancyToast.ERROR,
+                            false
+                        ).show()
                     } else {
-                        Toast.makeText(this@CartActivity, "Transaction Finished with failure.", Toast.LENGTH_LONG)
-                            .show()
+                        FancyToast.makeText(
+                            this,
+                            "Transaction Finished with failure",
+                            FancyToast.LENGTH_SHORT,
+                            FancyToast.WARNING,
+                            false
+                        ).show()
                     }
                 }
             }
@@ -149,8 +174,6 @@ class CartActivity : AppCompatActivity(), MyCartView.View {
                 )
             ) // set theme. it will replace theme on snap theme on MAP ( optional)
             .buildSDK()
-
-
     }
 
     private fun initData() {
@@ -163,19 +186,18 @@ class CartActivity : AppCompatActivity(), MyCartView.View {
             .create(BaseApiService::class.java)
 
         val layout = LinearLayoutManager(this@CartActivity)
-        orderItem_view.layoutManager = layout
-        orderItem_view.setHasFixedSize(true)
+        rv_order_Item.layoutManager = layout
+        rv_order_Item.setHasFixedSize(true)
 
-        val repository = CartRepositoryImp(baseApiService)
         val scheduler = AppSchedulerProvider()
 
-        presenter = CartPresenter(this, this@CartActivity, repository, scheduler)
+        presenter = CartPresenter(this, this@CartActivity, baseApiService, scheduler)
 
         adapter = CartAdapter(
-            listCartItem as ArrayList<CartItem>, this@CartActivity, repository, scheduler, "Bearer $token"
+            listCartItem as ArrayList<CartItem>, this@CartActivity, baseApiService, scheduler, "Bearer $token"
         )
 
-        orderItem_view.adapter = adapter
+        rv_order_Item.adapter = adapter
     }
 
     override fun onResume() {
@@ -207,23 +229,29 @@ class CartActivity : AppCompatActivity(), MyCartView.View {
 
     @SuppressLint("SetTextI18n")
     override fun showCartData(cartData: CartData) {
-        jumlah_price.text = cartData.subTotal.toString()
-        service_price.text = cartData.serviceFee.toString()
+        order_price.text = cartData.subTotal.toString()
+        service_fees.text = cartData.serviceFee.toString()
         total_price.text = cartData.total.toString()
         disabledAddCart = cartData.disableAddToCart!!
     }
 
     override fun noInternetConnection(message: String) {
-        Snackbar.make(keranjang_layout, message, Snackbar.LENGTH_SHORT).show()
+        FancyToast.makeText(this, message, FancyToast.LENGTH_SHORT, FancyToast.ERROR, false).show()
     }
 
     override fun onSuccessCheckVoucher() {
-        if (condition!!) {
-            Toast.makeText(this@CartActivity, "Voucher Tersedia", Toast.LENGTH_LONG).show()
-            kode_voucer.setTextColor(Color.parseColor("#00ce5c"))
+        if (condition) {
+            FancyToast.makeText(this, voucherMessage, FancyToast.LENGTH_LONG, FancyToast.SUCCESS, false).show()
+            input_coupon.setTextColor(Color.parseColor("#00ce5c"))
         } else {
-            Toast.makeText(this@CartActivity, "Voucher Tidak Tersedia", Toast.LENGTH_LONG).show()
-            kode_voucer.setTextColor(Color.parseColor("#d40101"))
+            FancyToast.makeText(
+                this,
+                "Kode kupon yang anda masukan salah",
+                FancyToast.LENGTH_LONG,
+                FancyToast.WARNING,
+                false
+            ).show()
+            input_coupon.setTextColor(Color.parseColor("#d40101"))
         }
 
         swipe_refresh.isRefreshing = false
@@ -233,9 +261,9 @@ class CartActivity : AppCompatActivity(), MyCartView.View {
         midtransInitialitation(hashedId)
         swipe_refresh.isRefreshing = false
         if (paymentMethod == "wallet") {
-            Toast.makeText(this@CartActivity, "Pembayaran Berhasil", Toast.LENGTH_SHORT).show()
+            FancyToast.makeText(this, "Pembayaran Berhasil", FancyToast.LENGTH_LONG, FancyToast.SUCCESS, false).show()
             val intent = Intent(this@CartActivity, SearchDesignerActivity::class.java)
-            intent.putExtra("sendOrderID", hashedId)
+            intent.putExtra(HASHED_ID, hashedId)
             startActivity(intent)
             finishAffinity()
         } else if (paymentMethod == "midtrans") {
@@ -259,7 +287,8 @@ class CartActivity : AppCompatActivity(), MyCartView.View {
     }
 
     override fun getVoucherData(data: DataVoucher) {
-        condition = data.fisAvailable
+        voucherMessage = data.message.toString()
+        condition = data.isAvailable ?: false
     }
 
     override fun getCheckoutData(data: CheckoutData) {
@@ -269,7 +298,7 @@ class CartActivity : AppCompatActivity(), MyCartView.View {
 
     @SuppressLint("SetTextI18n")
     override fun showItemCount(count: String) {
-        text_jumlah_produk.text = "Jumlah ($count produk)"
+        tv_total_product.text = "Jumlah ($count produk)"
     }
 
     override fun onSuccessLoadData() {

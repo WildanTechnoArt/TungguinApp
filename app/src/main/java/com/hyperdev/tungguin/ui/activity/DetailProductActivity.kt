@@ -15,9 +15,9 @@ import com.hyperdev.tungguin.model.detailproduct.ProductDetailItem
 import com.hyperdev.tungguin.network.BaseApiService
 import com.hyperdev.tungguin.network.NetworkClient
 import com.hyperdev.tungguin.presenter.DetailProductPresenter
-import com.hyperdev.tungguin.repository.product.ProductRepositoryImpl
 import com.hyperdev.tungguin.utils.AppSchedulerProvider
 import com.hyperdev.tungguin.ui.view.DetailProductView
+import com.hyperdev.tungguin.utils.UtilsConstant.Companion.HASHED_ID
 import com.synnapps.carouselview.ImageListener
 import kotlinx.android.synthetic.main.activity_detail_product.*
 
@@ -37,19 +37,20 @@ class DetailProductActivity : AppCompatActivity(), DetailProductView.View {
         requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
 
         setSupportActionBar(toolbar)
-        supportActionBar?.setDisplayShowHomeEnabled(true)
-        supportActionBar?.setHomeButtonEnabled(true)
-        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        supportActionBar?.apply {
+            setDisplayShowHomeEnabled(true)
+            setHomeButtonEnabled(true)
+            setDisplayHomeAsUpEnabled(true)
+        }
 
         token = SharedPrefManager.getInstance(this@DetailProductActivity).token.toString()
-        hashed_id = intent?.getStringExtra("sendProductID").toString()
+        hashed_id = intent?.getStringExtra(HASHED_ID).toString()
 
         baseApiService = NetworkClient.getClient(this@DetailProductActivity)!!
             .create(BaseApiService::class.java)
 
-        val request = ProductRepositoryImpl(baseApiService)
         val scheduler = AppSchedulerProvider()
-        presenter = DetailProductPresenter(this, this@DetailProductActivity, request, scheduler)
+        presenter = DetailProductPresenter(this, this, baseApiService, scheduler)
 
         presenter.getDetailProduct("Bearer $token", hashed_id)
 
@@ -65,7 +66,7 @@ class DetailProductActivity : AppCompatActivity(), DetailProductView.View {
 
         btn_order.setOnClickListener {
             val intent = Intent(this@DetailProductActivity, OrderDesignActivity::class.java)
-            intent.putExtra("sendProductID", hashed_id)
+            intent.putExtra(HASHED_ID, hashed_id)
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
             startActivity(intent)
         }
@@ -75,26 +76,22 @@ class DetailProductActivity : AppCompatActivity(), DetailProductView.View {
         }
     }
 
-    override fun showPriceList(priceList: List<PriceList>) {
+    override fun showPriceList(priceList: List<PriceList>) {}
 
-    }
-
-    override fun showFieldList(fieldListFormatted: List<FieldListFormatted>) {
-
-    }
+    override fun showFieldList(fieldListFormatted: List<FieldListFormatted>) {}
 
     override fun showDetailProductItem(productItem: ProductDetailItem) {
         imageList.add(productItem.iconUrl.toString())
         tv_product_name.text = productItem.name.toString()
 
         val productDescription = productItem.description.toString()
-        if(productDescription != "null"){
+        if (productDescription != "null") {
             product_description.loadData(productDescription, "text/html", null)
-        }else{
+        } else {
             tv_description.visibility = View.GONE
             product_description.visibility = View.GONE
             line.visibility = View.GONE
-            view2.visibility = View.GONE
+            line_two.visibility = View.GONE
         }
 
         img_slider_product.pageCount = imageList.size

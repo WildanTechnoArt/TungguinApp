@@ -1,20 +1,18 @@
 package com.hyperdev.tungguin.ui.activity
 
 import android.content.pm.ActivityInfo
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import com.google.android.material.snackbar.Snackbar
 import android.view.View
-import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import com.hyperdev.tungguin.R
 import com.hyperdev.tungguin.database.SharedPrefManager
 import com.hyperdev.tungguin.network.BaseApiService
 import com.hyperdev.tungguin.network.NetworkClient
 import com.hyperdev.tungguin.presenter.ProfileUpdatePresenter
-import com.hyperdev.tungguin.repository.profile.ProfileRepositoryImpl
 import com.hyperdev.tungguin.ui.view.ProfileUpdateView
 import com.hyperdev.tungguin.utils.AppSchedulerProvider
 import com.hyperdev.tungguin.utils.Validation.Companion.validateFields
+import com.shashank.sony.fancytoastlib.FancyToast
 import kotlinx.android.synthetic.main.activity_change_pass.*
 
 class ChangePassActivity : AppCompatActivity(), ProfileUpdateView.View {
@@ -37,23 +35,24 @@ class ChangePassActivity : AppCompatActivity(), ProfileUpdateView.View {
 
         initData()
 
-        btnSavePass.setOnClickListener {
+        btn_save_password.setOnClickListener {
             changePassUser()
         }
     }
 
-    private fun initData(){
+    private fun initData() {
         setSupportActionBar(toolbar)
-        supportActionBar?.setDisplayShowHomeEnabled(true)
-        supportActionBar?.setHomeButtonEnabled(true)
-        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        supportActionBar?.apply {
+            setDisplayShowHomeEnabled(true)
+            setHomeButtonEnabled(true)
+            setDisplayHomeAsUpEnabled(true)
+        }
 
         baseApiService = NetworkClient.getClient(this@ChangePassActivity)!!
             .create(BaseApiService::class.java)
 
-        val repository = ProfileRepositoryImpl(baseApiService)
         val scheduler = AppSchedulerProvider()
-        presenter = ProfileUpdatePresenter(this@ChangePassActivity, this, repository, scheduler)
+        presenter = ProfileUpdatePresenter(this@ChangePassActivity, this, baseApiService, scheduler)
 
         getToken = SharedPrefManager.getInstance(this@ChangePassActivity).token.toString()
         getName = intent?.extras?.getString("userName")!!
@@ -64,24 +63,24 @@ class ChangePassActivity : AppCompatActivity(), ProfileUpdateView.View {
     }
 
     private fun changePassUser() {
-        newPassword = newpass.text.toString()
-        cPassword = newpassConfirm.text.toString()
+        newPassword = input_new_password.text.toString()
+        cPassword = input_retype_password.text.toString()
 
         var err = 0
 
         if (!validateFields(newPassword)) {
             err++
-            newpass.error = "Masukan password baru !"
+            input_new_password.error = "Masukan password baru !"
         }
 
         if (!validateFields(cPassword)) {
             err++
-            newpassConfirm.error = "Tidak boleh kosong !"
+            input_retype_password.error = "Tidak boleh kosong !"
         }
 
         if (err == 0) {
             if (newPassword != cPassword) {
-                newpassConfirm.error = "Password yang dimasukan tidak sama!"
+                input_retype_password.error = "Password yang dimasukan tidak sama!"
             } else {
                 presenter.updatePassword(
                     "Bearer $getToken", "application/json",
@@ -100,12 +99,12 @@ class ChangePassActivity : AppCompatActivity(), ProfileUpdateView.View {
     }
 
     override fun onSuccess() {
-        Toast.makeText(this@ChangePassActivity, "Password berhasil diubah", Toast.LENGTH_SHORT).show()
+        FancyToast.makeText(this, "Password berhasil diubah", FancyToast.LENGTH_SHORT, FancyToast.SUCCESS, false).show()
         finish()
     }
 
     override fun noInternetConnection(message: String) {
-        Snackbar.make(change_pass_layout, message, Snackbar.LENGTH_SHORT).show()
+        FancyToast.makeText(this, message, FancyToast.LENGTH_SHORT, FancyToast.ERROR, false).show()
     }
 
     override fun onSupportNavigateUp(): Boolean {

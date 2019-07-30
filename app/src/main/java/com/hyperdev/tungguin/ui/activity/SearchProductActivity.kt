@@ -20,7 +20,6 @@ import com.hyperdev.tungguin.model.searchproduct.SearchProductData
 import com.hyperdev.tungguin.network.BaseApiService
 import com.hyperdev.tungguin.network.NetworkClient
 import com.hyperdev.tungguin.presenter.SearchProductPresenter
-import com.hyperdev.tungguin.repository.product.ProductRepositoryImpl
 import com.hyperdev.tungguin.ui.view.SearchProductView
 import com.hyperdev.tungguin.utils.AppSchedulerProvider
 import kotlinx.android.synthetic.main.activity_search_product.*
@@ -90,10 +89,9 @@ class SearchProductActivity : AppCompatActivity(), SearchProductView.View, View.
         mBaseApiService = NetworkClient.getClient(this)
             ?.create(BaseApiService::class.java)
 
-        val repository = mBaseApiService?.let { ProductRepositoryImpl(it) }
         val scheduler = AppSchedulerProvider()
 
-        mPresenter = SearchProductPresenter(this, this, repository, scheduler)
+        mPresenter = SearchProductPresenter(this, this, mBaseApiService, scheduler)
 
         mToken = "Bearer ${SharedPrefManager.getInstance(this).token.toString()}"
 
@@ -135,15 +133,15 @@ class SearchProductActivity : AppCompatActivity(), SearchProductView.View, View.
         if (mListProduct.isEmpty()) {
             rv_product_list.visibility = View.GONE
             img_cross.visibility = View.VISIBLE
-            tv_message1.visibility = View.VISIBLE
-            tv_message2.visibility = View.VISIBLE
+            tv_message_one.visibility = View.VISIBLE
+            tv_message_two.visibility = View.VISIBLE
             tv_contact_us.visibility = View.VISIBLE
             tv_contact_us.paintFlags = Paint.UNDERLINE_TEXT_FLAG
         } else {
             rv_product_list.visibility = View.VISIBLE
             img_cross.visibility = View.GONE
-            tv_message1.visibility = View.GONE
-            tv_message1.visibility = View.GONE
+            tv_message_one.visibility = View.GONE
+            tv_message_one.visibility = View.GONE
             tv_contact_us.visibility = View.GONE
         }
         mAdapter.notifyDataSetChanged()

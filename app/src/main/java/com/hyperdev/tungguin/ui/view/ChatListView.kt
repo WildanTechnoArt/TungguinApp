@@ -1,7 +1,7 @@
 package com.hyperdev.tungguin.ui.view
 
 import com.hyperdev.tungguin.model.chat.ChatListData
-import com.hyperdev.tungguin.repository.chat.ChatRepositoryImp
+import com.hyperdev.tungguin.network.BaseApiService
 
 class ChatListView {
 
@@ -14,7 +14,7 @@ class ChatListView {
     }
 
     interface ViewModel {
-        fun setChatList(repository: ChatRepositoryImp, view: View, token: String, accept: String, page: Int?)
+        fun setChatList(baseApiService: BaseApiService, view: View, token: String, accept: String, page: Int?)
         fun onDestroy()
     }
 }

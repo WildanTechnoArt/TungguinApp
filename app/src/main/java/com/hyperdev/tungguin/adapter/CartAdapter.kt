@@ -9,7 +9,7 @@ import android.view.ViewGroup
 import com.hyperdev.tungguin.R
 import com.hyperdev.tungguin.model.cart.CartItem
 import com.hyperdev.tungguin.model.cart.DeleteCartResponse
-import com.hyperdev.tungguin.repository.cart.CartRepositoryImp
+import com.hyperdev.tungguin.network.BaseApiService
 import com.hyperdev.tungguin.utils.SchedulerProvider
 import com.hyperdev.tungguin.ui.view.MyCartView
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -24,7 +24,7 @@ import kotlinx.android.synthetic.main.cart_item.view.*
 class CartAdapter(
     private val cartList: ArrayList<CartItem>,
     private val view: MyCartView.View,
-    private val cart: CartRepositoryImp,
+    private val baseApiService: BaseApiService,
     private val scheduler: SchedulerProvider,
     private val token: String
 ) : RecyclerView.Adapter<CartAdapter.ViewHolder>() {
@@ -57,7 +57,7 @@ class CartAdapter(
                 .setPositiveButton("Ya") { _, _ ->
                     view.showProgressBar()
 
-                    cart.deleteCartItem(token, "application/json", getId)
+                    baseApiService.getCartDalete(token, "application/json", getId)
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribeOn(scheduler.io())
                         .subscribeWith(object : ResourceSubscriber<DeleteCartResponse>() {

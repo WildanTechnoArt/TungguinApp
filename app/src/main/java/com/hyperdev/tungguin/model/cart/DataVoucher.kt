@@ -7,10 +7,10 @@ data class DataVoucher(
 
     @SerializedName("is_available")
     @Expose
-    var fisAvailable: Boolean? = null,
+    var isAvailable: Boolean? = null,
 
-    @SerializedName("content")
+    @SerializedName("message")
     @Expose
-    var content: String? = null
+    var message: String? = null
 
 )

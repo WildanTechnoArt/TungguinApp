@@ -6,10 +6,10 @@ import com.google.gson.Gson
 import com.hyperdev.tungguin.model.cart.CartResponse
 import com.hyperdev.tungguin.model.cart.CheckVoucherResponse
 import com.hyperdev.tungguin.model.cart.CheckoutResponse
+import com.hyperdev.tungguin.network.BaseApiService
 import com.hyperdev.tungguin.network.ConnectivityStatus.Companion.isConnected
 import com.hyperdev.tungguin.network.HandleError
 import com.hyperdev.tungguin.network.Response
-import com.hyperdev.tungguin.repository.cart.CartRepositoryImp
 import com.hyperdev.tungguin.utils.SchedulerProvider
 import com.hyperdev.tungguin.ui.view.MyCartView
 import io.reactivex.Observer
@@ -23,7 +23,7 @@ import java.net.SocketTimeoutException
 class CartPresenter(
     private val view: MyCartView.View,
     private val context: Context,
-    private val cart: CartRepositoryImp,
+    private val baseApiService: BaseApiService,
     private val scheduler: SchedulerProvider
 ) : MyCartView.Presenter {
 
@@ -33,7 +33,7 @@ class CartPresenter(
         view.showProgressBar()
 
         compositeDisposable.add(
-            cart.getCartItem(token, "application/json")
+            baseApiService.getCartData(token, "application/json")
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(scheduler.io())
                 .subscribeWith(object : ResourceSubscriber<CartResponse>() {
@@ -72,7 +72,7 @@ class CartPresenter(
     override fun checkVoucher(token: String, accept: String, code: String) {
         view.showProgressBar()
 
-        cart.checkVoucher(token, accept, code)
+        baseApiService.checkKupon(token, accept, code)
             .observeOn(AndroidSchedulers.mainThread())
             .subscribeOn(scheduler.io())
             .unsubscribeOn(scheduler.io())
@@ -116,7 +116,7 @@ class CartPresenter(
     override fun checkout(token: String, accept: String, paymentType: String, voucher: String) {
         view.showProgressBar()
 
-        cart.checkout(token, accept, paymentType, voucher)
+        baseApiService.checkout(token, accept, paymentType, voucher)
             .observeOn(AndroidSchedulers.mainThread())
             .subscribeOn(scheduler.io())
             .unsubscribeOn(scheduler.io())

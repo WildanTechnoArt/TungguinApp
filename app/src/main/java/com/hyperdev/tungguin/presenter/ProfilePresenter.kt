@@ -5,10 +5,9 @@ import android.widget.Toast
 import com.hyperdev.tungguin.model.profile.ProfileResponse
 import com.hyperdev.tungguin.model.authentication.CityResponse
 import com.hyperdev.tungguin.model.authentication.ProvinceResponse
+import com.hyperdev.tungguin.network.BaseApiService
 import com.hyperdev.tungguin.network.ConnectivityStatus
 import com.hyperdev.tungguin.network.HandleError
-import com.hyperdev.tungguin.repository.profile.ProfileRepositoryImpl
-import com.hyperdev.tungguin.repository.authentication.AuthRepositoryImp
 import com.hyperdev.tungguin.utils.SchedulerProvider
 import com.hyperdev.tungguin.ui.view.ProfileView
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -20,8 +19,7 @@ import java.net.SocketTimeoutException
 class ProfilePresenter(
     private val view: ProfileView.View,
     private val context: Context,
-    private val profile: ProfileRepositoryImpl,
-    private val register: AuthRepositoryImp,
+    private val baseApiService: BaseApiService,
     private val scheduler: SchedulerProvider
 ) : ProfileView.Presenter {
 
@@ -31,7 +29,7 @@ class ProfilePresenter(
         view.displayProgress()
 
         compositeDisposable.add(
-            profile.getProfile(token, "application/json")
+            baseApiService.getProfile(token, "application/json")
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(scheduler.io())
                 .subscribeWith(object : ResourceSubscriber<ProfileResponse>() {
@@ -66,7 +64,7 @@ class ProfilePresenter(
 
     override fun getCityAll(id: String) {
         compositeDisposable.add(
-            register.getCity(id)
+            baseApiService.getAllCity(id)
                 .observeOn(scheduler.ui())
                 .subscribeOn(scheduler.io())
                 .subscribeWith(object : ResourceSubscriber<CityResponse>() {
@@ -91,7 +89,7 @@ class ProfilePresenter(
         view.displayProgress()
 
         compositeDisposable.add(
-            register.getProvince()
+            baseApiService.getAllProvince()
                 .observeOn(scheduler.ui())
                 .subscribeOn(scheduler.io())
                 .subscribeWith(object : ResourceSubscriber<ProvinceResponse>() {

@@ -5,14 +5,10 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.graphics.drawable.Drawable
-import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
-import android.widget.ProgressBar
-import android.widget.TextView
-import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions.withCrossFade
@@ -22,19 +18,11 @@ import com.hyperdev.tungguin.GlideApp
 import com.hyperdev.tungguin.R
 import com.hyperdev.tungguin.model.katalogdesain.Item
 import com.hyperdev.tungguin.ui.activity.DetailProductActivity
+import com.hyperdev.tungguin.utils.UtilsConstant.Companion.HASHED_ID
+import kotlinx.android.synthetic.main.catalog_item.view.*
 
 class KatalogItemListAdapter(private val katalogItem: ArrayList<Item>, private var context: Context?) :
     RecyclerView.Adapter<KatalogItemListAdapter.ViewHolder>() {
-
-    inner class ViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
-
-        val getProductName: TextView = view.findViewById(R.id.tv_design_name)
-        val getProductImage: ImageView = view.findViewById(R.id.img_product_item)
-        val getProductPrice: TextView = view.findViewById(R.id.tv_design_price)
-        val getItemView: ConstraintLayout = view.findViewById(R.id.catalog_item_view)
-        val progressBar: ProgressBar = view.findViewById(R.id.progress_bar)
-
-    }
 
     override fun onCreateViewHolder(parent: ViewGroup, p1: Int): ViewHolder {
         val v = LayoutInflater.from(parent.context).inflate(R.layout.catalog_item, parent, false)
@@ -48,19 +36,19 @@ class KatalogItemListAdapter(private val katalogItem: ArrayList<Item>, private v
 
         val getItemID = katalogItem[position].hashedId.toString()
 
-        holder.getProductName.text = katalogItem[position].name.toString()
+        holder.itemView.tv_design_name.text = katalogItem[position].name.toString()
 
         GlideApp.with(holder.view.context)
             .load(katalogItem[position].iconUrl.toString())
             .transition(withCrossFade())
-            .listener(object : RequestListener<Drawable>{
+            .listener(object : RequestListener<Drawable> {
                 override fun onLoadFailed(
                     e: GlideException?,
                     model: Any?,
                     target: Target<Drawable>?,
                     isFirstResource: Boolean
                 ): Boolean {
-                    holder.progressBar.visibility = View.GONE
+                    holder.itemView.progress_bar.visibility = View.GONE
                     return false
                 }
 
@@ -71,20 +59,22 @@ class KatalogItemListAdapter(private val katalogItem: ArrayList<Item>, private v
                     dataSource: DataSource?,
                     isFirstResource: Boolean
                 ): Boolean {
-                    holder.progressBar.visibility = View.GONE
+                    holder.itemView.progress_bar.visibility = View.GONE
                     return false
                 }
 
             })
-            .into(holder.getProductImage)
+            .into(holder.itemView.img_product_item)
 
-        holder.getProductPrice.text = katalogItem[position].formattedPrice.toString()
+        holder.itemView.tv_design_price.text = katalogItem[position].formattedPrice.toString()
 
-        holder.getItemView.setOnClickListener {
+        holder.itemView.catalog_item_view.setOnClickListener {
             val intent = Intent(context, DetailProductActivity::class.java)
-            intent.putExtra("sendProductID", getItemID)
+            intent.putExtra(HASHED_ID, getItemID)
             context?.startActivity(intent)
             (context as Activity)
         }
     }
+
+    inner class ViewHolder(val view: View) : RecyclerView.ViewHolder(view)
 }

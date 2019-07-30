@@ -4,9 +4,9 @@ import android.content.Context
 import android.widget.Toast
 import com.google.gson.Gson
 import com.hyperdev.tungguin.model.contact.ContactUsResponse
+import com.hyperdev.tungguin.network.BaseApiService
 import com.hyperdev.tungguin.network.ConnectivityStatus
 import com.hyperdev.tungguin.network.Response
-import com.hyperdev.tungguin.repository.other.ContactUsRepositoryImp
 import com.hyperdev.tungguin.ui.view.ContactUsView
 import com.hyperdev.tungguin.utils.SchedulerProvider
 import io.reactivex.Observer
@@ -19,7 +19,7 @@ import java.net.SocketTimeoutException
 class ContactUsPresenter(
     private val context: Context,
     private val view: ContactUsView.View,
-    private val contact: ContactUsRepositoryImp,
+    private val baseApiService: BaseApiService,
     private val scheduler: SchedulerProvider
 ) : ContactUsView.Presenter {
 
@@ -28,7 +28,7 @@ class ContactUsPresenter(
     override fun contactUs(token: String, accept: String, title: String, content: String) {
         view.showProgressBar()
 
-        contact.contactUs(token, accept, title, content)
+        baseApiService.contactUs(token, accept, title, content)
             .observeOn(AndroidSchedulers.mainThread())
             .subscribeOn(scheduler.io())
             .unsubscribeOn(scheduler.io())

@@ -1,19 +1,17 @@
 package com.hyperdev.tungguin.ui.activity
 
 import android.content.pm.ActivityInfo
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import com.google.android.material.snackbar.Snackbar
-import android.util.Log
 import android.view.View
+import androidx.appcompat.app.AppCompatActivity
 import com.hyperdev.tungguin.R
 import com.hyperdev.tungguin.network.BaseApiService
 import com.hyperdev.tungguin.network.NetworkClient
 import com.hyperdev.tungguin.presenter.ForgotPassPresenter
-import com.hyperdev.tungguin.repository.other.ForgotPassRepositoryImpl
 import com.hyperdev.tungguin.ui.view.ForgotPassView
 import com.hyperdev.tungguin.utils.AppSchedulerProvider
 import com.hyperdev.tungguin.utils.Validation.Companion.validateEmail
+import com.shashank.sony.fancytoastlib.FancyToast
 import kotlinx.android.synthetic.main.activity_reset_pass.*
 
 class ForgotPassActivity : AppCompatActivity(), ForgotPassView.View {
@@ -29,25 +27,26 @@ class ForgotPassActivity : AppCompatActivity(), ForgotPassView.View {
         requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
 
         setSupportActionBar(toolbar)
-        supportActionBar?.setDisplayShowHomeEnabled(true)
-        supportActionBar?.setHomeButtonEnabled(true)
-        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        supportActionBar?.apply {
+            setDisplayShowHomeEnabled(true)
+            setHomeButtonEnabled(true)
+            setDisplayHomeAsUpEnabled(true)
+        }
 
         baseApiService = NetworkClient.getClient(this@ForgotPassActivity)!!
             .create(BaseApiService::class.java)
 
-        val repository = ForgotPassRepositoryImpl(baseApiService)
         val scheduler = AppSchedulerProvider()
-        presenter = ForgotPassPresenter(this@ForgotPassActivity, this, repository, scheduler)
+        presenter = ForgotPassPresenter(this, this, baseApiService, scheduler)
 
-        btnResetPass.setOnClickListener {
-            emailUser = email.text.toString()
+        btn_send_email.setOnClickListener {
+            emailUser = input_email.text.toString()
 
             var err = 0
 
             if (!validateEmail(emailUser)) {
                 err++
-                email.error = "Email tidak valid !"
+                input_email.error = "Email tidak valid!"
             }
 
             if (err == 0) {
@@ -59,23 +58,23 @@ class ForgotPassActivity : AppCompatActivity(), ForgotPassView.View {
     override fun showProgressBar() {
         shadow.visibility = View.VISIBLE
         progress_bar.visibility = View.VISIBLE
-        btnResetPass.isEnabled = false
-        email.isEnabled = false
+        btn_send_email.isEnabled = false
+        input_email.isEnabled = false
     }
 
     override fun hideProgressBar() {
         shadow.visibility = View.GONE
         progress_bar.visibility = View.GONE
-        btnResetPass.isEnabled = true
-        email.isEnabled = true
+        btn_send_email.isEnabled = true
+        input_email.isEnabled = true
     }
 
     override fun onSuccess() {
-        Log.d(ForgotPassActivity::class.java.simpleName, "Forgot Password Success")
+        FancyToast.makeText(this, "Silakan cek email anda", FancyToast.LENGTH_SHORT, FancyToast.SUCCESS, false).show()
     }
 
     override fun noInternetConnection(message: String) {
-        Snackbar.make(forgot_pass_layout, message, Snackbar.LENGTH_SHORT).show()
+        FancyToast.makeText(this, message, FancyToast.LENGTH_SHORT, FancyToast.ERROR, false).show()
     }
 
     override fun onSupportNavigateUp(): Boolean {

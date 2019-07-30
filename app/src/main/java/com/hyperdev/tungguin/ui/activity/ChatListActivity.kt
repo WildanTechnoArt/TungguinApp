@@ -1,8 +1,8 @@
 package com.hyperdev.tungguin.ui.activity
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.widget.Toast
+import android.view.View
+import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -16,10 +16,10 @@ import com.hyperdev.tungguin.network.BaseApiService
 import com.hyperdev.tungguin.network.ConnectivityStatus
 import com.hyperdev.tungguin.network.HandleError
 import com.hyperdev.tungguin.network.NetworkClient
-import com.hyperdev.tungguin.repository.chat.ChatRepositoryImp
 import com.hyperdev.tungguin.ui.view.ChatListView
 import com.hyperdev.tungguin.utils.UtilsConstant.Companion.SAVED_STATE
 import com.hyperdev.tungguin.viewmodel.ChatListViewModel
+import com.shashank.sony.fancytoastlib.FancyToast
 import kotlinx.android.synthetic.main.activity_chat_list.*
 import retrofit2.HttpException
 import java.net.SocketTimeoutException
@@ -85,12 +85,19 @@ class ChatListActivity : AppCompatActivity(), ChatListView.View {
                 } else {
                     adapter.refreshAdapter(chatItems)
                 }
+
+                if (adapter.itemCount != 0) {
+                    tv_img_not_found.visibility = View.GONE
+                    rv_chat_list.visibility = View.VISIBLE
+                } else {
+                    tv_img_not_found.visibility = View.VISIBLE
+                    rv_chat_list.visibility = View.GONE
+                }
             }
         }
 
     private fun requestChatList() {
-        val repository = baseApiService?.let { ChatRepositoryImp(it) }
-        repository?.let {
+        baseApiService?.let {
             chatListViewModel.setChatList(
                 it, this,
                 "Bearer $mToken",
@@ -134,10 +141,22 @@ class ChatListActivity : AppCompatActivity(), ChatListView.View {
                 is HttpException -> // non 200 error codes
                     HandleError.handleError(t, t.code(), this)
                 is SocketTimeoutException -> // connection errors
-                    Toast.makeText(this, "Connection Timeout!", Toast.LENGTH_SHORT).show()
+                    FancyToast.makeText(
+                        this,
+                        "Connection Timeout!",
+                        FancyToast.LENGTH_SHORT,
+                        FancyToast.ERROR,
+                        false
+                    ).show()
             }
         } else {
-            Toast.makeText(this, "Tidak Terhubung Dengan Internet!", Toast.LENGTH_SHORT).show()
+            FancyToast.makeText(
+                this,
+                "Tidak Terhubung Dengan Internet!",
+                FancyToast.LENGTH_SHORT,
+                FancyToast.ERROR,
+                false
+            ).show()
         }
     }
 

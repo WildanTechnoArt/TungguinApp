@@ -7,9 +7,9 @@ import com.hyperdev.tungguin.database.SharedPrefManager
 import com.hyperdev.tungguin.model.authentication.CityResponse
 import com.hyperdev.tungguin.model.authentication.ProvinceResponse
 import com.hyperdev.tungguin.model.authentication.RegisterResponse
+import com.hyperdev.tungguin.network.BaseApiService
 import com.hyperdev.tungguin.network.ConnectivityStatus
 import com.hyperdev.tungguin.network.Response
-import com.hyperdev.tungguin.repository.authentication.AuthRepositoryImp
 import com.hyperdev.tungguin.utils.SchedulerProvider
 import com.hyperdev.tungguin.ui.view.RegisterView
 import io.reactivex.Observer
@@ -23,7 +23,7 @@ import java.net.SocketTimeoutException
 class RegisterPresenter(
     private val context: Context,
     private val view: RegisterView.View,
-    private val reg: AuthRepositoryImp,
+    private val baseApiService: BaseApiService,
     private val scheduler: SchedulerProvider
 ) : RegisterView.Presenter {
 
@@ -31,7 +31,7 @@ class RegisterPresenter(
 
     override fun postDataUser(register: HashMap<String, String>) {
         view.displayProgress()
-        reg.registerRequest("application/json", register)
+        baseApiService.registerRequest("application/json", register)
             .observeOn(AndroidSchedulers.mainThread())
             .subscribeOn(scheduler.io())
             .unsubscribeOn(scheduler.io())
@@ -75,7 +75,7 @@ class RegisterPresenter(
         view.displayProgress()
 
         compositeDisposable.add(
-            reg.getProvince()
+            baseApiService.getAllProvince()
                 .observeOn(scheduler.ui())
                 .subscribeOn(scheduler.io())
                 .subscribeWith(object : ResourceSubscriber<ProvinceResponse>() {
@@ -101,7 +101,7 @@ class RegisterPresenter(
 
     override fun getCityAll(id: String) {
         compositeDisposable.add(
-            reg.getCity(id)
+            baseApiService.getAllCity(id)
                 .observeOn(scheduler.ui())
                 .subscribeOn(scheduler.io())
                 .subscribeWith(object : ResourceSubscriber<CityResponse>() {

@@ -18,7 +18,6 @@ import com.hyperdev.tungguin.model.transaction.TransactionHistory
 import com.hyperdev.tungguin.network.BaseApiService
 import com.hyperdev.tungguin.network.NetworkClient
 import com.hyperdev.tungguin.presenter.TransactionHistoriPresenter
-import com.hyperdev.tungguin.repository.transaction.TransactionRepositoryImp
 import com.hyperdev.tungguin.utils.AppSchedulerProvider
 import com.hyperdev.tungguin.ui.view.HistoriTransactionView
 import kotlin.properties.Delegates
@@ -35,7 +34,7 @@ class TransactionHisFragment : Fragment(), HistoriTransactionView.View {
     private lateinit var baseApiService: BaseApiService
     private val TAG = javaClass.simpleName
     private var adapter by Delegates.notNull<TransactionRecyclerAdapter>()
-    private var page by Delegates.notNull<Int>()
+    private var page: Int = 1
     private lateinit var nextPageURL: String
     private var isLoading by Delegates.notNull<Boolean>()
 
@@ -44,9 +43,7 @@ class TransactionHisFragment : Fragment(), HistoriTransactionView.View {
 
         recycler = view.findViewById(R.id.recyclerTransactionList)
         progressBar = view.findViewById(R.id.progress_bar)
-        txtImgNotFound = view.findViewById(R.id.txt_img_not_found)
-
-        page = 1
+        txtImgNotFound = view.findViewById(R.id.tv_img_not_found)
 
         loadData()
 
@@ -67,9 +64,8 @@ class TransactionHisFragment : Fragment(), HistoriTransactionView.View {
         recycler.layoutManager = layout
         recycler.setHasFixedSize(true)
 
-        val request = TransactionRepositoryImp(baseApiService)
         val scheduler = AppSchedulerProvider()
-        presenter = TransactionHistoriPresenter(this, context!!, request, scheduler)
+        presenter = TransactionHistoriPresenter(this, context!!, baseApiService, scheduler)
         adapter = TransactionRecyclerAdapter(listTransaction as ArrayList<ListTransaction>)
 
         presenter.getTransactionHistory("Bearer $token", page = page)
@@ -120,7 +116,7 @@ class TransactionHisFragment : Fragment(), HistoriTransactionView.View {
             adapter.refreshAdapter(dataTransaction)
         }
 
-        if (adapter.itemCount.toString() != "0") {
+        if (adapter.itemCount != 0) {
             txtImgNotFound.visibility = View.GONE
             recycler.visibility = View.VISIBLE
         } else {

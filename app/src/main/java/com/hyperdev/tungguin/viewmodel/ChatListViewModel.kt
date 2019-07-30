@@ -5,7 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.hyperdev.tungguin.model.chat.ChatListItem
 import com.hyperdev.tungguin.model.chat.ChatListResponse
-import com.hyperdev.tungguin.repository.chat.ChatRepositoryImp
+import com.hyperdev.tungguin.network.BaseApiService
 import com.hyperdev.tungguin.ui.view.ChatListView
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
@@ -22,7 +22,7 @@ class ChatListViewModel : ViewModel(), ChatListView.ViewModel {
     }
 
     override fun setChatList(
-        repository: ChatRepositoryImp,
+        baseApiService: BaseApiService,
         view: ChatListView.View,
         token: String,
         accept: String,
@@ -31,7 +31,7 @@ class ChatListViewModel : ViewModel(), ChatListView.ViewModel {
 
         view.showProgressBar()
         compositeDisposable.add(
-            repository.getChatList(token, accept, page)
+            baseApiService.getChat(token, accept, page)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
                 .subscribeWith(object : ResourceSubscriber<ChatListResponse>(){

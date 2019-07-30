@@ -2,11 +2,9 @@
     <string name="app_name">Tungguin</string>
     <string name="logo_full">logo_full</string>
     <string name="tungguin">Tungguin</string>
-    <string name="txt1">Dengan masuk dan mendaftar, kamu penyetujui Ketentuan Layanan dan Kebijakan Privasi.</string>
+    <string name="privacy_policy">Dengan masuk dan mendaftar, kamu penyetujui Ketentuan Layanan dan Kebijakan Privasi.</string>
     <string name="masuk">Masuk</string>
     <string name="daftar">Daftar</string>
-    <string name="txt2">Butuh desain apa saja, sekarang? TUNGGUIN aja!</string>
-    <string name="txt3">Selamat Datang di TUNGGUIN!</string>
     <string name="kota">Kota</string>
     <string name="provinsi">Provinsi</string>
     <string name="retype_password">Retype Password</string>
@@ -62,7 +60,7 @@
     <string name="_750_000">750.000</string>
     <string name="_1_000_000">1.000.000</string>
     <string name="jumlah_top_up">Jumlah Top Up</string>
-    <string name="rp_0">Rp0</string>
+    <string name="rp_0">Rp 0,-</string>
     <string name="saldo_e_wallet">Saldo e-Wallet Anda:</string>
     <string name="formatterdId">-</string>
     <string name="formattedStatus">Menunggu Pembayaran</string>
@@ -81,7 +79,7 @@
     <string name="src_design">Cari desain</string>
     <string name="wildan">Hei.....</string>
     <string name="productNameExample">-</string>
-    <string name="txt_data_not_found">TIdak Ada Data</string>
+    <string name="txt_data_not_found">Tidak Ada Data</string>
     <string name="informasi_order">Informasi Order</string>
     <string name="id_order">ID Order</string>
     <string name="waktu_pemesanan">Waktu Pemesanan</string>
@@ -116,8 +114,35 @@
     <string name="message_example">Message</string>
     <string name="clock">00:00:00</string>
     <string name="id_order_customer">ID Order:</string>
+    <string name="total_product">Jumlah (0 produk)</string>
+    <string name="service_fees">Service Fees</string>
+    <string name="total">Total</string>
+    <string name="input_coupon_code">Masukan Kode Kupon</string>
+    <string name="check">Cek</string>
+    <string name="btn_payment">Bayar</string>
+    <string name="loading_progress">Sedang Memuat....</string>
+    <string name="input_message">Ketik pesan</string>
+    <string name="image_button">image_button</string>
+    <string name="send_contact_us">Kirim Pesan</string>
+    <string name="total_service_fees">(Total + Service Fees)</string>
+    <string name="descriptioni">Deskripsi</string>
+    <string name="message">Pesan</string>
+    <string name="selamat_datang_di_tungguin">Selamat Datang di Tungguin</string>
+    <string name="tagline">Butuh desan apa saja sekarang? Tungguin aja</string>
+    <string name="text_designer_online">0 Desainer sedang online</string>
+    <string name="design_count">Jumlah Desain</string>
+    <string name="design_concept">Konsep Desain</string>
+    <string name="concept_design_hint">Masukan konsep desain yang anda inginkan disini</string>
+    <string name="design_reference">Referensi Desain</string>
+    <string name="add_reference_file">(+) Tambah File</string>
+    <string name="nol_desain">0 Desain</string>
+    <string name="design_order">Order Desain</string>
+    <string name="search_designer">Sedang Mencari Desainer....</string>
+    <string name="search_designer_timer">30</string>
+
     <item name="visible" type="id"/>
     <item name="masked" type="id"/>
+
     <item name="path_password_eye_mask_visible" type="id"/>
     <item name="path_password_eye_mask_strike_through" type="id"/>
 </resources>

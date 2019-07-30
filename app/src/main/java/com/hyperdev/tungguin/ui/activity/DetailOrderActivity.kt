@@ -5,25 +5,25 @@ import android.content.ActivityNotFoundException
 import android.content.Intent
 import android.content.pm.ActivityInfo
 import android.net.Uri
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import androidx.recyclerview.widget.LinearLayoutManager
 import android.text.util.Linkify
 import android.view.View
-import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.hyperdev.tungguin.GlideApp
 import com.hyperdev.tungguin.R
 import com.hyperdev.tungguin.adapter.DesignOrderAdapter
 import com.hyperdev.tungguin.database.SharedPrefManager
-import com.hyperdev.tungguin.model.detailorder.ItemDesign
 import com.hyperdev.tungguin.model.detailorder.DetailOrderData
+import com.hyperdev.tungguin.model.detailorder.ItemDesign
 import com.hyperdev.tungguin.model.profile.DataUser
 import com.hyperdev.tungguin.network.BaseApiService
 import com.hyperdev.tungguin.network.NetworkClient
 import com.hyperdev.tungguin.presenter.DetailOrderPresenter
-import com.hyperdev.tungguin.repository.order.OrderRepositoryImp
-import com.hyperdev.tungguin.utils.AppSchedulerProvider
 import com.hyperdev.tungguin.ui.view.DetailOrderView
+import com.hyperdev.tungguin.utils.AppSchedulerProvider
+import com.hyperdev.tungguin.utils.UtilsConstant.Companion.HASHED_ID
+import com.shashank.sony.fancytoastlib.FancyToast
 import kotlinx.android.synthetic.main.activity_detail_order.*
 import kotlinx.android.synthetic.main.customer_information.*
 import kotlinx.android.synthetic.main.designer_information.*
@@ -48,19 +48,20 @@ class DetailOrderActivity : AppCompatActivity(), DetailOrderView.View {
         requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
 
         setSupportActionBar(toolbar)
-        supportActionBar?.setDisplayShowHomeEnabled(true)
-        supportActionBar?.setHomeButtonEnabled(true)
-        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        supportActionBar?.apply {
+            setDisplayShowHomeEnabled(true)
+            setHomeButtonEnabled(true)
+            setDisplayHomeAsUpEnabled(true)
+        }
 
-        orderId = intent?.getStringExtra("sendOrderID").toString()
+        orderId = intent?.getStringExtra(HASHED_ID).toString()
         token = SharedPrefManager.getInstance(this@DetailOrderActivity).token.toString()
 
         baseApiService = NetworkClient.getClient(this@DetailOrderActivity)!!
             .create(BaseApiService::class.java)
 
-        val repository = OrderRepositoryImp(baseApiService)
         val scheduler = AppSchedulerProvider()
-        presenter = DetailOrderPresenter(this@DetailOrderActivity, this@DetailOrderActivity, repository, scheduler)
+        presenter = DetailOrderPresenter(this, this, baseApiService, scheduler)
 
         val layout = LinearLayoutManager(this@DetailOrderActivity)
         rv_list_product_order.layoutManager = layout
@@ -81,13 +82,13 @@ class DetailOrderActivity : AppCompatActivity(), DetailOrderView.View {
 
         btn_chat.setOnClickListener {
             val intent = Intent(this@DetailOrderActivity, ChatActivity::class.java)
-            intent.putExtra("sendOrderID", orderId)
+            intent.putExtra(HASHED_ID, orderId)
             startActivity(intent)
         }
 
         btn_rating.setOnClickListener {
             val intent = Intent(this@DetailOrderActivity, TestimoniActivity::class.java)
-            intent.putExtra("sendOrderID", orderId)
+            intent.putExtra(HASHED_ID, orderId)
             startActivity(intent)
         }
     }
@@ -111,17 +112,29 @@ class DetailOrderActivity : AppCompatActivity(), DetailOrderView.View {
         val getDesignerKode = "Kode: ${data?.designer?.formattedId.toString()}"
         val photoUrl = data?.designer?.photoUrl.toString()
         val getIdOrder = data?.formattedId.toString()
-        val getPdfUrl = data?.pdfUrl.toString()
+        val getPdfUrl = data?.pdfUrl
         val internalDesigner = data?.designer?.isInternal
         val phoneNumner = data?.designer?.phoneNumber.toString()
         val getStatusDesign = data?.statusFormatted?.status.toString()
         val getDateExpired = data?.expireDateFormatted.toString()
 
+        order_id.text = getIdOrder
+        date_order.text = data?.formattedDate.toString()
+
+        if (getDateExpired != "null") {
+            date_expire.text = getDateExpired
+        } else {
+            date_expire.text = "-"
+        }
+
+        status_order.text = data?.statusFormatted?.label.toString()
+        tv_total_price.text = data?.realTotalFormatted.toString()
+
         when (getStatusDesign) {
             "searching_designer" -> {
 
                 val intent = Intent(this@DetailOrderActivity, SearchDesignerActivity::class.java)
-                intent.putExtra("sendOrderID", orderId)
+                intent.putExtra(HASHED_ID, orderId)
                 startActivity(intent)
                 finish()
 
@@ -135,7 +148,7 @@ class DetailOrderActivity : AppCompatActivity(), DetailOrderView.View {
                 tv_id_designer.text = getDesignerKode
                 img_designer.visibility = View.VISIBLE
 
-                if(internalDesigner == true){
+                if (internalDesigner == true) {
                     val numberWithCountry = phoneNumner.replaceFirst("0", "62")
                     btn_contact_designer.visibility = View.VISIBLE
                     btn_contact_designer.setOnClickListener {
@@ -149,9 +162,6 @@ class DetailOrderActivity : AppCompatActivity(), DetailOrderView.View {
                     .placeholder(R.drawable.circle_profil)
                     .into(img_designer)
 
-                order_id.visibility = View.VISIBLE
-                order_id.text = getIdOrder
-
                 tv_order_information.visibility = View.GONE
                 btn_payment_instructions.visibility = View.GONE
                 btn_chat.visibility = View.VISIBLE
@@ -164,16 +174,23 @@ class DetailOrderActivity : AppCompatActivity(), DetailOrderView.View {
             "pending" -> {
 
                 tv_order_information.visibility = View.VISIBLE
-                btn_payment_instructions.visibility = View.VISIBLE
-                btn_payment_instructions.setOnClickListener {
-                    try {
-                        val pdfUrl = Uri.parse(getPdfUrl)
-                        val intent = Intent(Intent.ACTION_VIEW, pdfUrl)
-                        startActivity(intent)
-                    } catch (ex: ActivityNotFoundException) {
-                        Toast.makeText(this, "Tidak ada aplikasi yang dapat menangani permintaan ini. " +
-                                "Silakan instal browser web", Toast.LENGTH_LONG).show()
-                        ex.printStackTrace()
+                if (getPdfUrl != null) {
+                    btn_payment_instructions.visibility = View.VISIBLE
+                    btn_payment_instructions.setOnClickListener {
+                        try {
+                            val pdfUrl = Uri.parse(getPdfUrl)
+                            val intent = Intent(Intent.ACTION_VIEW, pdfUrl)
+                            startActivity(intent)
+                        } catch (ex: ActivityNotFoundException) {
+                            FancyToast.makeText(
+                                this,
+                                "Tidak ada aplikasi yang dapat menangani permintaan ini. Silakan instal browser web",
+                                FancyToast.LENGTH_LONG,
+                                FancyToast.INFO,
+                                false
+                            ).show()
+                            ex.printStackTrace()
+                        }
                     }
                 }
 
@@ -190,7 +207,7 @@ class DetailOrderActivity : AppCompatActivity(), DetailOrderView.View {
                 tv_order_information.visibility = View.VISIBLE
                 btn_payment_instructions.visibility = View.GONE
 
-                status_order.setBackgroundResource(R.drawable.red_round_no_hover)
+                status_order.setBackgroundResource(R.drawable.btn_red_round_no_hover)
 
             }
 
@@ -217,31 +234,30 @@ class DetailOrderActivity : AppCompatActivity(), DetailOrderView.View {
                     .placeholder(R.drawable.circle_profil)
                     .into(img_designer)
 
-                order_id.visibility = View.VISIBLE
-                order_id.text = getIdOrder
-
                 tv_order_information.visibility = View.GONE
                 btn_payment_instructions.visibility = View.GONE
 
                 if (data?.testimonial?.orderId != null) {
                     btn_rating.visibility = View.GONE
-                    testimoni_designer.visibility = View.VISIBLE
+                    input_testimoni_designer.visibility = View.VISIBLE
                     rating_bar.rating = data.testimonial!!.starRating!!.toFloat()
                     tv_testi_designer.text = data.testimonial!!.designerTestimonial.toString()
                     tv_testi_app.text = data.testimonial!!.appTestimonial.toString()
                     tv_tip_designer.text = data.testimonial!!.designerTipFormatted.toString()
                 } else {
                     btn_rating.visibility = View.VISIBLE
-                    testimoni_designer.visibility = View.GONE
+                    input_testimoni_designer.visibility = View.GONE
                 }
 
                 btn_repeat_order.visibility = View.VISIBLE
                 btn_repeat_order.setOnClickListener {
                     val getIdDesigner = data?.designer?.hashedId.toString()
-                    Toast.makeText(
-                        this@DetailOrderActivity,
+                    FancyToast.makeText(
+                        this,
                         "Designer telah dipilih, silakan order kembali",
-                        Toast.LENGTH_LONG
+                        FancyToast.LENGTH_LONG,
+                        FancyToast.INFO,
+                        false
                     ).show()
                     SharedPrefManager.getInstance(this@DetailOrderActivity).saveDesigner(getIdDesigner)
                     startActivity(Intent(this@DetailOrderActivity, DashboardActivity::class.java))
@@ -249,17 +265,6 @@ class DetailOrderActivity : AppCompatActivity(), DetailOrderView.View {
                 }
             }
         }
-
-        date_order.text = data?.formattedDate.toString()
-
-        if (getDateExpired != "null") {
-            date_expire.text = getDateExpired
-        } else {
-            date_expire.text = "-"
-        }
-
-        status_order.text = data?.statusFormatted?.label.toString()
-        total_harga.text = data?.realTotalFormatted.toString()
     }
 
     override fun displayProfile(profileItem: DataUser) {
