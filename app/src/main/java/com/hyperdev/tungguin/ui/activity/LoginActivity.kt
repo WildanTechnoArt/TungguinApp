@@ -7,6 +7,8 @@ import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import com.hyperdev.tungguin.R
 import com.hyperdev.tungguin.network.BaseApiService
+import com.hyperdev.tungguin.network.ConnectivityStatus
+import com.hyperdev.tungguin.network.HandleError
 import com.hyperdev.tungguin.network.NetworkClient
 import com.hyperdev.tungguin.presenter.LoginPresenter
 import com.hyperdev.tungguin.ui.view.LoginView
@@ -15,6 +17,8 @@ import com.hyperdev.tungguin.utils.Validation.Companion.validateEmail
 import com.hyperdev.tungguin.utils.Validation.Companion.validateFields
 import com.shashank.sony.fancytoastlib.FancyToast
 import kotlinx.android.synthetic.main.activity_login_page.*
+import retrofit2.HttpException
+import java.net.SocketTimeoutException
 
 class LoginActivity : AppCompatActivity(), LoginView.View {
 
@@ -29,18 +33,18 @@ class LoginActivity : AppCompatActivity(), LoginView.View {
         setContentView(R.layout.activity_login_page)
         requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
 
-        baseApiService = NetworkClient.getClient(this@LoginActivity)!!
+        baseApiService = NetworkClient.getClient(this)
             .create(BaseApiService::class.java)
 
         val scheduler = AppSchedulerProvider()
-        presenter = LoginPresenter(this@LoginActivity, this, baseApiService, scheduler)
+        presenter = LoginPresenter(this, baseApiService, scheduler)
 
         btn_login.setOnClickListener {
             login()
         }
 
         tv_forgot_pass.setOnClickListener {
-            startActivity(Intent(this@LoginActivity, ForgotPassActivity::class.java))
+            startActivity(Intent(this, ForgotPassActivity::class.java))
         }
     }
 
@@ -62,7 +66,7 @@ class LoginActivity : AppCompatActivity(), LoginView.View {
         }
 
         if (err == 0) {
-            presenter.loginUser(emailUser, passUser)
+            presenter.loginUser(emailUser, passUser, this)
         }
     }
 
@@ -87,7 +91,28 @@ class LoginActivity : AppCompatActivity(), LoginView.View {
         finishAffinity()
     }
 
-    override fun noInternetConnection(message: String) {
-        FancyToast.makeText(this, message, FancyToast.LENGTH_SHORT, FancyToast.ERROR, false).show()
+    override fun handleError(e: Throwable) {
+        if (ConnectivityStatus.isConnected(this)) {
+            when (e) {
+                is HttpException -> // non 200 error codes
+                    HandleError.handleError(e, e.code(), this)
+                is SocketTimeoutException -> // connection errors
+                    FancyToast.makeText(
+                        this,
+                        "Connection Timeout!",
+                        FancyToast.LENGTH_SHORT,
+                        FancyToast.ERROR,
+                        false
+                    ).show()
+            }
+        } else {
+            FancyToast.makeText(
+                this,
+                "Tidak Terhubung Dengan Internet!",
+                FancyToast.LENGTH_SHORT,
+                FancyToast.ERROR,
+                false
+            ).show()
+        }
     }
 }

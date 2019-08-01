@@ -9,6 +9,7 @@ class BalanceView {
         fun showProgressBar()
         fun hideProgressBar()
         fun onSuccess()
+        fun handleError(e: Throwable)
     }
 
     interface Presenter {

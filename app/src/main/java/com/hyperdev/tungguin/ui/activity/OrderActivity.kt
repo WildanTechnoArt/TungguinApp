@@ -23,6 +23,11 @@ import android.view.animation.AnimationSet
 import android.view.animation.AccelerateInterpolator
 import android.view.animation.AlphaAnimation
 import android.view.animation.DecelerateInterpolator
+import com.hyperdev.tungguin.network.ConnectivityStatus
+import com.hyperdev.tungguin.network.HandleError
+import com.shashank.sony.fancytoastlib.FancyToast
+import retrofit2.HttpException
+import java.net.SocketTimeoutException
 
 class OrderActivity : AppCompatActivity(), OrderWithSliderView.View {
 
@@ -39,12 +44,12 @@ class OrderActivity : AppCompatActivity(), OrderWithSliderView.View {
 
         token = SharedPrefManager.getInstance(this).token.toString()
 
-        baseApiService = NetworkClient.getClient(this)!!
+        baseApiService = NetworkClient.getClient(this)
             .create(BaseApiService::class.java)
 
         val scheduler = AppSchedulerProvider()
 
-        presenter = OrderWithSliderPresenter(this, this, baseApiService, scheduler)
+        presenter = OrderWithSliderPresenter(this, baseApiService, scheduler)
 
         presenter.getOrderWithSlider("Bearer $token")
         presenter.getUserProfile("Bearer $token")
@@ -124,5 +129,35 @@ class OrderActivity : AppCompatActivity(), OrderWithSliderView.View {
 
     override fun hideProgress() {
         progress_bar.visibility = View.GONE
+    }
+
+    override fun handleError(e: Throwable) {
+        if (ConnectivityStatus.isConnected(this)) {
+            when (e) {
+                is HttpException -> // non 200 error codes
+                    HandleError.handleError(e, e.code(), this)
+                is SocketTimeoutException -> // connection errors
+                    FancyToast.makeText(
+                        this,
+                        "Connection Timeout!",
+                        FancyToast.LENGTH_SHORT,
+                        FancyToast.ERROR,
+                        false
+                    ).show()
+            }
+        } else {
+            FancyToast.makeText(
+                this,
+                "Tidak Terhubung Dengan Internet!",
+                FancyToast.LENGTH_SHORT,
+                FancyToast.ERROR,
+                false
+            ).show()
+        }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        presenter.onDestroy()
     }
 }

@@ -10,11 +10,16 @@ import com.hyperdev.tungguin.adapter.KatalogDesainAdapter
 import com.hyperdev.tungguin.database.SharedPrefManager
 import com.hyperdev.tungguin.model.katalogdesain.KatalogItem
 import com.hyperdev.tungguin.network.BaseApiService
+import com.hyperdev.tungguin.network.ConnectivityStatus
+import com.hyperdev.tungguin.network.HandleError
 import com.hyperdev.tungguin.network.NetworkClient
 import com.hyperdev.tungguin.presenter.CataloguePresenter
 import com.hyperdev.tungguin.utils.AppSchedulerProvider
 import com.hyperdev.tungguin.ui.view.KatalogDesainView
+import com.shashank.sony.fancytoastlib.FancyToast
 import kotlinx.android.synthetic.main.activity_catalogue_desain.*
+import retrofit2.HttpException
+import java.net.SocketTimeoutException
 import kotlin.properties.Delegates
 
 class KatalogDesainActivity : AppCompatActivity(), KatalogDesainView.View {
@@ -48,15 +53,15 @@ class KatalogDesainActivity : AppCompatActivity(), KatalogDesainView.View {
     private fun loadData() {
         token = SharedPrefManager.getInstance(this).token.toString()
 
-        baseApiService = NetworkClient.getClient(this)!!
+        baseApiService = NetworkClient.getClient(this)
             .create(BaseApiService::class.java)
 
-        val layout = LinearLayoutManager(this@KatalogDesainActivity)
+        val layout = LinearLayoutManager(this)
         rv_catalogue.layoutManager = layout
         rv_catalogue.setHasFixedSize(true)
 
         val scheduler = AppSchedulerProvider()
-        presenter = CataloguePresenter(this, this, baseApiService, scheduler)
+        presenter = CataloguePresenter(this, baseApiService, scheduler)
 
         adapter = KatalogDesainAdapter(listKatalogItem as ArrayList<KatalogItem>, this)
 
@@ -86,6 +91,31 @@ class KatalogDesainActivity : AppCompatActivity(), KatalogDesainView.View {
     override fun onSupportNavigateUp(): Boolean {
         onBackPressed()
         return true
+    }
+
+    override fun handleError(e: Throwable) {
+        if (ConnectivityStatus.isConnected(this)) {
+            when (e) {
+                is HttpException -> // non 200 error codes
+                    HandleError.handleError(e, e.code(), this)
+                is SocketTimeoutException -> // connection errors
+                    FancyToast.makeText(
+                        this,
+                        "Connection Timeout!",
+                        FancyToast.LENGTH_SHORT,
+                        FancyToast.ERROR,
+                        false
+                    ).show()
+            }
+        } else {
+            FancyToast.makeText(
+                this,
+                "Tidak Terhubung Dengan Internet!",
+                FancyToast.LENGTH_SHORT,
+                FancyToast.ERROR,
+                false
+            ).show()
+        }
     }
 
     override fun onDestroy() {

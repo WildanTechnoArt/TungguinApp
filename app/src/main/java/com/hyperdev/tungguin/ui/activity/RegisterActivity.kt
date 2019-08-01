@@ -11,6 +11,8 @@ import com.hyperdev.tungguin.R
 import com.hyperdev.tungguin.model.authentication.CityItem
 import com.hyperdev.tungguin.model.authentication.ProvinceItem
 import com.hyperdev.tungguin.network.BaseApiService
+import com.hyperdev.tungguin.network.ConnectivityStatus
+import com.hyperdev.tungguin.network.HandleError
 import com.hyperdev.tungguin.network.NetworkClient
 import com.hyperdev.tungguin.presenter.RegisterPresenter
 import com.hyperdev.tungguin.ui.view.RegisterView
@@ -19,6 +21,8 @@ import com.hyperdev.tungguin.utils.Validation.Companion.validateEmail
 import com.hyperdev.tungguin.utils.Validation.Companion.validateFields
 import com.shashank.sony.fancytoastlib.FancyToast
 import kotlinx.android.synthetic.main.activity_register_page.*
+import retrofit2.HttpException
+import java.net.SocketTimeoutException
 import java.util.*
 
 class RegisterActivity : AppCompatActivity(), RegisterView.View {
@@ -48,12 +52,12 @@ class RegisterActivity : AppCompatActivity(), RegisterView.View {
         cityList.add("Pilih Kota...")
         cityIdList.add("null")
 
-        baseApiService = NetworkClient.getClient(this@RegisterActivity)!!
+        baseApiService = NetworkClient.getClient(this@RegisterActivity)
             .create(BaseApiService::class.java)
 
         val scheduler = AppSchedulerProvider()
 
-        presenter = RegisterPresenter(this, this, baseApiService, scheduler)
+        presenter = RegisterPresenter(this, baseApiService, scheduler)
         presenter.getProvinceAll()
         presenter.getCityAll(provinceId)
 
@@ -114,7 +118,7 @@ class RegisterActivity : AppCompatActivity(), RegisterView.View {
             registerMap["phone_number"] = nomorUser
             registerMap["province_id"] = provinceId
             registerMap["city_id"] = cityId
-            presenter.postDataUser(registerMap)
+            presenter.postDataUser(registerMap, this)
         }
     }
 
@@ -154,7 +158,8 @@ class RegisterActivity : AppCompatActivity(), RegisterView.View {
             cityIdList.add(it.id.toString())
         }
 
-        city_items.adapter = ArrayAdapter(this@RegisterActivity, android.R.layout.simple_spinner_dropdown_item, cityList)
+        city_items.adapter =
+            ArrayAdapter(this@RegisterActivity, android.R.layout.simple_spinner_dropdown_item, cityList)
 
         city_items.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onNothingSelected(parent: AdapterView<*>?) {}
@@ -193,12 +198,33 @@ class RegisterActivity : AppCompatActivity(), RegisterView.View {
     }
 
     override fun onSuccess() {
-        startActivity(Intent(this@RegisterActivity, DashboardActivity::class.java))
+        startActivity(Intent(this, DashboardActivity::class.java))
         finishAffinity()
     }
 
-    override fun noInternetConnection(message: String) {
-        FancyToast.makeText(this, message, FancyToast.LENGTH_SHORT, FancyToast.SUCCESS, false).show()
+    override fun handleError(e: Throwable) {
+        if (ConnectivityStatus.isConnected(this)) {
+            when (e) {
+                is HttpException -> // non 200 error codes
+                    HandleError.handleError(e, e.code(), this)
+                is SocketTimeoutException -> // connection errors
+                    FancyToast.makeText(
+                        this,
+                        "Connection Timeout!",
+                        FancyToast.LENGTH_SHORT,
+                        FancyToast.ERROR,
+                        false
+                    ).show()
+            }
+        } else {
+            FancyToast.makeText(
+                this,
+                "Tidak Terhubung Dengan Internet!",
+                FancyToast.LENGTH_SHORT,
+                FancyToast.ERROR,
+                false
+            ).show()
+        }
     }
 
     override fun onDestroy() {

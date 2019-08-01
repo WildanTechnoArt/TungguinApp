@@ -18,11 +18,16 @@ import com.hyperdev.tungguin.database.SharedPrefManager
 import com.hyperdev.tungguin.model.searchproduct.SearchItem
 import com.hyperdev.tungguin.model.searchproduct.SearchProductData
 import com.hyperdev.tungguin.network.BaseApiService
+import com.hyperdev.tungguin.network.ConnectivityStatus
+import com.hyperdev.tungguin.network.HandleError
 import com.hyperdev.tungguin.network.NetworkClient
 import com.hyperdev.tungguin.presenter.SearchProductPresenter
 import com.hyperdev.tungguin.ui.view.SearchProductView
 import com.hyperdev.tungguin.utils.AppSchedulerProvider
+import com.shashank.sony.fancytoastlib.FancyToast
 import kotlinx.android.synthetic.main.activity_search_product.*
+import retrofit2.HttpException
+import java.net.SocketTimeoutException
 import java.util.*
 
 class SearchProductActivity : AppCompatActivity(), SearchProductView.View, View.OnClickListener {
@@ -87,11 +92,11 @@ class SearchProductActivity : AppCompatActivity(), SearchProductView.View, View.
         mProductName = tv_search_product.text.toString()
 
         mBaseApiService = NetworkClient.getClient(this)
-            ?.create(BaseApiService::class.java)
+            .create(BaseApiService::class.java)
 
         val scheduler = AppSchedulerProvider()
 
-        mPresenter = SearchProductPresenter(this, this, mBaseApiService, scheduler)
+        mPresenter = SearchProductPresenter(this, mBaseApiService, scheduler)
 
         mToken = "Bearer ${SharedPrefManager.getInstance(this).token.toString()}"
 
@@ -169,5 +174,35 @@ class SearchProductActivity : AppCompatActivity(), SearchProductView.View, View.
     override fun hideSearchProgressBar() {
         mIsLoading = false
         swipe_refresh.isRefreshing = false
+    }
+
+    override fun handleError(e: Throwable) {
+        if (ConnectivityStatus.isConnected(this)) {
+            when (e) {
+                is HttpException -> // non 200 error codes
+                    HandleError.handleError(e, e.code(), this)
+                is SocketTimeoutException -> // connection errors
+                    FancyToast.makeText(
+                        this,
+                        "Connection Timeout!",
+                        FancyToast.LENGTH_SHORT,
+                        FancyToast.ERROR,
+                        false
+                    ).show()
+            }
+        } else {
+            FancyToast.makeText(
+                this,
+                "Tidak Terhubung Dengan Internet!",
+                FancyToast.LENGTH_SHORT,
+                FancyToast.ERROR,
+                false
+            ).show()
+        }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        mPresenter.onDestroy()
     }
 }

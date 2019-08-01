@@ -21,6 +21,8 @@ class SearchProductView {
 
         //Menghilangkan progressBar setelah data produk yang dicari berhasil dimuat
         fun hideSearchProgressBar()
+
+        fun handleError(e: Throwable)
     }
 
     interface Presenter{

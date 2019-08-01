@@ -26,6 +26,8 @@ import com.hyperdev.tungguin.model.detailproduct.FieldListFormatted
 import com.hyperdev.tungguin.model.detailproduct.PriceList
 import com.hyperdev.tungguin.model.detailproduct.ProductDetailItem
 import com.hyperdev.tungguin.network.BaseApiService
+import com.hyperdev.tungguin.network.ConnectivityStatus
+import com.hyperdev.tungguin.network.HandleError
 import com.hyperdev.tungguin.network.NetworkClient
 import com.hyperdev.tungguin.presenter.AddToCartPresenter
 import com.hyperdev.tungguin.presenter.DetailProductPresenter
@@ -42,6 +44,8 @@ import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import okhttp3.RequestBody.Companion.asRequestBody
 import okhttp3.RequestBody.Companion.toRequestBody
+import retrofit2.HttpException
+import java.net.SocketTimeoutException
 import kotlin.properties.Delegates
 
 class OrderDesignActivity : AppCompatActivity(), DetailProductView.View, UploadImageView.View,
@@ -118,25 +122,25 @@ class OrderDesignActivity : AppCompatActivity(), DetailProductView.View, UploadI
             setDisplayHomeAsUpEnabled(true)
         }
 
-        token = SharedPrefManager.getInstance(this@OrderDesignActivity).token.toString()
+        token = SharedPrefManager.getInstance(this).token.toString()
         hashed_id = intent?.getStringExtra(HASHED_ID).toString()
         cartDataMap["type"] = setRequestBody(hashed_id)
 
-        baseApiService = NetworkClient.getClient(this@OrderDesignActivity)!!
+        baseApiService = NetworkClient.getClient(this)
             .create(BaseApiService::class.java)
 
-        val layout = GridLayoutManager(this@OrderDesignActivity, 3)
+        val layout = GridLayoutManager(this, 3)
         rv_price_list.layoutManager = layout
         rv_price_list.setHasFixedSize(true)
 
         val scheduler = AppSchedulerProvider()
-        presenter = DetailProductPresenter(this, this, baseApiService, scheduler)
-        presenterCart = AddToCartPresenter(this, this, baseApiService, scheduler)
+        presenter = DetailProductPresenter(this, baseApiService, scheduler)
+        presenterCart = AddToCartPresenter(this, baseApiService, scheduler)
         presenterImage = UploadFilePresenter(this, scheduler)
 
         presenter.getDetailProduct("Bearer $token", hashed_id)
 
-        val layoutImg = LinearLayoutManager(this@OrderDesignActivity)
+        val layoutImg = LinearLayoutManager(this)
         rv_refrence_list.layoutManager = layoutImg
         rv_refrence_list.setHasFixedSize(false)
         rv_refrence_list.isNestedScrollingEnabled = false
@@ -630,10 +634,6 @@ class OrderDesignActivity : AppCompatActivity(), DetailProductView.View, UploadI
         startActivity(intent)
     }
 
-    override fun noInternetConnection(message: String) {
-        FancyToast.makeText(this, message, FancyToast.LENGTH_SHORT, FancyToast.ERROR, false).show()
-    }
-
     override fun onSupportNavigateUp(): Boolean {
         onBackPressed()
         return true
@@ -652,6 +652,31 @@ class OrderDesignActivity : AppCompatActivity(), DetailProductView.View, UploadI
                 }
                 return
             }
+        }
+    }
+
+    override fun handleError(e: Throwable) {
+        if (ConnectivityStatus.isConnected(this)) {
+            when (e) {
+                is HttpException -> // non 200 error codes
+                    HandleError.handleError(e, e.code(), this)
+                is SocketTimeoutException -> // connection errors
+                    FancyToast.makeText(
+                        this,
+                        "Connection Timeout!",
+                        FancyToast.LENGTH_SHORT,
+                        FancyToast.ERROR,
+                        false
+                    ).show()
+            }
+        } else {
+            FancyToast.makeText(
+                this,
+                "Tidak Terhubung Dengan Internet!",
+                FancyToast.LENGTH_SHORT,
+                FancyToast.ERROR,
+                false
+            ).show()
         }
     }
 

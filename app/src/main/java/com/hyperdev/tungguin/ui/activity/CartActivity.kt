@@ -19,6 +19,8 @@ import com.hyperdev.tungguin.model.cart.CartItem
 import com.hyperdev.tungguin.model.cart.CheckoutData
 import com.hyperdev.tungguin.model.cart.DataVoucher
 import com.hyperdev.tungguin.network.BaseApiService
+import com.hyperdev.tungguin.network.ConnectivityStatus
+import com.hyperdev.tungguin.network.HandleError
 import com.hyperdev.tungguin.network.NetworkClient
 import com.hyperdev.tungguin.presenter.CartPresenter
 import com.hyperdev.tungguin.ui.view.MyCartView
@@ -32,6 +34,8 @@ import com.midtrans.sdk.uikit.SdkUIFlowBuilder
 import com.shashank.sony.fancytoastlib.FancyToast
 import kotlinx.android.synthetic.main.activity_cart.*
 import kotlinx.android.synthetic.main.cart_information.*
+import retrofit2.HttpException
+import java.net.SocketTimeoutException
 import kotlin.properties.Delegates
 
 class CartActivity : AppCompatActivity(), MyCartView.View {
@@ -109,7 +113,7 @@ class CartActivity : AppCompatActivity(), MyCartView.View {
     private fun midtransInitialitation(hashedId: String) {
         SdkUIFlowBuilder.init()
             .setClientKey(BuildConfig.MIDTRANS_CLIENTID)
-            .setContext(this@CartActivity)
+            .setContext(this)
             .setTransactionFinishedCallback {
                 if (it.response != null) {
                     when (it.status) {
@@ -121,16 +125,16 @@ class CartActivity : AppCompatActivity(), MyCartView.View {
                                 FancyToast.SUCCESS,
                                 false
                             ).show()
-                            val intent = Intent(this@CartActivity, SearchDesignerActivity::class.java)
+                            val intent = Intent(this, SearchDesignerActivity::class.java)
                             intent.putExtra(HASHED_ID, hashedId)
                             startActivity(intent)
-                            finish()
+                            finishAffinity()
                         }
                         TransactionResult.STATUS_PENDING -> {
-                            val intent = Intent(this@CartActivity, DetailOrderActivity::class.java)
+                            val intent = Intent(this, DetailOrderActivity::class.java)
                             intent.putExtra(HASHED_ID, hashedId)
                             startActivity(intent)
-                            finish()
+                            finishAffinity()
                         }
                         TransactionResult.STATUS_FAILED -> FancyToast.makeText(
                             this,
@@ -180,21 +184,21 @@ class CartActivity : AppCompatActivity(), MyCartView.View {
 
         swipe_refresh.isEnabled = false
 
-        token = SharedPrefManager.getInstance(this@CartActivity).token.toString()
+        token = SharedPrefManager.getInstance(this).token.toString()
 
-        baseApiService = NetworkClient.getClient(this@CartActivity)!!
+        baseApiService = NetworkClient.getClient(this)
             .create(BaseApiService::class.java)
 
-        val layout = LinearLayoutManager(this@CartActivity)
+        val layout = LinearLayoutManager(this)
         rv_order_Item.layoutManager = layout
         rv_order_Item.setHasFixedSize(true)
 
         val scheduler = AppSchedulerProvider()
 
-        presenter = CartPresenter(this, this@CartActivity, baseApiService, scheduler)
+        presenter = CartPresenter(this, baseApiService, scheduler)
 
         adapter = CartAdapter(
-            listCartItem as ArrayList<CartItem>, this@CartActivity, baseApiService, scheduler, "Bearer $token"
+            listCartItem as ArrayList<CartItem>, this, baseApiService, scheduler, "Bearer $token"
         )
 
         rv_order_Item.adapter = adapter
@@ -215,7 +219,7 @@ class CartActivity : AppCompatActivity(), MyCartView.View {
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
         when (item?.itemId) {
             R.id.addOrder -> {
-                startActivity(Intent(this@CartActivity, OrderActivity::class.java))
+                startActivity(Intent(this, OrderActivity::class.java))
             }
         }
         return true
@@ -233,10 +237,6 @@ class CartActivity : AppCompatActivity(), MyCartView.View {
         service_fees.text = cartData.serviceFee.toString()
         total_price.text = cartData.total.toString()
         disabledAddCart = cartData.disableAddToCart!!
-    }
-
-    override fun noInternetConnection(message: String) {
-        FancyToast.makeText(this, message, FancyToast.LENGTH_SHORT, FancyToast.ERROR, false).show()
     }
 
     override fun onSuccessCheckVoucher() {
@@ -262,7 +262,7 @@ class CartActivity : AppCompatActivity(), MyCartView.View {
         swipe_refresh.isRefreshing = false
         if (paymentMethod == "wallet") {
             FancyToast.makeText(this, "Pembayaran Berhasil", FancyToast.LENGTH_LONG, FancyToast.SUCCESS, false).show()
-            val intent = Intent(this@CartActivity, SearchDesignerActivity::class.java)
+            val intent = Intent(this, SearchDesignerActivity::class.java)
             intent.putExtra(HASHED_ID, hashedId)
             startActivity(intent)
             finishAffinity()
@@ -274,7 +274,7 @@ class CartActivity : AppCompatActivity(), MyCartView.View {
             MidtransSDK.getInstance().uiKitCustomSetting = uiKitCustomSetting
 
             // Start Payment
-            MidtransSDK.getInstance().startPaymentUiFlow(this@CartActivity, tokenMidtrans)
+            MidtransSDK.getInstance().startPaymentUiFlow(this, tokenMidtrans)
         }
     }
 
@@ -307,5 +307,30 @@ class CartActivity : AppCompatActivity(), MyCartView.View {
 
     override fun onSuccessDeleteItem() {
         presenter.getCartData("Bearer $token")
+    }
+
+    override fun handleError(e: Throwable) {
+        if (ConnectivityStatus.isConnected(this)) {
+            when (e) {
+                is HttpException -> // non 200 error codes
+                    HandleError.handleError(e, e.code(), this)
+                is SocketTimeoutException -> // connection errors
+                    FancyToast.makeText(
+                        this,
+                        "Connection Timeout!",
+                        FancyToast.LENGTH_SHORT,
+                        FancyToast.ERROR,
+                        false
+                    ).show()
+            }
+        } else {
+            FancyToast.makeText(
+                this,
+                "Tidak Terhubung Dengan Internet!",
+                FancyToast.LENGTH_SHORT,
+                FancyToast.ERROR,
+                false
+            ).show()
+        }
     }
 }

@@ -1,5 +1,6 @@
 package com.hyperdev.tungguin.ui.activity
 
+import android.content.Intent
 import android.content.pm.ActivityInfo
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -13,18 +14,23 @@ import com.hyperdev.tungguin.database.SharedPrefManager
 import com.hyperdev.tungguin.model.historiorder.DataOrder
 import com.hyperdev.tungguin.model.historiorder.OrderItem
 import com.hyperdev.tungguin.network.BaseApiService
+import com.hyperdev.tungguin.network.ConnectivityStatus
+import com.hyperdev.tungguin.network.HandleError
 import com.hyperdev.tungguin.network.NetworkClient
-import com.hyperdev.tungguin.presenter.OrderHistoriPresenter
+import com.hyperdev.tungguin.presenter.OrderHistoryPresenter
 import com.hyperdev.tungguin.utils.AppSchedulerProvider
-import com.hyperdev.tungguin.ui.view.HistoriOrderView
+import com.hyperdev.tungguin.ui.view.HistoryOrderView
+import com.shashank.sony.fancytoastlib.FancyToast
 import kotlinx.android.synthetic.main.activity_history_order.*
+import retrofit2.HttpException
+import java.net.SocketTimeoutException
 import kotlin.properties.Delegates
 
-class HistoriOrderActivity : AppCompatActivity(), HistoriOrderView.View {
+class HistoriOrderActivity : AppCompatActivity(), HistoryOrderView.View {
 
     //Deklarasi Variable
     private var listOrder: MutableList<OrderItem> = mutableListOf()
-    private lateinit var presenter: HistoriOrderView.Presenter
+    private lateinit var presenter: HistoryOrderView.Presenter
     private lateinit var token: String
     private lateinit var baseApiService: BaseApiService
     private val TAG = javaClass.simpleName
@@ -58,17 +64,17 @@ class HistoriOrderActivity : AppCompatActivity(), HistoriOrderView.View {
     }
 
     private fun loadData() {
-        token = SharedPrefManager.getInstance(this@HistoriOrderActivity).token.toString()
+        token = SharedPrefManager.getInstance(this).token.toString()
 
-        baseApiService = NetworkClient.getClient(this@HistoriOrderActivity)!!
+        baseApiService = NetworkClient.getClient(this)
             .create(BaseApiService::class.java)
 
-        val layout = LinearLayoutManager(this@HistoriOrderActivity)
+        val layout = LinearLayoutManager(this)
         rv_history_list.layoutManager = layout
         rv_history_list.setHasFixedSize(true)
 
         val scheduler = AppSchedulerProvider()
-        presenter = OrderHistoriPresenter(this, this, baseApiService, scheduler)
+        presenter = OrderHistoryPresenter(this, baseApiService, scheduler)
         adapter = OrderHistoriAdapter(this, listOrder as ArrayList<OrderItem>)
 
         presenter.getOrderHistory("Bearer $token", page = page)
@@ -134,6 +140,39 @@ class HistoriOrderActivity : AppCompatActivity(), HistoriOrderView.View {
     override fun onSupportNavigateUp(): Boolean {
         onBackPressed()
         return true
+    }
+
+    override fun onBackPressed() {
+        super.onBackPressed()
+        val intent = Intent(this@HistoriOrderActivity, DashboardActivity::class.java)
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+        startActivity(intent)
+        finish()
+    }
+
+    override fun handleError(e: Throwable) {
+        if (ConnectivityStatus.isConnected(this)) {
+            when (e) {
+                is HttpException -> // non 200 error codes
+                    HandleError.handleError(e, e.code(), this)
+                is SocketTimeoutException -> // connection errors
+                    FancyToast.makeText(
+                        this,
+                        "Connection Timeout!",
+                        FancyToast.LENGTH_SHORT,
+                        FancyToast.ERROR,
+                        false
+                    ).show()
+            }
+        } else {
+            FancyToast.makeText(
+                this,
+                "Tidak Terhubung Dengan Internet!",
+                FancyToast.LENGTH_SHORT,
+                FancyToast.ERROR,
+                false
+            ).show()
+        }
     }
 
     override fun onDestroy() {

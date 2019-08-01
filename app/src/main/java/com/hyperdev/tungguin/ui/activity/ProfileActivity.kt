@@ -14,6 +14,8 @@ import com.hyperdev.tungguin.model.authentication.CityItem
 import com.hyperdev.tungguin.model.authentication.ProvinceItem
 import com.hyperdev.tungguin.model.profile.DataUser
 import com.hyperdev.tungguin.network.BaseApiService
+import com.hyperdev.tungguin.network.ConnectivityStatus
+import com.hyperdev.tungguin.network.HandleError
 import com.hyperdev.tungguin.network.NetworkClient
 import com.hyperdev.tungguin.presenter.ProfilePresenter
 import com.hyperdev.tungguin.presenter.ProfileUpdatePresenter
@@ -24,6 +26,8 @@ import com.hyperdev.tungguin.utils.Validation.Companion.validateEmail
 import com.hyperdev.tungguin.utils.Validation.Companion.validateFields
 import com.shashank.sony.fancytoastlib.FancyToast
 import kotlinx.android.synthetic.main.activity_profile.*
+import retrofit2.HttpException
+import java.net.SocketTimeoutException
 
 class ProfileActivity : AppCompatActivity(), ProfileView.View, ProfileUpdateView.View {
 
@@ -100,15 +104,15 @@ class ProfileActivity : AppCompatActivity(), ProfileView.View, ProfileUpdateView
         cityList.add("Pilih Kota...")
         cityIdList.add("null")
 
-        baseApiService = NetworkClient.getClient(this@ProfileActivity)!!
+        baseApiService = NetworkClient.getClient(this)
             .create(BaseApiService::class.java)
 
-        getToken = SharedPrefManager.getInstance(this@ProfileActivity).token.toString()
+        getToken = SharedPrefManager.getInstance(this).token.toString()
 
         val scheduler = AppSchedulerProvider()
 
-        presenter = ProfilePresenter(this, this@ProfileActivity, baseApiService, scheduler)
-        presenter2 = ProfileUpdatePresenter(this@ProfileActivity, this, baseApiService, scheduler)
+        presenter = ProfilePresenter(this, baseApiService, scheduler)
+        presenter2 = ProfileUpdatePresenter(this, baseApiService, scheduler)
         presenter.getProvinceAll()
         presenter.getCityAll(provinceId)
     }
@@ -268,14 +272,29 @@ class ProfileActivity : AppCompatActivity(), ProfileView.View, ProfileUpdateView
         ).show()
     }
 
-    override fun noInternetConnection(message: String) {
-        FancyToast.makeText(
-            this,
-            message,
-            FancyToast.LENGTH_SHORT,
-            FancyToast.SUCCESS,
-            false
-        ).show()
+    override fun handleError(e: Throwable) {
+        if (ConnectivityStatus.isConnected(this)) {
+            when (e) {
+                is HttpException -> // non 200 error codes
+                    HandleError.handleError(e, e.code(), this)
+                is SocketTimeoutException -> // connection errors
+                    FancyToast.makeText(
+                        this,
+                        "Connection Timeout!",
+                        FancyToast.LENGTH_SHORT,
+                        FancyToast.ERROR,
+                        false
+                    ).show()
+            }
+        } else {
+            FancyToast.makeText(
+                this,
+                "Tidak Terhubung Dengan Internet!",
+                FancyToast.LENGTH_SHORT,
+                FancyToast.ERROR,
+                false
+            ).show()
+        }
     }
 
     override fun onSupportNavigateUp(): Boolean {

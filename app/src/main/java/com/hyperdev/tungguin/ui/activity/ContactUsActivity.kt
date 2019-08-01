@@ -8,6 +8,8 @@ import com.hyperdev.tungguin.R
 import com.hyperdev.tungguin.database.SharedPrefManager
 import com.hyperdev.tungguin.model.contact.MetaContactUs
 import com.hyperdev.tungguin.network.BaseApiService
+import com.hyperdev.tungguin.network.ConnectivityStatus
+import com.hyperdev.tungguin.network.HandleError
 import com.hyperdev.tungguin.network.NetworkClient
 import com.hyperdev.tungguin.presenter.ContactUsPresenter
 import com.hyperdev.tungguin.ui.view.ContactUsView
@@ -15,6 +17,8 @@ import com.hyperdev.tungguin.utils.AppSchedulerProvider
 import com.hyperdev.tungguin.utils.Validation.Companion.validateFields
 import com.shashank.sony.fancytoastlib.FancyToast
 import kotlinx.android.synthetic.main.activity_contact_us.*
+import retrofit2.HttpException
+import java.net.SocketTimeoutException
 
 class ContactUsActivity : AppCompatActivity(), ContactUsView.View {
 
@@ -43,11 +47,11 @@ class ContactUsActivity : AppCompatActivity(), ContactUsView.View {
     }
 
     private fun initData(){
-        baseApiService = NetworkClient.getClient(this@ContactUsActivity)!!
+        baseApiService = NetworkClient.getClient(this)
             .create(BaseApiService::class.java)
 
         val scheduler = AppSchedulerProvider()
-        presenter = ContactUsPresenter(this@ContactUsActivity, this, baseApiService, scheduler)
+        presenter = ContactUsPresenter(this, baseApiService, scheduler)
 
         token = SharedPrefManager.getInstance(this).token.toString()
     }
@@ -97,7 +101,28 @@ class ContactUsActivity : AppCompatActivity(), ContactUsView.View {
         this.message = message.message.toString()
     }
 
-    override fun noInternetConnection(message: String) {
-        FancyToast.makeText(this, message, FancyToast.LENGTH_SHORT, FancyToast.ERROR, false).show()
+    override fun handleError(e: Throwable) {
+        if (ConnectivityStatus.isConnected(this)) {
+            when (e) {
+                is HttpException -> // non 200 error codes
+                    HandleError.handleError(e, e.code(), this)
+                is SocketTimeoutException -> // connection errors
+                    FancyToast.makeText(
+                        this,
+                        "Connection Timeout!",
+                        FancyToast.LENGTH_SHORT,
+                        FancyToast.ERROR,
+                        false
+                    ).show()
+            }
+        } else {
+            FancyToast.makeText(
+                this,
+                "Tidak Terhubung Dengan Internet!",
+                FancyToast.LENGTH_SHORT,
+                FancyToast.ERROR,
+                false
+            ).show()
+        }
     }
 }

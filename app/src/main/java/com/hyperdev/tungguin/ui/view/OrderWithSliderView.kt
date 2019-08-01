@@ -11,6 +11,7 @@ class OrderWithSliderView {
         fun displayProfile(profileItem: DataUser)
         fun displayProgress()
         fun hideProgress()
+        fun handleError(e: Throwable)
     }
 
     interface Presenter {

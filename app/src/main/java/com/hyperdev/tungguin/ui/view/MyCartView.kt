@@ -42,8 +42,8 @@ class MyCartView {
         // Membuat statement jika permintaan untuk checkout / pembayaran berhasil
         fun onSuccessCheckout()
 
-        // Method untuk menghandle jika tidak ada koneksi internet
-        fun noInternetConnection(message: String)
+        // Method untuk menghandle jika terjadi error
+        fun handleError(e: Throwable)
     }
 
     interface Presenter {

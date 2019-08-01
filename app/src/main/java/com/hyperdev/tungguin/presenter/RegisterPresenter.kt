@@ -1,27 +1,20 @@
 package com.hyperdev.tungguin.presenter
 
 import android.content.Context
-import android.widget.Toast
-import com.google.gson.Gson
 import com.hyperdev.tungguin.database.SharedPrefManager
 import com.hyperdev.tungguin.model.authentication.CityResponse
 import com.hyperdev.tungguin.model.authentication.ProvinceResponse
 import com.hyperdev.tungguin.model.authentication.RegisterResponse
 import com.hyperdev.tungguin.network.BaseApiService
-import com.hyperdev.tungguin.network.ConnectivityStatus
-import com.hyperdev.tungguin.network.Response
-import com.hyperdev.tungguin.utils.SchedulerProvider
 import com.hyperdev.tungguin.ui.view.RegisterView
+import com.hyperdev.tungguin.utils.SchedulerProvider
 import io.reactivex.Observer
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
 import io.reactivex.subscribers.ResourceSubscriber
-import retrofit2.HttpException
-import java.net.SocketTimeoutException
 
 class RegisterPresenter(
-    private val context: Context,
     private val view: RegisterView.View,
     private val baseApiService: BaseApiService,
     private val scheduler: SchedulerProvider
@@ -29,7 +22,7 @@ class RegisterPresenter(
 
     private val compositeDisposable = CompositeDisposable()
 
-    override fun postDataUser(register: HashMap<String, String>) {
+    override fun postDataUser(register: HashMap<String, String>, context: Context) {
         view.displayProgress()
         baseApiService.registerRequest("application/json", register)
             .observeOn(AndroidSchedulers.mainThread())
@@ -50,22 +43,7 @@ class RegisterPresenter(
 
                 override fun onError(e: Throwable) {
                     view.hideProgress()
-
-                    if (ConnectivityStatus.isConnected(context)) {
-                        when (e) {
-                            is HttpException -> {
-                                val gson = Gson()
-                                val response =
-                                    gson.fromJson(e.response()?.errorBody()?.charStream(), Response::class.java)
-                                val message = response.meta?.message.toString()
-                                Toast.makeText(context, message, Toast.LENGTH_LONG).show()
-                            }
-                            is SocketTimeoutException -> // connection errors
-                                view.noInternetConnection("Connection Timeout!")
-                        }
-                    } else {
-                        view.noInternetConnection("Tidak Terhubung Dengan Internet!")
-                    }
+                    view.handleError(e)
                 }
 
             })
@@ -92,8 +70,8 @@ class RegisterPresenter(
                     }
 
                     override fun onError(e: Throwable) {
-                        e.printStackTrace()
                         view.hideProgress()
+                        view.handleError(e)
                     }
                 })
         )
@@ -116,7 +94,8 @@ class RegisterPresenter(
                     }
 
                     override fun onError(e: Throwable) {
-                        e.printStackTrace()
+                        view.handleError(e)
+                        view.hideProgress()
                     }
                 })
         )

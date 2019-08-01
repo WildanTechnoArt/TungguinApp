@@ -34,7 +34,7 @@
 
                 <TextView
                         android:text="@string/none"
-                        android:layout_width="wrap_content"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:id="@+id/tv_designer_name"
                         app:layout_constraintStart_toStartOf="parent"

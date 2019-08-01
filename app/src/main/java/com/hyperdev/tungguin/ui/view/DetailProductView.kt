@@ -12,6 +12,7 @@ class DetailProductView {
         fun showDetailProductItem(productItem: ProductDetailItem)
         fun displayProgress()
         fun hideProgress()
+        fun handleError(e: Throwable)
     }
 
     interface Presenter {

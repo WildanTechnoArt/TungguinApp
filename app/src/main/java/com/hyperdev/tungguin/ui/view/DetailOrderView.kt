@@ -13,6 +13,7 @@ class DetailOrderView {
         fun displayProgress()
         fun hideProgress()
         fun onSuccess()
+        fun handleError(e: Throwable)
     }
 
     interface Presenter {

@@ -16,13 +16,18 @@ import com.hyperdev.tungguin.database.SharedPrefManager
 import com.hyperdev.tungguin.model.dashboard.AnnouncementData
 import com.hyperdev.tungguin.model.profile.DataUser
 import com.hyperdev.tungguin.network.BaseApiService
+import com.hyperdev.tungguin.network.ConnectivityStatus
+import com.hyperdev.tungguin.network.HandleError
 import com.hyperdev.tungguin.network.NetworkClient
 import com.hyperdev.tungguin.presenter.DashboardPresenter
 import com.hyperdev.tungguin.utils.AppSchedulerProvider
 import com.hyperdev.tungguin.ui.view.DashboardView
+import com.shashank.sony.fancytoastlib.FancyToast
 import com.synnapps.carouselview.ImageListener
 import kotlinx.android.synthetic.main.activity_dashboard.*
 import kotlinx.android.synthetic.main.dashboard_main_menu.*
+import retrofit2.HttpException
+import java.net.SocketTimeoutException
 import java.util.*
 
 class DashboardActivity : AppCompatActivity(), DashboardView.View {
@@ -55,17 +60,17 @@ class DashboardActivity : AppCompatActivity(), DashboardView.View {
     }
 
     private fun postTokenFCM() {
-        val tokenFCM = SharedPrefManager.getInstance(this@DashboardActivity).tokenFCM.toString()
+        val tokenFCM = SharedPrefManager.getInstance(this).tokenFCM.toString()
         presenter.sendTokenFcm("Bearer $getToken", "application/json", tokenFCM)
     }
 
     private fun mainMenuListener(){
         img_cart.setOnClickListener {
-            startActivity(Intent(this@DashboardActivity, CartActivity::class.java))
+            startActivity(Intent(this, CartActivity::class.java))
         }
 
         img_message.setOnClickListener {
-            startActivity(Intent(this@DashboardActivity, ChatListActivity::class.java))
+            startActivity(Intent(this, ChatListActivity::class.java))
         }
 
         tv_search_design.setOnClickListener {
@@ -73,27 +78,27 @@ class DashboardActivity : AppCompatActivity(), DashboardView.View {
         }
 
         btn_profile.setOnClickListener {
-            startActivity(Intent(this@DashboardActivity, ProfileActivity::class.java))
+            startActivity(Intent(this, ProfileActivity::class.java))
         }
 
         btn_topup.setOnClickListener {
-            startActivity(Intent(this@DashboardActivity, TopUpActivity::class.java))
+            startActivity(Intent(this, TopUpActivity::class.java))
         }
 
         btn_topup_histori.setOnClickListener {
-            startActivity(Intent(this@DashboardActivity, HistoryActivity::class.java))
+            startActivity(Intent(this, HistoryActivity::class.java))
         }
 
         btn_order.setOnClickListener {
-            startActivity(Intent(this@DashboardActivity, OrderActivity::class.java))
+            startActivity(Intent(this, OrderActivity::class.java))
         }
 
         order_histori.setOnClickListener {
-            startActivity(Intent(this@DashboardActivity, HistoriOrderActivity::class.java))
+            startActivity(Intent(this, HistoriOrderActivity::class.java))
         }
 
         katalog_desain.setOnClickListener {
-            startActivity(Intent(this@DashboardActivity, KatalogDesainActivity::class.java))
+            startActivity(Intent(this, KatalogDesainActivity::class.java))
         }
 
         btnHelp.setOnClickListener {
@@ -125,20 +130,20 @@ class DashboardActivity : AppCompatActivity(), DashboardView.View {
         imageList = arrayListOf()
 
         imageListener = ImageListener { position, imageView ->
-            GlideApp.with(this@DashboardActivity)
+            GlideApp.with(this)
                 .load(imageList[position])
                 .into(imageView)
 
         }
 
-        baseApiService = NetworkClient.getClient(this@DashboardActivity)!!
+        baseApiService = NetworkClient.getClient(this)
             .create(BaseApiService::class.java)
 
-        getToken = SharedPrefManager.getInstance(this@DashboardActivity).token.toString()
+        getToken = SharedPrefManager.getInstance(this).token.toString()
 
         val scheduler = AppSchedulerProvider()
 
-        presenter = DashboardPresenter(this, this@DashboardActivity, baseApiService, scheduler)
+        presenter = DashboardPresenter(this, baseApiService, scheduler)
     }
 
     private fun resetTokenFCM() {
@@ -147,8 +152,8 @@ class DashboardActivity : AppCompatActivity(), DashboardView.View {
     }
 
     override fun onSuccessResetToken() {
-        SharedPrefManager.getInstance(this@DashboardActivity).deleteToken()
-        startActivity(Intent(this@DashboardActivity, MainActivity::class.java))
+        SharedPrefManager.getInstance(this).deleteToken()
+        startActivity(Intent(this, MainActivity::class.java))
         finishAffinity()
     }
 
@@ -165,7 +170,7 @@ class DashboardActivity : AppCompatActivity(), DashboardView.View {
 
     override fun onBackPressed() {
         if (this.lastBackPressTime < System.currentTimeMillis() - 3000) {
-            toast = Toast.makeText(this@DashboardActivity, "Tekan tombol kembali lagi untuk keluar", Toast.LENGTH_SHORT)
+            toast = Toast.makeText(this, "Tekan tombol kembali lagi untuk keluar", Toast.LENGTH_SHORT)
             toast.show()
             this.lastBackPressTime = System.currentTimeMillis()
         } else {
@@ -225,5 +230,30 @@ class DashboardActivity : AppCompatActivity(), DashboardView.View {
 
     override fun hideProgressBar() {
         swipe_refresh.isRefreshing = false
+    }
+
+    override fun handleError(e: Throwable) {
+        if (ConnectivityStatus.isConnected(this)) {
+            when (e) {
+                is HttpException -> // non 200 error codes
+                    HandleError.handleError(e, e.code(), this)
+                is SocketTimeoutException -> // connection errors
+                    FancyToast.makeText(
+                        this,
+                        "Connection Timeout!",
+                        FancyToast.LENGTH_SHORT,
+                        FancyToast.ERROR,
+                        false
+                    ).show()
+            }
+        } else {
+            FancyToast.makeText(
+                this,
+                "Tidak Terhubung Dengan Internet!",
+                FancyToast.LENGTH_SHORT,
+                FancyToast.ERROR,
+                false
+            ).show()
+        }
     }
 }

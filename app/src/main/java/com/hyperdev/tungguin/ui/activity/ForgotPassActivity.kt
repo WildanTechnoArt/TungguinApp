@@ -6,6 +6,8 @@ import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import com.hyperdev.tungguin.R
 import com.hyperdev.tungguin.network.BaseApiService
+import com.hyperdev.tungguin.network.ConnectivityStatus
+import com.hyperdev.tungguin.network.HandleError
 import com.hyperdev.tungguin.network.NetworkClient
 import com.hyperdev.tungguin.presenter.ForgotPassPresenter
 import com.hyperdev.tungguin.ui.view.ForgotPassView
@@ -13,6 +15,8 @@ import com.hyperdev.tungguin.utils.AppSchedulerProvider
 import com.hyperdev.tungguin.utils.Validation.Companion.validateEmail
 import com.shashank.sony.fancytoastlib.FancyToast
 import kotlinx.android.synthetic.main.activity_reset_pass.*
+import retrofit2.HttpException
+import java.net.SocketTimeoutException
 
 class ForgotPassActivity : AppCompatActivity(), ForgotPassView.View {
 
@@ -33,11 +37,11 @@ class ForgotPassActivity : AppCompatActivity(), ForgotPassView.View {
             setDisplayHomeAsUpEnabled(true)
         }
 
-        baseApiService = NetworkClient.getClient(this@ForgotPassActivity)!!
+        baseApiService = NetworkClient.getClient(this)
             .create(BaseApiService::class.java)
 
         val scheduler = AppSchedulerProvider()
-        presenter = ForgotPassPresenter(this, this, baseApiService, scheduler)
+        presenter = ForgotPassPresenter(this, baseApiService, scheduler)
 
         btn_send_email.setOnClickListener {
             emailUser = input_email.text.toString()
@@ -50,7 +54,7 @@ class ForgotPassActivity : AppCompatActivity(), ForgotPassView.View {
             }
 
             if (err == 0) {
-                presenter.forgotPassword(emailUser)
+                presenter.forgotPassword(emailUser, this)
             }
         }
     }
@@ -73,8 +77,29 @@ class ForgotPassActivity : AppCompatActivity(), ForgotPassView.View {
         FancyToast.makeText(this, "Silakan cek email anda", FancyToast.LENGTH_SHORT, FancyToast.SUCCESS, false).show()
     }
 
-    override fun noInternetConnection(message: String) {
-        FancyToast.makeText(this, message, FancyToast.LENGTH_SHORT, FancyToast.ERROR, false).show()
+    override fun handleError(e: Throwable) {
+        if (ConnectivityStatus.isConnected(this)) {
+            when (e) {
+                is HttpException -> // non 200 error codes
+                    HandleError.handleError(e, e.code(), this)
+                is SocketTimeoutException -> // connection errors
+                    FancyToast.makeText(
+                        this,
+                        "Connection Timeout!",
+                        FancyToast.LENGTH_SHORT,
+                        FancyToast.ERROR,
+                        false
+                    ).show()
+            }
+        } else {
+            FancyToast.makeText(
+                this,
+                "Tidak Terhubung Dengan Internet!",
+                FancyToast.LENGTH_SHORT,
+                FancyToast.ERROR,
+                false
+            ).show()
+        }
     }
 
     override fun onSupportNavigateUp(): Boolean {

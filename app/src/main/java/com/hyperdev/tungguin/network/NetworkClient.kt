@@ -13,8 +13,8 @@ import java.util.concurrent.TimeUnit
 class NetworkClient {
 
     companion object {
-        private var retrofit: Retrofit? = null
-        fun getClient(context: Context): Retrofit? {
+        private lateinit var retrofit: Retrofit
+        fun getClient(context: Context): Retrofit {
             val logging = HttpLoggingInterceptor()
             logging.level = HttpLoggingInterceptor.Level.BODY
 
@@ -26,14 +26,13 @@ class NetworkClient {
                 .writeTimeout(30, TimeUnit.SECONDS)
                 .build()
 
-            if (retrofit == null) {
-                retrofit = Retrofit.Builder()
-                    .baseUrl(BuildConfig.BASE_URL + "api/")
-                    .addConverterFactory(GsonConverterFactory.create())
-                    .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
-                    .client(clientTest)
-                    .build()
-            }
+            retrofit = Retrofit.Builder()
+                .baseUrl(BuildConfig.BASE_URL + "api/")
+                .addConverterFactory(GsonConverterFactory.create())
+                .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
+                .client(clientTest)
+                .build()
+
             return retrofit
         }
     }

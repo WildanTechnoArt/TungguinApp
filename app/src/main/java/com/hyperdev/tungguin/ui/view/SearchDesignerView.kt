@@ -8,6 +8,7 @@ class SearchDesignerView {
         fun showDetailOrder(data: DetailOrderData?)
         fun displayProgress()
         fun hideProgress()
+        fun handleError(e: Throwable)
     }
 
     interface Presenter {

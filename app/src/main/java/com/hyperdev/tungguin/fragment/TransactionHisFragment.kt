@@ -1,5 +1,6 @@
 package com.hyperdev.tungguin.fragment
 
+import android.content.Context
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -16,17 +17,22 @@ import com.hyperdev.tungguin.database.SharedPrefManager
 import com.hyperdev.tungguin.model.transaction.ListTransaction
 import com.hyperdev.tungguin.model.transaction.TransactionHistory
 import com.hyperdev.tungguin.network.BaseApiService
+import com.hyperdev.tungguin.network.ConnectivityStatus
+import com.hyperdev.tungguin.network.HandleError
 import com.hyperdev.tungguin.network.NetworkClient
 import com.hyperdev.tungguin.presenter.TransactionHistoriPresenter
 import com.hyperdev.tungguin.utils.AppSchedulerProvider
-import com.hyperdev.tungguin.ui.view.HistoriTransactionView
+import com.hyperdev.tungguin.ui.view.HistoryTransactionView
+import com.shashank.sony.fancytoastlib.FancyToast
+import retrofit2.HttpException
+import java.net.SocketTimeoutException
 import kotlin.properties.Delegates
 
-class TransactionHisFragment : Fragment(), HistoriTransactionView.View {
+class TransactionHisFragment : Fragment(), HistoryTransactionView.View {
 
     //Deklarasi Variable
     private var listTransaction: MutableList<ListTransaction> = mutableListOf()
-    private lateinit var presenter: HistoriTransactionView.Presenter
+    private lateinit var presenter: HistoryTransactionView.Presenter
     private lateinit var token: String
     private lateinit var recycler: RecyclerView
     private lateinit var progressBar: ProgressBar
@@ -37,9 +43,12 @@ class TransactionHisFragment : Fragment(), HistoriTransactionView.View {
     private var page: Int = 1
     private lateinit var nextPageURL: String
     private var isLoading by Delegates.notNull<Boolean>()
+    private lateinit var mContext: Context
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_transaction_his, container, false)
+
+        mContext = view.context
 
         recycler = view.findViewById(R.id.recyclerTransactionList)
         progressBar = view.findViewById(R.id.progress_bar)
@@ -55,9 +64,9 @@ class TransactionHisFragment : Fragment(), HistoriTransactionView.View {
     }
 
     private fun loadData() {
-        token = SharedPrefManager.getInstance(context!!).token.toString()
+        token = SharedPrefManager.getInstance(mContext).token.toString()
 
-        baseApiService = NetworkClient.getClient(context!!)!!
+        baseApiService = NetworkClient.getClient(mContext)
             .create(BaseApiService::class.java)
 
         val layout = LinearLayoutManager(context)
@@ -65,7 +74,7 @@ class TransactionHisFragment : Fragment(), HistoriTransactionView.View {
         recycler.setHasFixedSize(true)
 
         val scheduler = AppSchedulerProvider()
-        presenter = TransactionHistoriPresenter(this, context!!, baseApiService, scheduler)
+        presenter = TransactionHistoriPresenter(this, baseApiService, scheduler)
         adapter = TransactionRecyclerAdapter(listTransaction as ArrayList<ListTransaction>)
 
         presenter.getTransactionHistory("Bearer $token", page = page)
@@ -122,6 +131,31 @@ class TransactionHisFragment : Fragment(), HistoriTransactionView.View {
         } else {
             txtImgNotFound.visibility = View.VISIBLE
             recycler.visibility = View.GONE
+        }
+    }
+
+    override fun handleError(e: Throwable) {
+        if (ConnectivityStatus.isConnected(mContext)) {
+            when (e) {
+                is HttpException -> // non 200 error codes
+                    HandleError.handleError(e, e.code(), mContext)
+                is SocketTimeoutException -> // connection errors
+                    FancyToast.makeText(
+                        mContext,
+                        "Connection Timeout!",
+                        FancyToast.LENGTH_SHORT,
+                        FancyToast.ERROR,
+                        false
+                    ).show()
+            }
+        } else {
+            FancyToast.makeText(
+                mContext,
+                "Tidak Terhubung Dengan Internet!",
+                FancyToast.LENGTH_SHORT,
+                FancyToast.ERROR,
+                false
+            ).show()
         }
     }
 

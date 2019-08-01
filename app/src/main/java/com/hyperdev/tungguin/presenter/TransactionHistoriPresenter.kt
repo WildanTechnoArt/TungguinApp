@@ -1,25 +1,18 @@
 package com.hyperdev.tungguin.presenter
 
-import android.content.Context
-import android.widget.Toast
 import com.hyperdev.tungguin.model.transaction.TransactionResponse
 import com.hyperdev.tungguin.network.BaseApiService
-import com.hyperdev.tungguin.network.ConnectivityStatus
-import com.hyperdev.tungguin.network.HandleError
+import com.hyperdev.tungguin.ui.view.HistoryTransactionView
 import com.hyperdev.tungguin.utils.SchedulerProvider
-import com.hyperdev.tungguin.ui.view.HistoriTransactionView
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.subscribers.ResourceSubscriber
-import retrofit2.HttpException
-import java.net.SocketTimeoutException
 
 class TransactionHistoriPresenter(
-    private val view: HistoriTransactionView.View,
-    private val context: Context,
+    private val view: HistoryTransactionView.View,
     private val baseApiService: BaseApiService,
     private val scheduler: SchedulerProvider
-) : HistoriTransactionView.Presenter {
+) : HistoryTransactionView.Presenter {
 
     private val compositeDisposable = CompositeDisposable()
 
@@ -48,19 +41,8 @@ class TransactionHistoriPresenter(
                     }
 
                     override fun onError(e: Throwable) {
-                        e.printStackTrace()
                         view.hideProgress()
-
-                        if (ConnectivityStatus.isConnected(context)) {
-                            when (e) {
-                                is HttpException -> // non 200 error codes
-                                    HandleError.handleError(e, e.code(), context)
-                                is SocketTimeoutException -> // connection errors
-                                    Toast.makeText(context, "Connection Timeout!", Toast.LENGTH_LONG).show()
-                            }
-                        } else {
-                            Toast.makeText(context, "Tidak Terhubung Dengan Internet!", Toast.LENGTH_LONG).show()
-                        }
+                        view.handleError(e)
                     }
                 })
         )

@@ -13,13 +13,18 @@ import com.hyperdev.tungguin.model.detailproduct.FieldListFormatted
 import com.hyperdev.tungguin.model.detailproduct.PriceList
 import com.hyperdev.tungguin.model.detailproduct.ProductDetailItem
 import com.hyperdev.tungguin.network.BaseApiService
+import com.hyperdev.tungguin.network.ConnectivityStatus
+import com.hyperdev.tungguin.network.HandleError
 import com.hyperdev.tungguin.network.NetworkClient
 import com.hyperdev.tungguin.presenter.DetailProductPresenter
 import com.hyperdev.tungguin.utils.AppSchedulerProvider
 import com.hyperdev.tungguin.ui.view.DetailProductView
 import com.hyperdev.tungguin.utils.UtilsConstant.Companion.HASHED_ID
+import com.shashank.sony.fancytoastlib.FancyToast
 import com.synnapps.carouselview.ImageListener
 import kotlinx.android.synthetic.main.activity_detail_product.*
+import retrofit2.HttpException
+import java.net.SocketTimeoutException
 
 class DetailProductActivity : AppCompatActivity(), DetailProductView.View {
 
@@ -43,14 +48,14 @@ class DetailProductActivity : AppCompatActivity(), DetailProductView.View {
             setDisplayHomeAsUpEnabled(true)
         }
 
-        token = SharedPrefManager.getInstance(this@DetailProductActivity).token.toString()
+        token = SharedPrefManager.getInstance(this).token.toString()
         hashed_id = intent?.getStringExtra(HASHED_ID).toString()
 
-        baseApiService = NetworkClient.getClient(this@DetailProductActivity)!!
+        baseApiService = NetworkClient.getClient(this)
             .create(BaseApiService::class.java)
 
         val scheduler = AppSchedulerProvider()
-        presenter = DetailProductPresenter(this, this, baseApiService, scheduler)
+        presenter = DetailProductPresenter(this, baseApiService, scheduler)
 
         presenter.getDetailProduct("Bearer $token", hashed_id)
 
@@ -113,5 +118,30 @@ class DetailProductActivity : AppCompatActivity(), DetailProductView.View {
     override fun onDestroy() {
         super.onDestroy()
         presenter.onDestroy()
+    }
+
+    override fun handleError(e: Throwable) {
+        if (ConnectivityStatus.isConnected(this)) {
+            when (e) {
+                is HttpException -> // non 200 error codes
+                    HandleError.handleError(e, e.code(), this)
+                is SocketTimeoutException -> // connection errors
+                    FancyToast.makeText(
+                        this,
+                        "Connection Timeout!",
+                        FancyToast.LENGTH_SHORT,
+                        FancyToast.ERROR,
+                        false
+                    ).show()
+            }
+        } else {
+            FancyToast.makeText(
+                this,
+                "Tidak Terhubung Dengan Internet!",
+                FancyToast.LENGTH_SHORT,
+                FancyToast.ERROR,
+                false
+            ).show()
+        }
     }
 }

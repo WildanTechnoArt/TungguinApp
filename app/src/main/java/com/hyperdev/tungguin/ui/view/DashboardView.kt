@@ -24,6 +24,8 @@ class DashboardView {
 
         // Untuk membuat statement jika token berhasil di reset saat logout
         fun onSuccessResetToken()
+
+        fun handleError(e: Throwable)
     }
 
     interface Presenter {

@@ -9,7 +9,7 @@ class ContactUsView {
         fun showProgressBar()
         fun hideProgressBar()
         fun onSuccess()
-        fun noInternetConnection(message: String)
+        fun handleError(e: Throwable)
     }
 
     interface Presenter {

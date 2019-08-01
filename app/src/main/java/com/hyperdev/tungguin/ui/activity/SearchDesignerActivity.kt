@@ -16,6 +16,8 @@ import com.hyperdev.tungguin.R
 import com.hyperdev.tungguin.database.SharedPrefManager
 import com.hyperdev.tungguin.model.detailorder.DetailOrderData
 import com.hyperdev.tungguin.network.BaseApiService
+import com.hyperdev.tungguin.network.ConnectivityStatus
+import com.hyperdev.tungguin.network.HandleError
 import com.hyperdev.tungguin.network.NetworkClient
 import com.hyperdev.tungguin.presenter.SearchDesignPresenter
 import com.hyperdev.tungguin.ui.view.SearchDesignerView
@@ -26,6 +28,8 @@ import kotlinx.android.synthetic.main.activity_search_designer.*
 import kotlinx.android.synthetic.main.designer_found_layout.*
 import org.json.JSONException
 import org.json.JSONObject
+import retrofit2.HttpException
+import java.net.SocketTimeoutException
 import java.net.URISyntaxException
 
 class SearchDesignerActivity : AppCompatActivity(), SearchDesignerView.View {
@@ -36,6 +40,7 @@ class SearchDesignerActivity : AppCompatActivity(), SearchDesignerView.View {
     private lateinit var presenter: SearchDesignerView.Presenter
     private lateinit var token: String
     private lateinit var mCountdownTimer: CountDownTimer
+    private var mCustomerTimer: Int = 0
 
     // WebSocket
     private var socket: Socket? = null
@@ -54,13 +59,13 @@ class SearchDesignerActivity : AppCompatActivity(), SearchDesignerView.View {
         requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
 
         orderId = intent?.getStringExtra(HASHED_ID).toString()
-        token = SharedPrefManager.getInstance(this@SearchDesignerActivity).token.toString()
+        token = SharedPrefManager.getInstance(this).token.toString()
 
-        baseApiService = NetworkClient.getClient(this@SearchDesignerActivity)!!
+        baseApiService = NetworkClient.getClient(this)
             .create(BaseApiService::class.java)
 
         val scheduler = AppSchedulerProvider()
-        presenter = SearchDesignPresenter(this, this, baseApiService, scheduler)
+        presenter = SearchDesignPresenter(this, baseApiService, scheduler)
 
         // Inisialisasi WebSocket
         initSocket()
@@ -68,10 +73,7 @@ class SearchDesignerActivity : AppCompatActivity(), SearchDesignerView.View {
 
         presenter.getDetailOrder("Bearer $token", orderId)
 
-        swipe_refresh.setOnRefreshListener {
-            presenter.getDetailOrder("Bearer $token", orderId)
-            mCountdownTimer.start()
-        }
+        swipe_refresh.isEnabled = false
 
         btn_detail_order.setOnClickListener {
             val intent = Intent(this@SearchDesignerActivity, DetailOrderActivity::class.java)
@@ -91,6 +93,14 @@ class SearchDesignerActivity : AppCompatActivity(), SearchDesignerView.View {
         super.onDestroy()
         socket?.disconnect()
         mCountdownTimer.cancel()
+    }
+
+    override fun onBackPressed() {
+        super.onBackPressed()
+        val intent = Intent(this@SearchDesignerActivity, DetailOrderActivity::class.java)
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+        startActivity(intent)
+        finish()
     }
 
     @SuppressLint("SetTextI18n")
@@ -124,6 +134,8 @@ class SearchDesignerActivity : AppCompatActivity(), SearchDesignerView.View {
 
     @SuppressLint("SetTextI18n")
     override fun showDetailOrder(data: DetailOrderData?) {
+        mCustomerTimer = data?.customerTimer ?: 0
+
         if ((data?.statusFormatted?.status.toString() == "searching_designer")) {
             mCountdownTimer = MyCountdownTimer()
             mCountdownTimer.start()
@@ -157,17 +169,44 @@ class SearchDesignerActivity : AppCompatActivity(), SearchDesignerView.View {
         swipe_refresh.isRefreshing = false
     }
 
+    override fun handleError(e: Throwable) {
+        if (ConnectivityStatus.isConnected(this)) {
+            when (e) {
+                is HttpException -> // non 200 error codes
+                    HandleError.handleError(e, e.code(), this)
+                is SocketTimeoutException -> // connection errors
+                    FancyToast.makeText(
+                        this,
+                        "Connection Timeout!",
+                        FancyToast.LENGTH_SHORT,
+                        FancyToast.ERROR,
+                        false
+                    ).show()
+            }
+        } else {
+            FancyToast.makeText(
+                this,
+                "Tidak Terhubung Dengan Internet!",
+                FancyToast.LENGTH_SHORT,
+                FancyToast.ERROR,
+                false
+            ).show()
+        }
+    }
+
     inner class MyCountdownTimer
-        : CountDownTimer(30 * 1000, 1000) {
+        : CountDownTimer((mCustomerTimer * 1000).toLong(), 1000) {
 
         override fun onFinish() {
-            presenter.getDetailOrder("Bearer $token", orderId)
-            mCountdownTimer.start()
+            val intent = Intent(this@SearchDesignerActivity, DetailOrderActivity::class.java)
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+            startActivity(intent)
+            finish()
         }
 
         @SuppressLint("SetTextI18n")
         override fun onTick(millisUntilFinished: Long) {
-            tv_timer.text = "${millisUntilFinished / 1000} Sec"
+            tv_timer.text = "${millisUntilFinished / 1000} Detik"
         }
     }
 }

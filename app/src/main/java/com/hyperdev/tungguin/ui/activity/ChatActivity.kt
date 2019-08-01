@@ -25,6 +25,8 @@ import com.hyperdev.tungguin.model.chat.ChatData
 import com.hyperdev.tungguin.model.chat.HistoriItem
 import com.hyperdev.tungguin.model.detailorder.DesignerData
 import com.hyperdev.tungguin.network.BaseApiService
+import com.hyperdev.tungguin.network.ConnectivityStatus
+import com.hyperdev.tungguin.network.HandleError
 import com.hyperdev.tungguin.network.NetworkClient
 import com.hyperdev.tungguin.presenter.ChatPresenter
 import com.hyperdev.tungguin.ui.view.ChatView
@@ -42,6 +44,8 @@ import okhttp3.RequestBody.Companion.asRequestBody
 import okhttp3.RequestBody.Companion.toRequestBody
 import org.json.JSONException
 import org.json.JSONObject
+import retrofit2.HttpException
+import java.net.SocketTimeoutException
 import java.net.URISyntaxException
 import kotlin.properties.Delegates
 
@@ -102,14 +106,14 @@ class ChatActivity : AppCompatActivity(), ChatView.View {
 
         btn_attach_file.setOnClickListener {
             if (ContextCompat.checkSelfPermission(
-                    this@ChatActivity, android.Manifest.permission.READ_EXTERNAL_STORAGE
+                    this, android.Manifest.permission.READ_EXTERNAL_STORAGE
                 ) != PackageManager.PERMISSION_GRANTED && ContextCompat.checkSelfPermission(
-                    this@ChatActivity, android.Manifest.permission.WRITE_EXTERNAL_STORAGE
+                    this, android.Manifest.permission.WRITE_EXTERNAL_STORAGE
                 ) != PackageManager.PERMISSION_GRANTED
             ) {
 
                 ActivityCompat.requestPermissions(
-                    this@ChatActivity, arrayOf(
+                    this, arrayOf(
                         android.Manifest.permission.READ_EXTERNAL_STORAGE,
                         android.Manifest.permission.WRITE_EXTERNAL_STORAGE
                     ),
@@ -117,7 +121,7 @@ class ChatActivity : AppCompatActivity(), ChatView.View {
                 )
 
             } else {
-                presenter.takeFile(this@ChatActivity)
+                presenter.takeFile(this)
             }
         }
 
@@ -170,19 +174,19 @@ class ChatActivity : AppCompatActivity(), ChatView.View {
         socket?.connect()
         socket?.emit("order", orderId)
 
-        token = SharedPrefManager.getInstance(this@ChatActivity).token.toString()
+        token = SharedPrefManager.getInstance(this).token.toString()
 
-        baseApiService = NetworkClient.getClient(this@ChatActivity)!!
+        baseApiService = NetworkClient.getClient(this)
             .create(BaseApiService::class.java)
 
-        val layout = LinearLayoutManager(this@ChatActivity)
+        val layout = LinearLayoutManager(this)
         rv_chat_list.layoutManager = layout
         rv_chat_list.setHasFixedSize(true)
 
         val scheduler = AppSchedulerProvider()
-        presenter = ChatPresenter(this, this@ChatActivity, baseApiService, scheduler)
+        presenter = ChatPresenter(this, baseApiService, scheduler)
 
-        adapter = MessageAdapter(this@ChatActivity, listChatItem)
+        adapter = MessageAdapter(this, listChatItem)
 
         presenter.getChatData("Bearer $token", orderId, page = page)
         presenter.getDetailOrder("Bearer $token", orderId)
@@ -248,10 +252,6 @@ class ChatActivity : AppCompatActivity(), ChatView.View {
         fileBody = null
     }
 
-    override fun noInternetConnection(message: String) {
-        FancyToast.makeText(this, message, FancyToast.ERROR, FancyToast.LENGTH_SHORT, false).show()
-    }
-
     override fun showChatData(historiItem: HistoriItem?) {
         nextPageURL = historiItem?.nextPageUrl.toString()
         prevPageUrl = historiItem?.prevPageUrl.toString()
@@ -281,7 +281,7 @@ class ChatActivity : AppCompatActivity(), ChatView.View {
     override fun profileDesigner(designer: DesignerData) {
         designerName = designer.name.toString()
         tv_designer_name.text = designerName
-        GlideApp.with(this@ChatActivity)
+        GlideApp.with(this)
             .load(designer.photoUrl.toString())
             .placeholder(R.drawable.circle_profil)
             .into(tv_designer_photo)
@@ -299,6 +299,31 @@ class ChatActivity : AppCompatActivity(), ChatView.View {
             adapter.setData(chatlist)
         } else {
             adapter.refreshAdapter(chatlist)
+        }
+    }
+
+    override fun handleError(e: Throwable) {
+        if (ConnectivityStatus.isConnected(this)) {
+            when (e) {
+                is HttpException -> // non 200 error codes
+                    HandleError.handleError(e, e.code(), this)
+                is SocketTimeoutException -> // connection errors
+                    FancyToast.makeText(
+                        this,
+                        "Connection Timeout!",
+                        FancyToast.LENGTH_SHORT,
+                        FancyToast.ERROR,
+                        false
+                    ).show()
+            }
+        } else {
+            FancyToast.makeText(
+                this,
+                "Tidak Terhubung Dengan Internet!",
+                FancyToast.LENGTH_SHORT,
+                FancyToast.ERROR,
+                false
+            ).show()
         }
     }
 }

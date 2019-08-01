@@ -10,7 +10,7 @@ class ReviewOrderView {
         fun hideProgress()
         fun onSuccess()
         fun onSuccessSend()
-        fun noInternetConnection(message: String)
+        fun handleError(e: Throwable)
     }
 
     interface Presenter {

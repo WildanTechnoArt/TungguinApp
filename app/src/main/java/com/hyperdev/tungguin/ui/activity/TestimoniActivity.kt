@@ -13,6 +13,8 @@ import com.hyperdev.tungguin.R
 import com.hyperdev.tungguin.database.SharedPrefManager
 import com.hyperdev.tungguin.model.detailorder.DetailOrderData
 import com.hyperdev.tungguin.network.BaseApiService
+import com.hyperdev.tungguin.network.ConnectivityStatus
+import com.hyperdev.tungguin.network.HandleError
 import com.hyperdev.tungguin.network.NetworkClient
 import com.hyperdev.tungguin.presenter.ReviewOrderPresenter
 import com.hyperdev.tungguin.ui.view.ReviewOrderView
@@ -20,6 +22,8 @@ import com.hyperdev.tungguin.utils.AppSchedulerProvider
 import com.hyperdev.tungguin.utils.UtilsConstant.Companion.HASHED_ID
 import com.shashank.sony.fancytoastlib.FancyToast
 import kotlinx.android.synthetic.main.activity_testimoni.*
+import retrofit2.HttpException
+import java.net.SocketTimeoutException
 
 class TestimoniActivity : AppCompatActivity(), ReviewOrderView.View {
 
@@ -42,11 +46,11 @@ class TestimoniActivity : AppCompatActivity(), ReviewOrderView.View {
         orderId = intent?.getStringExtra(HASHED_ID).toString()
         token = SharedPrefManager.getInstance(this).token.toString()
 
-        baseApiService = NetworkClient.getClient(this)!!
+        baseApiService = NetworkClient.getClient(this)
             .create(BaseApiService::class.java)
 
         val scheduler = AppSchedulerProvider()
-        presenter = ReviewOrderPresenter(this, this, baseApiService, scheduler)
+        presenter = ReviewOrderPresenter(this, baseApiService, scheduler)
         presenter.getDetailOrder("Bearer $token", orderId)
 
         btn_send.setOnClickListener {
@@ -222,14 +226,29 @@ class TestimoniActivity : AppCompatActivity(), ReviewOrderView.View {
         finish()
     }
 
-    override fun noInternetConnection(message: String) {
-        FancyToast.makeText(
-            this,
-            message,
-            FancyToast.LENGTH_SHORT,
-            FancyToast.ERROR,
-            false
-        ).show()
+    override fun handleError(e: Throwable) {
+        if (ConnectivityStatus.isConnected(this)) {
+            when (e) {
+                is HttpException -> // non 200 error codes
+                    HandleError.handleError(e, e.code(), this)
+                is SocketTimeoutException -> // connection errors
+                    FancyToast.makeText(
+                        this,
+                        "Connection Timeout!",
+                        FancyToast.LENGTH_SHORT,
+                        FancyToast.ERROR,
+                        false
+                    ).show()
+            }
+        } else {
+            FancyToast.makeText(
+                this,
+                "Tidak Terhubung Dengan Internet!",
+                FancyToast.LENGTH_SHORT,
+                FancyToast.ERROR,
+                false
+            ).show()
+        }
     }
 
     override fun onDestroy() {

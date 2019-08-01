@@ -1,27 +1,20 @@
 package com.hyperdev.tungguin.presenter
 
-import android.content.Context
-import android.widget.Toast
 import com.hyperdev.tungguin.model.dashboard.AnnouncementResponse
 import com.hyperdev.tungguin.model.dashboard.DashboardResponse
 import com.hyperdev.tungguin.model.dashboard.FCMResponse
 import com.hyperdev.tungguin.model.profile.ProfileResponse
 import com.hyperdev.tungguin.network.BaseApiService
-import com.hyperdev.tungguin.network.ConnectivityStatus
-import com.hyperdev.tungguin.network.HandleError
-import com.hyperdev.tungguin.utils.SchedulerProvider
 import com.hyperdev.tungguin.ui.view.DashboardView
+import com.hyperdev.tungguin.utils.SchedulerProvider
 import io.reactivex.Observer
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
 import io.reactivex.subscribers.ResourceSubscriber
-import retrofit2.HttpException
-import java.net.SocketTimeoutException
 
 class DashboardPresenter(
     private val view: DashboardView.View,
-    private val context: Context,
     private val baseApiService: BaseApiService,
     private val scheduler: SchedulerProvider
 ) : DashboardView.Presenter {
@@ -43,7 +36,7 @@ class DashboardPresenter(
                 override fun onNext(t: FCMResponse) {}
 
                 override fun onError(e: Throwable) {
-                    e.printStackTrace()
+                    view.handleError(e)
                 }
 
             })
@@ -68,10 +61,9 @@ class DashboardPresenter(
                 override fun onNext(t: FCMResponse) {}
 
                 override fun onError(e: Throwable) {
-                    e.printStackTrace()
                     view.hideProgressBar()
+                    view.handleError(e)
                 }
-
             })
     }
 
@@ -92,7 +84,7 @@ class DashboardPresenter(
                     }
 
                     override fun onError(e: Throwable) {
-                        e.printStackTrace()
+                        view.handleError(e)
                     }
                 })
         )
@@ -119,19 +111,8 @@ class DashboardPresenter(
                     }
 
                     override fun onError(e: Throwable) {
-                        e.printStackTrace()
                         view.hideProgressBar()
-
-                        if (ConnectivityStatus.isConnected(context)) {
-                            when (e) {
-                                is HttpException -> // non 200 error codes
-                                    HandleError.handleError(e, e.code(), context)
-                                is SocketTimeoutException -> // connection errors
-                                    Toast.makeText(context, "Connection Timeout!", Toast.LENGTH_LONG).show()
-                            }
-                        } else {
-                            Toast.makeText(context, "Tidak Terhubung Dengan Internet!", Toast.LENGTH_LONG).show()
-                        }
+                        view.handleError(e)
                     }
                 })
         )
@@ -154,7 +135,7 @@ class DashboardPresenter(
                     }
 
                     override fun onError(e: Throwable) {
-                        e.printStackTrace()
+                        view.handleError(e)
                     }
                 })
         )

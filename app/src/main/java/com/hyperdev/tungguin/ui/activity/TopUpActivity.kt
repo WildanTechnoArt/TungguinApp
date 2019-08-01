@@ -7,13 +7,14 @@ import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import androidx.appcompat.app.AppCompatActivity
-import com.google.android.material.snackbar.Snackbar
 import com.hyperdev.tungguin.BuildConfig
 import com.hyperdev.tungguin.R
 import com.hyperdev.tungguin.database.SharedPrefManager
 import com.hyperdev.tungguin.model.profile.DataUser
 import com.hyperdev.tungguin.model.transaction.DataTopUp
 import com.hyperdev.tungguin.network.BaseApiService
+import com.hyperdev.tungguin.network.ConnectivityStatus
+import com.hyperdev.tungguin.network.HandleError
 import com.hyperdev.tungguin.network.NetworkClient
 import com.hyperdev.tungguin.presenter.TopUpPresenter
 import com.hyperdev.tungguin.ui.view.TopUpView
@@ -28,6 +29,8 @@ import com.midtrans.sdk.corekit.models.snap.TransactionResult
 import com.midtrans.sdk.uikit.SdkUIFlowBuilder
 import com.shashank.sony.fancytoastlib.FancyToast
 import kotlinx.android.synthetic.main.activity_top_up.*
+import retrofit2.HttpException
+import java.net.SocketTimeoutException
 import java.text.NumberFormat
 
 class TopUpActivity : AppCompatActivity(), TopUpView.View {
@@ -94,14 +97,14 @@ class TopUpActivity : AppCompatActivity(), TopUpView.View {
 
     private fun initData() {
 
-        baseApiService = NetworkClient.getClient(this)!!
+        baseApiService = NetworkClient.getClient(this)
             .create(BaseApiService::class.java)
 
         getToken = SharedPrefManager.getInstance(this).token.toString()
         moneyFormat = NumberFormat.getCurrencyInstance()
 
         val scheduler = AppSchedulerProvider()
-        presenter = TopUpPresenter(this, this, baseApiService, scheduler)
+        presenter = TopUpPresenter(this, baseApiService, scheduler)
         presenter.getUserAmount("Bearer $getToken")
 
     }
@@ -265,8 +268,34 @@ class TopUpActivity : AppCompatActivity(), TopUpView.View {
         swipe_refresh.isRefreshing = false
     }
 
-    override fun noInternetConnection(message: String) {
-        Snackbar.make(topupLayout, message, Snackbar.LENGTH_SHORT).show()
+    override fun handleError(e: Throwable) {
+        if (ConnectivityStatus.isConnected(this)) {
+            when (e) {
+                is HttpException -> // non 200 error codes
+                    HandleError.handleError(e, e.code(), this)
+                is SocketTimeoutException -> // connection errors
+                    FancyToast.makeText(
+                        this,
+                        "Connection Timeout!",
+                        FancyToast.LENGTH_SHORT,
+                        FancyToast.ERROR,
+                        false
+                    ).show()
+            }
+        } else {
+            FancyToast.makeText(
+                this,
+                "Tidak Terhubung Dengan Internet!",
+                FancyToast.LENGTH_SHORT,
+                FancyToast.ERROR,
+                false
+            ).show()
+        }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        presenter.onDestroy()
     }
 
     override fun onSupportNavigateUp(): Boolean {

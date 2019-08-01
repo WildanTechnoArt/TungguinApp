@@ -1,26 +1,17 @@
 package com.hyperdev.tungguin.presenter
 
-import android.content.Context
-import android.widget.Toast
-import com.google.gson.Gson
 import com.hyperdev.tungguin.model.detailorder.DetailOrderResponse
 import com.hyperdev.tungguin.network.BaseApiService
-import com.hyperdev.tungguin.network.ConnectivityStatus
-import com.hyperdev.tungguin.network.HandleError
-import com.hyperdev.tungguin.network.Response
-import com.hyperdev.tungguin.utils.SchedulerProvider
 import com.hyperdev.tungguin.ui.view.ReviewOrderView
+import com.hyperdev.tungguin.utils.SchedulerProvider
 import io.reactivex.Observer
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
 import io.reactivex.subscribers.ResourceSubscriber
-import retrofit2.HttpException
-import java.net.SocketTimeoutException
 
 class ReviewOrderPresenter(
     private val view: ReviewOrderView.View,
-    private val context: Context,
     private val baseApiService: BaseApiService,
     private val scheduler: SchedulerProvider
 ) : ReviewOrderView.Presenter {
@@ -54,22 +45,7 @@ class ReviewOrderPresenter(
 
                 override fun onError(e: Throwable) {
                     view.hideProgress()
-
-                    if (ConnectivityStatus.isConnected(context)) {
-                        when (e) {
-                            is HttpException -> {
-                                val gson = Gson()
-                                val response =
-                                    gson.fromJson(e.response()?.errorBody()?.charStream(), Response::class.java)
-                                val message = response.meta?.message.toString()
-                                Toast.makeText(context, message, Toast.LENGTH_LONG).show()
-                            }
-                            is SocketTimeoutException -> // connection errors
-                                view.noInternetConnection("Connection Timeout!")
-                        }
-                    } else {
-                        view.noInternetConnection("Tidak Terhubung Dengan Internet!")
-                    }
+                    view.handleError(e)
                 }
 
             })
@@ -98,19 +74,8 @@ class ReviewOrderPresenter(
                     }
 
                     override fun onError(e: Throwable) {
-                        e.printStackTrace()
                         view.hideProgress()
-
-                        if (ConnectivityStatus.isConnected(context)) {
-                            when (e) {
-                                is HttpException -> // non 200 error codes
-                                    HandleError.handleError(e, e.code(), context)
-                                is SocketTimeoutException -> // connection errors
-                                    Toast.makeText(context, "Connection Timeout!", Toast.LENGTH_LONG).show()
-                            }
-                        } else {
-                            Toast.makeText(context, "Tidak Terhubung Dengan Internet!", Toast.LENGTH_LONG).show()
-                        }
+                        view.handleError(e)
                     }
                 })
         )

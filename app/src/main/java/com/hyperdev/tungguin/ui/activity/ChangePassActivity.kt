@@ -7,6 +7,8 @@ import androidx.appcompat.app.AppCompatActivity
 import com.hyperdev.tungguin.R
 import com.hyperdev.tungguin.database.SharedPrefManager
 import com.hyperdev.tungguin.network.BaseApiService
+import com.hyperdev.tungguin.network.ConnectivityStatus
+import com.hyperdev.tungguin.network.HandleError
 import com.hyperdev.tungguin.network.NetworkClient
 import com.hyperdev.tungguin.presenter.ProfileUpdatePresenter
 import com.hyperdev.tungguin.ui.view.ProfileUpdateView
@@ -14,6 +16,8 @@ import com.hyperdev.tungguin.utils.AppSchedulerProvider
 import com.hyperdev.tungguin.utils.Validation.Companion.validateFields
 import com.shashank.sony.fancytoastlib.FancyToast
 import kotlinx.android.synthetic.main.activity_change_pass.*
+import retrofit2.HttpException
+import java.net.SocketTimeoutException
 
 class ChangePassActivity : AppCompatActivity(), ProfileUpdateView.View {
 
@@ -48,11 +52,11 @@ class ChangePassActivity : AppCompatActivity(), ProfileUpdateView.View {
             setDisplayHomeAsUpEnabled(true)
         }
 
-        baseApiService = NetworkClient.getClient(this@ChangePassActivity)!!
+        baseApiService = NetworkClient.getClient(this@ChangePassActivity)
             .create(BaseApiService::class.java)
 
         val scheduler = AppSchedulerProvider()
-        presenter = ProfileUpdatePresenter(this@ChangePassActivity, this, baseApiService, scheduler)
+        presenter = ProfileUpdatePresenter(this@ChangePassActivity, baseApiService, scheduler)
 
         getToken = SharedPrefManager.getInstance(this@ChangePassActivity).token.toString()
         getName = intent?.extras?.getString("userName")!!
@@ -103,12 +107,33 @@ class ChangePassActivity : AppCompatActivity(), ProfileUpdateView.View {
         finish()
     }
 
-    override fun noInternetConnection(message: String) {
-        FancyToast.makeText(this, message, FancyToast.LENGTH_SHORT, FancyToast.ERROR, false).show()
-    }
-
     override fun onSupportNavigateUp(): Boolean {
         onBackPressed()
         return true
+    }
+
+    override fun handleError(e: Throwable) {
+        if (ConnectivityStatus.isConnected(this)) {
+            when (e) {
+                is HttpException -> // non 200 error codes
+                    HandleError.handleError(e, e.code(), this)
+                is SocketTimeoutException -> // connection errors
+                    FancyToast.makeText(
+                        this,
+                        "Connection Timeout!",
+                        FancyToast.LENGTH_SHORT,
+                        FancyToast.ERROR,
+                        false
+                    ).show()
+            }
+        } else {
+            FancyToast.makeText(
+                this,
+                "Tidak Terhubung Dengan Internet!",
+                FancyToast.LENGTH_SHORT,
+                FancyToast.ERROR,
+                false
+            ).show()
+        }
     }
 }

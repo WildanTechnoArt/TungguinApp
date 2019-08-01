@@ -62,7 +62,7 @@ class ChatListActivity : AppCompatActivity(), ChatListView.View {
         chatListViewModel = ViewModelProviders.of(this).get(ChatListViewModel::class.java)
         chatListViewModel.getChatList().observe(this, getChatList)
 
-        mToken = SharedPrefManager.getInstance(this@ChatListActivity).token.toString()
+        mToken = SharedPrefManager.getInstance(this).token.toString()
 
         adapter = ChatListAdapter()
         adapter.notifyDataSetChanged()
@@ -72,7 +72,7 @@ class ChatListActivity : AppCompatActivity(), ChatListView.View {
         rv_chat_list.addOnScrollListener(scrollListener)
 
         baseApiService = NetworkClient.getClient(this)
-            ?.create(BaseApiService::class.java)
+            .create(BaseApiService::class.java)
 
         rv_chat_list.adapter = adapter
     }

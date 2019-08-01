@@ -34,6 +34,10 @@ data class DetailOrderData (
     @Expose
     var formattedDate: String? = null,
 
+    @SerializedName("customer_timer_in_second")
+    @Expose
+    var customerTimer: Int? = null,
+
     @SerializedName("expire_date_formatted")
     @Expose
     var expireDateFormatted: String? = null,

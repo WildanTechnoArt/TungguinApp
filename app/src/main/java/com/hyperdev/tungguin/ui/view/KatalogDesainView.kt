@@ -8,6 +8,7 @@ class KatalogDesainView {
         fun showKatalogItemList(katalogItem: List<KatalogItem>)
         fun displayProgress()
         fun hideProgress()
+        fun handleError(e: Throwable)
     }
 
     interface Presenter {

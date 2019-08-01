@@ -19,7 +19,7 @@ class ChatView {
         fun hideProgress()
         fun onSuccess()
         fun onChatSuccess()
-        fun noInternetConnection(message: String)
+        fun handleError(e: Throwable)
     }
 
     interface Presenter {

@@ -18,6 +18,8 @@ import com.hyperdev.tungguin.model.detailorder.DetailOrderData
 import com.hyperdev.tungguin.model.detailorder.ItemDesign
 import com.hyperdev.tungguin.model.profile.DataUser
 import com.hyperdev.tungguin.network.BaseApiService
+import com.hyperdev.tungguin.network.ConnectivityStatus
+import com.hyperdev.tungguin.network.HandleError
 import com.hyperdev.tungguin.network.NetworkClient
 import com.hyperdev.tungguin.presenter.DetailOrderPresenter
 import com.hyperdev.tungguin.ui.view.DetailOrderView
@@ -30,6 +32,8 @@ import kotlinx.android.synthetic.main.designer_information.*
 import kotlinx.android.synthetic.main.information_order.*
 import kotlinx.android.synthetic.main.product_order_information.*
 import kotlinx.android.synthetic.main.testimoni_designer.*
+import retrofit2.HttpException
+import java.net.SocketTimeoutException
 import kotlin.properties.Delegates
 
 class DetailOrderActivity : AppCompatActivity(), DetailOrderView.View {
@@ -55,13 +59,13 @@ class DetailOrderActivity : AppCompatActivity(), DetailOrderView.View {
         }
 
         orderId = intent?.getStringExtra(HASHED_ID).toString()
-        token = SharedPrefManager.getInstance(this@DetailOrderActivity).token.toString()
+        token = SharedPrefManager.getInstance(this).token.toString()
 
-        baseApiService = NetworkClient.getClient(this@DetailOrderActivity)!!
+        baseApiService = NetworkClient.getClient(this)
             .create(BaseApiService::class.java)
 
         val scheduler = AppSchedulerProvider()
-        presenter = DetailOrderPresenter(this, this, baseApiService, scheduler)
+        presenter = DetailOrderPresenter(this, baseApiService, scheduler)
 
         val layout = LinearLayoutManager(this@DetailOrderActivity)
         rv_list_product_order.layoutManager = layout
@@ -290,8 +294,41 @@ class DetailOrderActivity : AppCompatActivity(), DetailOrderView.View {
         return true
     }
 
+    override fun onBackPressed() {
+        super.onBackPressed()
+        val intent = Intent(this@DetailOrderActivity, HistoriOrderActivity::class.java)
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+        startActivity(intent)
+        finish()
+    }
+
     override fun onDestroy() {
         super.onDestroy()
         presenter.onDestroy()
+    }
+
+    override fun handleError(e: Throwable) {
+        if (ConnectivityStatus.isConnected(this)) {
+            when (e) {
+                is HttpException -> // non 200 error codes
+                    HandleError.handleError(e, e.code(), this)
+                is SocketTimeoutException -> // connection errors
+                    FancyToast.makeText(
+                        this,
+                        "Connection Timeout!",
+                        FancyToast.LENGTH_SHORT,
+                        FancyToast.ERROR,
+                        false
+                    ).show()
+            }
+        } else {
+            FancyToast.makeText(
+                this,
+                "Tidak Terhubung Dengan Internet!",
+                FancyToast.LENGTH_SHORT,
+                FancyToast.ERROR,
+                false
+            ).show()
+        }
     }
 }

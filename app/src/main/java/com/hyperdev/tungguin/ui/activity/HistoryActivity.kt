@@ -11,11 +11,16 @@ import com.hyperdev.tungguin.adapter.PagerAdapter
 import com.hyperdev.tungguin.database.SharedPrefManager
 import com.hyperdev.tungguin.model.transaction.DataTransaction
 import com.hyperdev.tungguin.network.BaseApiService
+import com.hyperdev.tungguin.network.ConnectivityStatus
+import com.hyperdev.tungguin.network.HandleError
 import com.hyperdev.tungguin.network.NetworkClient
 import com.hyperdev.tungguin.presenter.HistoryPresenter
 import com.hyperdev.tungguin.ui.view.BalanceView
 import com.hyperdev.tungguin.utils.AppSchedulerProvider
+import com.shashank.sony.fancytoastlib.FancyToast
 import kotlinx.android.synthetic.main.activity_history.*
+import retrofit2.HttpException
+import java.net.SocketTimeoutException
 
 class HistoryActivity : AppCompatActivity(), BalanceView.View {
 
@@ -73,13 +78,13 @@ class HistoryActivity : AppCompatActivity(), BalanceView.View {
     }
 
     private fun loadData() {
-        baseApiService = NetworkClient.getClient(this)!!
+        baseApiService = NetworkClient.getClient(this)
             .create(BaseApiService::class.java)
 
         getToken = SharedPrefManager.getInstance(this).token.toString()
 
         val scheduler = AppSchedulerProvider()
-        presenter = HistoryPresenter(this, this, baseApiService, scheduler)
+        presenter = HistoryPresenter(this, baseApiService, scheduler)
         presenter.getUserBalance("Bearer $getToken")
 
         //Memanggil dan Memasukan Value pada Class PagerAdapter(FragmentManager dan JumlahTab)
@@ -112,5 +117,30 @@ class HistoryActivity : AppCompatActivity(), BalanceView.View {
     override fun onSupportNavigateUp(): Boolean {
         onBackPressed()
         return true
+    }
+
+    override fun handleError(e: Throwable) {
+        if (ConnectivityStatus.isConnected(this)) {
+            when (e) {
+                is HttpException -> // non 200 error codes
+                    HandleError.handleError(e, e.code(), this)
+                is SocketTimeoutException -> // connection errors
+                    FancyToast.makeText(
+                        this,
+                        "Connection Timeout!",
+                        FancyToast.LENGTH_SHORT,
+                        FancyToast.ERROR,
+                        false
+                    ).show()
+            }
+        } else {
+            FancyToast.makeText(
+                this,
+                "Tidak Terhubung Dengan Internet!",
+                FancyToast.LENGTH_SHORT,
+                FancyToast.ERROR,
+                false
+            ).show()
+        }
     }
 }
