@@ -32,13 +32,12 @@ class KatalogDesainAdapter(private val katalogList: ArrayList<KatalogItem>, priv
 
         adapter = KatalogItemListAdapter(katalogList[position].items as ArrayList<Item>, context)
 
-        val layout = LinearLayoutManager(
-            holder.itemView.rv_katalog_item.context,
-            LinearLayoutManager.HORIZONTAL,
-            false
-        )
+        val mContext = holder.itemView.context
 
-        holder.itemView.rv_katalog_item.layoutManager = layout
+        val layoutManager = LinearLayoutManager(mContext,
+            LinearLayoutManager.HORIZONTAL, false)
+
+        holder.itemView.rv_katalog_item.layoutManager = layoutManager
         holder.itemView.rv_katalog_item.setHasFixedSize(true)
         holder.itemView.rv_katalog_item.adapter = adapter
     }

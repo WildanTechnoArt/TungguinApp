@@ -128,7 +128,7 @@
     <string name="descriptioni">Deskripsi</string>
     <string name="message">Pesan</string>
     <string name="selamat_datang_di_tungguin">Selamat Datang di Tungguin</string>
-    <string name="tagline">Butuh desan apa saja sekarang? Tungguin aja</string>
+    <string name="tagline">Butuh desain apa sekarang?</string>
     <string name="text_designer_online">0 Desainer sedang online</string>
     <string name="design_count">Jumlah Desain</string>
     <string name="design_concept">Konsep Desain</string>
@@ -138,7 +138,6 @@
     <string name="nol_desain">0 Desain</string>
     <string name="design_order">Order Desain</string>
     <string name="search_designer">Sedang Mencari Desainer....</string>
-    <string name="search_designer_timer">30</string>
 
     <item name="visible" type="id"/>
     <item name="masked" type="id"/>

@@ -34,6 +34,8 @@ class KatalogItemListAdapter(private val katalogItem: ArrayList<Item>, private v
     @SuppressLint("SetTextI18n")
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
 
+        holder.setIsRecyclable(false)
+
         val getItemID = katalogItem[position].hashedId.toString()
 
         holder.itemView.tv_design_name.text = katalogItem[position].name.toString()
@@ -41,6 +43,7 @@ class KatalogItemListAdapter(private val katalogItem: ArrayList<Item>, private v
         GlideApp.with(holder.view.context)
             .load(katalogItem[position].iconUrl.toString())
             .transition(withCrossFade())
+            .placeholder(R.drawable.ic_image_ref)
             .listener(object : RequestListener<Drawable> {
                 override fun onLoadFailed(
                     e: GlideException?,
@@ -59,7 +62,7 @@ class KatalogItemListAdapter(private val katalogItem: ArrayList<Item>, private v
                     dataSource: DataSource?,
                     isFirstResource: Boolean
                 ): Boolean {
-                    holder.itemView.progress_bar.visibility = View.GONE
+                   holder.itemView.progress_bar.visibility = View.GONE
                     return false
                 }
 

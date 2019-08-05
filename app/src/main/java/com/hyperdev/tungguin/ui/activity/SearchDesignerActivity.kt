@@ -92,13 +92,13 @@ class SearchDesignerActivity : AppCompatActivity(), SearchDesignerView.View {
     override fun onDestroy() {
         super.onDestroy()
         socket?.disconnect()
-        mCountdownTimer.cancel()
     }
 
     override fun onBackPressed() {
         super.onBackPressed()
-        val intent = Intent(this@SearchDesignerActivity, DetailOrderActivity::class.java)
+        val intent = Intent(this, DetailOrderActivity::class.java)
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+        intent.putExtra(HASHED_ID, orderId)
         startActivity(intent)
         finish()
     }
@@ -200,6 +200,7 @@ class SearchDesignerActivity : AppCompatActivity(), SearchDesignerView.View {
         override fun onFinish() {
             val intent = Intent(this@SearchDesignerActivity, DetailOrderActivity::class.java)
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+            intent.putExtra(HASHED_ID, orderId)
             startActivity(intent)
             finish()
         }

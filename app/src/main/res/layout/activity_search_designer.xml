@@ -54,7 +54,6 @@
                     android:id="@+id/tv_timer"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="@string/search_designer_timer"
                     android:textSize="15sp"
                     android:gravity="center"/>
 

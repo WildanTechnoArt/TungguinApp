@@ -7,7 +7,6 @@ import android.os.Bundle
 import com.hyperdev.tungguin.R
 import com.hyperdev.tungguin.database.SharedPrefManager
 import kotlinx.android.synthetic.main.activity_main_page.*
-
 class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -21,6 +20,8 @@ class MainActivity : AppCompatActivity() {
         btn_register.setOnClickListener {
             startActivity(Intent(this, RegisterActivity::class.java))
         }
+
+        privacy_policy.loadUrl("file:///android_asset/privacy_policy.html")
     }
 
     override fun onStart() {

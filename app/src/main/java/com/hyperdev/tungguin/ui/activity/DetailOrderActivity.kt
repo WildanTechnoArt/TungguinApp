@@ -294,14 +294,6 @@ class DetailOrderActivity : AppCompatActivity(), DetailOrderView.View {
         return true
     }
 
-    override fun onBackPressed() {
-        super.onBackPressed()
-        val intent = Intent(this@DetailOrderActivity, HistoriOrderActivity::class.java)
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-        startActivity(intent)
-        finish()
-    }
-
     override fun onDestroy() {
         super.onDestroy()
         presenter.onDestroy()

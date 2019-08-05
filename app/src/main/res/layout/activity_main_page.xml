@@ -21,20 +21,6 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"/>
 
-    <TextView
-            android:text="@string/privacy_policy"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:id="@+id/privacy_policy"
-            app:layout_constraintStart_toStartOf="parent"
-            android:layout_marginStart="@dimen/big_size_margin"
-            app:layout_constraintBottom_toBottomOf="parent"
-            android:layout_marginBottom="@dimen/big_size_margin"
-            app:layout_constraintEnd_toEndOf="parent"
-            android:layout_marginEnd="@dimen/big_size_margin"
-            android:textColor="#000000"
-            android:textAlignment="viewStart" android:gravity="start"/>
-
     <Button
             android:text="@string/masuk"
             android:layout_width="0dp"
@@ -45,14 +31,13 @@
             android:textAllCaps="true"
             app:layout_constraintStart_toStartOf="parent"
             android:layout_marginStart="@dimen/big_size_margin"
-            android:layout_marginBottom="@dimen/big_size_margin"
-            app:layout_constraintBottom_toTopOf="@+id/privacy_policy"
             android:layout_marginEnd="@dimen/normal_size_margin"
             app:layout_constraintEnd_toStartOf="@+id/btn_register"
             android:elevation="6dp"
             tools:targetApi="lollipop"
             app:layout_constraintHorizontal_chainStyle="spread_inside"
-            android:textStyle="bold"/>
+            android:textStyle="bold" android:layout_marginBottom="24dp"
+            app:layout_constraintBottom_toTopOf="@+id/privacy_policy"/>
 
     <Button
             android:text="@string/daftar"
@@ -61,8 +46,6 @@
             android:id="@+id/btn_register"
             android:layout_marginEnd="@dimen/big_size_margin"
             app:layout_constraintEnd_toEndOf="parent"
-            android:layout_marginBottom="@dimen/big_size_margin"
-            app:layout_constraintBottom_toTopOf="@+id/privacy_policy"
             android:textAllCaps="true"
             android:textColor="#FFFFFF"
             android:background="@drawable/btn_primary_round_hover"
@@ -70,7 +53,8 @@
             android:layout_marginStart="@dimen/normal_size_margin"
             android:elevation="6dp"
             tools:targetApi="lollipop"
-            android:textStyle="bold"/>
+            android:textStyle="bold" android:layout_marginBottom="24dp"
+            app:layout_constraintBottom_toTopOf="@+id/privacy_policy"/>
 
     <TextView
             android:id="@+id/tv_text_two"
@@ -111,5 +95,11 @@
             app:layout_constraintBottom_toTopOf="@+id/tv_text_one"
             app:layout_constraintTop_toBottomOf="@+id/tv_app_name"
             app:layout_constraintVertical_bias="0.9"/>
+    <WebView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content" android:layout_marginBottom="12dp"
+            app:layout_constraintBottom_toBottomOf="parent" app:layout_constraintStart_toStartOf="parent"
+            android:layout_marginStart="8dp" android:layout_marginEnd="8dp"
+            app:layout_constraintEnd_toEndOf="parent" android:id="@+id/privacy_policy"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

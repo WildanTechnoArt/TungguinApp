@@ -1,10 +1,9 @@
 package com.hyperdev.tungguin.ui.activity
 
-import android.content.pm.ActivityInfo
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import androidx.recyclerview.widget.LinearLayoutManager
 import android.view.View
+import androidx.appcompat.app.AppCompatActivity
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.hyperdev.tungguin.R
 import com.hyperdev.tungguin.adapter.KatalogDesainAdapter
 import com.hyperdev.tungguin.database.SharedPrefManager
@@ -14,8 +13,8 @@ import com.hyperdev.tungguin.network.ConnectivityStatus
 import com.hyperdev.tungguin.network.HandleError
 import com.hyperdev.tungguin.network.NetworkClient
 import com.hyperdev.tungguin.presenter.CataloguePresenter
-import com.hyperdev.tungguin.utils.AppSchedulerProvider
 import com.hyperdev.tungguin.ui.view.KatalogDesainView
+import com.hyperdev.tungguin.utils.AppSchedulerProvider
 import com.shashank.sony.fancytoastlib.FancyToast
 import kotlinx.android.synthetic.main.activity_catalogue_desain.*
 import retrofit2.HttpException
@@ -34,7 +33,6 @@ class KatalogDesainActivity : AppCompatActivity(), KatalogDesainView.View {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_catalogue_desain)
-        requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
 
         setSupportActionBar(toolbar)
         supportActionBar?.apply {
@@ -57,8 +55,8 @@ class KatalogDesainActivity : AppCompatActivity(), KatalogDesainView.View {
             .create(BaseApiService::class.java)
 
         val layout = LinearLayoutManager(this)
-        rv_catalogue.layoutManager = layout
-        rv_catalogue.setHasFixedSize(true)
+        rv_catalogue_movie.layoutManager = layout
+        rv_catalogue_movie.setHasFixedSize(true)
 
         val scheduler = AppSchedulerProvider()
         presenter = CataloguePresenter(this, baseApiService, scheduler)
@@ -67,7 +65,7 @@ class KatalogDesainActivity : AppCompatActivity(), KatalogDesainView.View {
 
         presenter.getKatalogDesain("Bearer $token")
 
-        rv_catalogue.adapter = adapter
+        rv_catalogue_movie.adapter = adapter
     }
 
     override fun showKatalogItemList(katalogItem: List<KatalogItem>) {
@@ -80,12 +78,12 @@ class KatalogDesainActivity : AppCompatActivity(), KatalogDesainView.View {
 
     override fun displayProgress() {
         swipe_refresh.isRefreshing = true
-        rv_catalogue.visibility = View.GONE
+        rv_catalogue_movie.visibility = View.GONE
     }
 
     override fun hideProgress() {
         swipe_refresh.isRefreshing = false
-        rv_catalogue.visibility = View.VISIBLE
+        rv_catalogue_movie.visibility = View.VISIBLE
     }
 
     override fun onSupportNavigateUp(): Boolean {

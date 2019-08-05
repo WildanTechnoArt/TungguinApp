@@ -5,7 +5,8 @@
         xmlns:app="http://schemas.android.com/apk/res-auto"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context=".ui.activity.KatalogDesainActivity" android:background="@color/white">
+        tools:context=".ui.activity.KatalogDesainActivity"
+        android:background="@color/white">
 
     <com.google.android.material.appbar.AppBarLayout
             android:id="@+id/appbar"
@@ -24,7 +25,7 @@
                 android:background="@color/colorPrimary"
                 android:elevation="6dp"
                 app:popupTheme="@style/AppTheme.PopupOverlay"
-                app:title="Katalog Desain"
+                app:title="Promo Desain"
                 tools:targetApi="lollipop"/>
 
     </com.google.android.material.appbar.AppBarLayout>
@@ -43,13 +44,9 @@
             app:layout_constraintEnd_toEndOf="parent">
 
         <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/rv_catalogue"
+                android:id="@+id/rv_catalogue_movie"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/appbar"/>
+                android:layout_height="match_parent"/>
 
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 

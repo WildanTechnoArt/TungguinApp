@@ -1,13 +1,12 @@
 package com.hyperdev.tungguin.ui.activity
 
-import android.content.Intent
 import android.content.pm.ActivityInfo
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import android.util.Log
 import android.view.View
+import androidx.appcompat.app.AppCompatActivity
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.hyperdev.tungguin.R
 import com.hyperdev.tungguin.adapter.OrderHistoriAdapter
 import com.hyperdev.tungguin.database.SharedPrefManager
@@ -18,8 +17,8 @@ import com.hyperdev.tungguin.network.ConnectivityStatus
 import com.hyperdev.tungguin.network.HandleError
 import com.hyperdev.tungguin.network.NetworkClient
 import com.hyperdev.tungguin.presenter.OrderHistoryPresenter
-import com.hyperdev.tungguin.utils.AppSchedulerProvider
 import com.hyperdev.tungguin.ui.view.HistoryOrderView
+import com.hyperdev.tungguin.utils.AppSchedulerProvider
 import com.shashank.sony.fancytoastlib.FancyToast
 import kotlinx.android.synthetic.main.activity_history_order.*
 import retrofit2.HttpException
@@ -140,14 +139,6 @@ class HistoriOrderActivity : AppCompatActivity(), HistoryOrderView.View {
     override fun onSupportNavigateUp(): Boolean {
         onBackPressed()
         return true
-    }
-
-    override fun onBackPressed() {
-        super.onBackPressed()
-        val intent = Intent(this@HistoriOrderActivity, DashboardActivity::class.java)
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-        startActivity(intent)
-        finish()
     }
 
     override fun handleError(e: Throwable) {

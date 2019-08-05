@@ -128,13 +128,13 @@ class CartActivity : AppCompatActivity(), MyCartView.View {
                             val intent = Intent(this, SearchDesignerActivity::class.java)
                             intent.putExtra(HASHED_ID, hashedId)
                             startActivity(intent)
-                            finishAffinity()
+                            finish()
                         }
                         TransactionResult.STATUS_PENDING -> {
                             val intent = Intent(this, DetailOrderActivity::class.java)
                             intent.putExtra(HASHED_ID, hashedId)
                             startActivity(intent)
-                            finishAffinity()
+                            finish()
                         }
                         TransactionResult.STATUS_FAILED -> FancyToast.makeText(
                             this,

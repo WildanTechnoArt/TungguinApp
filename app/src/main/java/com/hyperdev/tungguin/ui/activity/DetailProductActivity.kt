@@ -2,9 +2,9 @@ package com.hyperdev.tungguin.ui.activity
 
 import android.content.Intent
 import android.content.pm.ActivityInfo
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
+import androidx.appcompat.app.AppCompatActivity
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions.withCrossFade
 import com.hyperdev.tungguin.GlideApp
 import com.hyperdev.tungguin.R
@@ -17,11 +17,10 @@ import com.hyperdev.tungguin.network.ConnectivityStatus
 import com.hyperdev.tungguin.network.HandleError
 import com.hyperdev.tungguin.network.NetworkClient
 import com.hyperdev.tungguin.presenter.DetailProductPresenter
-import com.hyperdev.tungguin.utils.AppSchedulerProvider
 import com.hyperdev.tungguin.ui.view.DetailProductView
+import com.hyperdev.tungguin.utils.AppSchedulerProvider
 import com.hyperdev.tungguin.utils.UtilsConstant.Companion.HASHED_ID
 import com.shashank.sony.fancytoastlib.FancyToast
-import com.synnapps.carouselview.ImageListener
 import kotlinx.android.synthetic.main.activity_detail_product.*
 import retrofit2.HttpException
 import java.net.SocketTimeoutException
@@ -31,8 +30,6 @@ class DetailProductActivity : AppCompatActivity(), DetailProductView.View {
     // Deklarasi Variable
     private lateinit var baseApiService: BaseApiService
     private lateinit var presenter: DetailProductView.Presenter
-    private lateinit var imageListener: ImageListener
-    private var imageList: MutableList<String> = mutableListOf()
     private lateinit var token: String
     private lateinit var hashed_id: String
 
@@ -59,16 +56,6 @@ class DetailProductActivity : AppCompatActivity(), DetailProductView.View {
 
         presenter.getDetailProduct("Bearer $token", hashed_id)
 
-        imageListener = ImageListener { position, imageView ->
-            GlideApp.with(this@DetailProductActivity)
-                .load(imageList[position])
-                .transition(withCrossFade())
-                .centerCrop()
-                .into(imageView)
-        }
-
-        img_slider_product.setImageListener(imageListener)
-
         btn_order.setOnClickListener {
             val intent = Intent(this@DetailProductActivity, OrderDesignActivity::class.java)
             intent.putExtra(HASHED_ID, hashed_id)
@@ -86,7 +73,7 @@ class DetailProductActivity : AppCompatActivity(), DetailProductView.View {
     override fun showFieldList(fieldListFormatted: List<FieldListFormatted>) {}
 
     override fun showDetailProductItem(productItem: ProductDetailItem) {
-        imageList.add(productItem.iconUrl.toString())
+        //imageList.add(productItem.iconUrl.toString())
         tv_product_name.text = productItem.name.toString()
 
         val productDescription = productItem.description.toString()
@@ -99,7 +86,13 @@ class DetailProductActivity : AppCompatActivity(), DetailProductView.View {
             line_two.visibility = View.GONE
         }
 
-        img_slider_product.pageCount = imageList.size
+        GlideApp.with(this)
+            .load(productItem.iconUrl.toString())
+            .placeholder(R.drawable.ic_image_ref)
+            .transition(withCrossFade())
+            .into(img_product)
+
+        // img_product.pageCount = imageList.size
     }
 
     override fun displayProgress() {
