@@ -98,7 +98,7 @@ class DashboardActivity : AppCompatActivity(), DashboardView.View {
         }
 
         katalog_desain.setOnClickListener {
-            startActivity(Intent(this, KatalogDesainActivity::class.java))
+            startActivity(Intent(this, PromoDesainActivity::class.java))
         }
 
         btnHelp.setOnClickListener {

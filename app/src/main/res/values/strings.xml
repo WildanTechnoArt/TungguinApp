@@ -2,7 +2,8 @@
     <string name="app_name">Tungguin</string>
     <string name="logo_full">logo_full</string>
     <string name="tungguin">Tungguin</string>
-    <string name="privacy_policy">Dengan masuk dan mendaftar, kamu penyetujui Ketentuan Layanan dan Kebijakan Privasi.</string>
+    <string name="privacy_policy">Dengan masuk dan mendaftar, kamu penyetujui Ketentuan Layanan dan Kebijakan Privasi.
+    </string>
     <string name="masuk">Masuk</string>
     <string name="daftar">Daftar</string>
     <string name="kota">Kota</string>

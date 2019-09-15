@@ -14,8 +14,8 @@ import android.widget.TextView
 import com.hyperdev.tungguin.R
 import com.hyperdev.tungguin.adapter.TopUpRecyclerAdapter
 import com.hyperdev.tungguin.database.SharedPrefManager
-import com.hyperdev.tungguin.model.transaction.ListTopUp
-import com.hyperdev.tungguin.model.transaction.TopUpData
+import com.hyperdev.tungguin.model.topup.ListTopUp
+import com.hyperdev.tungguin.model.topup.TopUpData
 import com.hyperdev.tungguin.network.BaseApiService
 import com.hyperdev.tungguin.network.ConnectivityStatus
 import com.hyperdev.tungguin.network.HandleError

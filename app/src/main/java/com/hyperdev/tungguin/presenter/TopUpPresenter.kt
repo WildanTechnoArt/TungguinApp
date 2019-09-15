@@ -1,7 +1,8 @@
 package com.hyperdev.tungguin.presenter
 
 import com.hyperdev.tungguin.model.profile.ProfileResponse
-import com.hyperdev.tungguin.model.transaction.TopUpResponse
+import com.hyperdev.tungguin.model.topup.TopUpItemResponse
+import com.hyperdev.tungguin.model.topup.TopUpResponse
 import com.hyperdev.tungguin.network.BaseApiService
 import com.hyperdev.tungguin.ui.view.TopUpView
 import com.hyperdev.tungguin.utils.SchedulerProvider
@@ -64,6 +65,31 @@ class TopUpPresenter(
                         } catch (ex: Exception) {
                             ex.printStackTrace()
                         }
+                    }
+
+                    override fun onError(e: Throwable) {
+                        view.hideProgressBar()
+                        view.handleError(e)
+                    }
+                })
+        )
+    }
+
+    override fun topUpAmount(token: String, accept: String) {
+        view.showProgressBar()
+
+        compositeDisposable.add(
+            baseApiService.getTopupAvailable(token, accept)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(scheduler.io())
+                .unsubscribeOn(scheduler.io())
+                .subscribeWith(object : ResourceSubscriber<TopUpItemResponse>() {
+                    override fun onComplete() {
+                        view.hideProgressBar()
+                    }
+
+                    override fun onNext(t: TopUpItemResponse) {
+                        t.data?.let { view.showTopupAmount(it) }
                     }
 
                     override fun onError(e: Throwable) {

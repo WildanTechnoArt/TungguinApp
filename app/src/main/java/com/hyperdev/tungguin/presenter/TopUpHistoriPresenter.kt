@@ -1,6 +1,6 @@
 package com.hyperdev.tungguin.presenter
 
-import com.hyperdev.tungguin.model.transaction.HistoriTopUpResponse
+import com.hyperdev.tungguin.model.topup.HistoriTopUpResponse
 import com.hyperdev.tungguin.network.BaseApiService
 import com.hyperdev.tungguin.ui.view.HistoryTopUpView
 import com.hyperdev.tungguin.utils.SchedulerProvider

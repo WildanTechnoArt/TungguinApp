@@ -10,39 +10,35 @@
         android:layout_margin="6dp" android:id="@+id/desain_item">
 
     <LinearLayout
-            android:orientation="vertical"
+            android:id="@+id/desain_layout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:gravity="center"
             android:background="@drawable/btn_gray_round_hover"
-            android:id="@+id/desain_layout" android:paddingTop="8dp"
-            android:paddingBottom="8dp">
+            android:gravity="center"
+            android:orientation="vertical"
+            android:paddingTop="12dp"
+            android:paddingBottom="12dp">
 
         <TextView
-                android:text="0"
+                android:id="@+id/number_desain"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center"
-                android:textStyle="bold"
-                android:textSize="16sp"
-                android:textColor="@color/colorAccent" tools:ignore="HardcodedText" android:id="@+id/number_desain"/>
-
-        <TextView
-                android:text="Desain"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center"
+                android:text="@string/none"
                 android:textColor="@color/colorAccent"
-                android:textStyle="bold" tools:ignore="HardcodedText"/>
+                android:textSize="14sp"
+                android:textStyle="bold" />
 
         <TextView
-                android:text="Rp 0;-"
+                android:id="@+id/price_desain"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
+                android:layout_marginTop="4dp"
                 android:gravity="center"
-                android:textStyle="bold" android:textSize="14sp" tools:ignore="HardcodedText"
-                android:id="@+id/price_desain"/>
+                android:text="Rp 0;-"
+                android:textSize="14sp"
+                android:textStyle="bold"
+                tools:ignore="HardcodedText" />
 
     </LinearLayout>
 

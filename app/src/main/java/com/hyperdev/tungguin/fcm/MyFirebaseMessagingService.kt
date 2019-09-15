@@ -19,16 +19,16 @@ import com.hyperdev.tungguin.ui.activity.HistoryActivity
 import com.hyperdev.tungguin.ui.activity.TestimoniActivity
 import com.hyperdev.tungguin.utils.UtilsConstant.Companion.HASHED_ID
 
-class MyFirebaseMessagingService : FirebaseMessagingService() {
+class MyFirebaseMessagingService : FirebaseMessagingService(){
 
-    override fun onMessageReceived(remoteMessage: RemoteMessage?) {
+    override fun onMessageReceived(remoteMessage: RemoteMessage) {
 
         // Membuat Click Listener pada Notifikasi yang Muncul
-        val data: MutableMap<String, String>? = remoteMessage?.data
+        val data: MutableMap<String, String>? = remoteMessage.data
         val type = data?.get("type").toString()
         val typeId = data?.get("type_id").toString()
-        val title = remoteMessage?.notification?.title.toString()
-        val message = remoteMessage?.notification?.body.toString()
+        val title = remoteMessage.notification?.title.toString()
+        val message = remoteMessage.notification?.body.toString()
 
         when (type) {
             "top_up_success" -> {
@@ -74,6 +74,13 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
         }
     }
 
+    override fun onNewToken(token: String) {
+        super.onNewToken(token)
+        //Mendapatkan Token dari FCM untuk klien
+        Log.d(TAG, "Token Saya : $token")
+        storeToken(token)
+    }
+
     private fun notificationProperties(title: String, message: String, intent: Intent) {
 
         val pendingIntent = PendingIntent.getActivity(
@@ -94,14 +101,6 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
             manager.createNotificationChannel(channel)
         }
         manager.notify(0, builder.build())
-    }
-
-    //Method untuk mendapatkan Token Baru
-    override fun onNewToken(token: String?) {
-        super.onNewToken(token)
-        //Mendapatkan Token dari FCM untuk klien
-        Log.d(TAG, "Token Saya : " + token!!)
-        storeToken(token)
     }
 
     companion object {

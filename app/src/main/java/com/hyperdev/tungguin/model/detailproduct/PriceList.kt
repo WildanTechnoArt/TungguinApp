@@ -8,11 +8,17 @@ data class PriceList (
     @SerializedName("design_option_count")
     @Expose
     var designOptionCount: Int? = null,
+
     @SerializedName("price")
     @Expose
     var price: Int? = null,
+
     @SerializedName("price_formatted")
     @Expose
-    var priceFormatted: String? = null
+    var priceFormatted: String? = null,
+
+    @SerializedName("formatted_design_option_count")
+    @Expose
+    var formattedDesign: String? = null
 
 )

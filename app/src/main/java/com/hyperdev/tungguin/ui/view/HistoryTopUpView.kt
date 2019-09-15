@@ -1,7 +1,7 @@
 package com.hyperdev.tungguin.ui.view
 
-import com.hyperdev.tungguin.model.transaction.ListTopUp
-import com.hyperdev.tungguin.model.transaction.TopUpData
+import com.hyperdev.tungguin.model.topup.ListTopUp
+import com.hyperdev.tungguin.model.topup.TopUpData
 
 class HistoryTopUpView {
 

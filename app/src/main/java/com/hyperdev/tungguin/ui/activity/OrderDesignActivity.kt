@@ -606,9 +606,9 @@ class OrderDesignActivity : AppCompatActivity(), DetailProductView.View, UploadI
     }
 
     @SuppressLint("SetTextI18n")
-    override fun shaowPriceList(priceFormatted: String, desainCount: String, kondisi: Boolean, price: String) {
+    override fun shaowPriceList(designFormatted: String, priceFormatted: String, desainCount: String, kondisi: Boolean, price: String) {
         this.kondisi = kondisi
-        tv_design_count.text = "$desainCount Desain"
+        tv_design_count.text = designFormatted
         cartDataMap["design_option"] = setRequestBody(desainCount)
         productPrice = setRequestBody(price)
         tv_total_price.text = priceFormatted

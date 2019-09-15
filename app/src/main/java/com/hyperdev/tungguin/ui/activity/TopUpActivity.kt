@@ -4,19 +4,21 @@ import android.annotation.SuppressLint
 import android.content.Intent
 import android.content.pm.ActivityInfo
 import android.os.Bundle
-import android.text.Editable
-import android.text.TextWatcher
 import androidx.appcompat.app.AppCompatActivity
+import androidx.recyclerview.widget.GridLayoutManager
 import com.hyperdev.tungguin.BuildConfig
 import com.hyperdev.tungguin.R
+import com.hyperdev.tungguin.adapter.TopupListAdapter
 import com.hyperdev.tungguin.database.SharedPrefManager
 import com.hyperdev.tungguin.model.profile.DataUser
-import com.hyperdev.tungguin.model.transaction.DataTopUp
+import com.hyperdev.tungguin.model.topup.DataTopUp
+import com.hyperdev.tungguin.model.topup.TopUpItemData
 import com.hyperdev.tungguin.network.BaseApiService
 import com.hyperdev.tungguin.network.ConnectivityStatus
 import com.hyperdev.tungguin.network.HandleError
 import com.hyperdev.tungguin.network.NetworkClient
 import com.hyperdev.tungguin.presenter.TopUpPresenter
+import com.hyperdev.tungguin.ui.TopupListener
 import com.hyperdev.tungguin.ui.view.TopUpView
 import com.hyperdev.tungguin.utils.AppSchedulerProvider
 import com.midtrans.sdk.corekit.core.MidtransSDK
@@ -31,19 +33,19 @@ import com.shashank.sony.fancytoastlib.FancyToast
 import kotlinx.android.synthetic.main.activity_top_up.*
 import retrofit2.HttpException
 import java.net.SocketTimeoutException
-import java.text.NumberFormat
+import kotlin.properties.Delegates
 
-class TopUpActivity : AppCompatActivity(), TopUpView.View {
+class TopUpActivity : AppCompatActivity(), TopUpView.View, TopupListener {
 
     //Deklarasi Variable
     private lateinit var baseApiService: BaseApiService
     private lateinit var presenter: TopUpView.Presenter
-    private var topupAmount: Long = 0
-    private lateinit var customAmount: String
+    private var topupAmount: Long? = 0
     private lateinit var getToken: String
-    private lateinit var moneyFormat: NumberFormat
     private lateinit var midtransToken: String
     private lateinit var transactionId: String
+    private var adapter by Delegates.notNull<TopupListAdapter>()
+    private var topupAmountList = arrayListOf<TopUpItemData>()
 
     @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -65,34 +67,11 @@ class TopUpActivity : AppCompatActivity(), TopUpView.View {
             presenter.getUserAmount("Bearer $getToken")
         }
 
-        midtransInitialotation()
-
-        input_amount!!.addTextChangedListener(object : TextWatcher {
-            override fun afterTextChanged(s: Editable?) {
-
-            }
-
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-
-            }
-
-            @SuppressLint("SetTextI18n")
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                try {
-                    customAmount = input_amount.text.toString()
-                    topupAmount = customAmount.toLong()
-                    totalTopUp.text = moneyFormat.format(topupAmount)
-                } catch (ex: NumberFormatException) {
-                    ex.printStackTrace()
-                }
-            }
-        })
-
-        topupButton()
-
         btnTopUp.setOnClickListener {
             presenter.topUpMoney("Bearer $getToken", "application/json", topupAmount.toString())
         }
+
+        midtransInitialotation()
     }
 
     private fun initData() {
@@ -101,16 +80,19 @@ class TopUpActivity : AppCompatActivity(), TopUpView.View {
             .create(BaseApiService::class.java)
 
         getToken = SharedPrefManager.getInstance(this).token.toString()
-        moneyFormat = NumberFormat.getCurrencyInstance()
 
         val scheduler = AppSchedulerProvider()
         presenter = TopUpPresenter(this, baseApiService, scheduler)
         presenter.getUserAmount("Bearer $getToken")
-
+        presenter.topUpAmount("Bearer $getToken", "application/json")
     }
 
-    private fun transactionRequest(transactionID: String, topupAmount: Long) {
-        val transactionRequest = TransactionRequest(transactionID, topupAmount.toDouble())
+    private fun transactionRequest(transactionID: String, topupAmount: Long?) {
+        val transactionRequest = topupAmount?.toDouble()?.let {
+            TransactionRequest(transactionID,
+                it
+            )
+        }
 
         val creditCardOptions = CreditCard()
         // Set to true if you want to save card to Snap
@@ -120,7 +102,7 @@ class TopUpActivity : AppCompatActivity(), TopUpView.View {
         // Set MIGS channel (ONLY for BCA, BRI and Maybank Acquiring bank)
         creditCardOptions.channel = CreditCard.MIGS
         // Set Credit Card Options
-        transactionRequest.creditCard = creditCardOptions
+        transactionRequest?.creditCard = creditCardOptions
 
         // Set transaction request into SDK instance
         MidtransSDK.getInstance().transactionRequest = transactionRequest
@@ -191,52 +173,18 @@ class TopUpActivity : AppCompatActivity(), TopUpView.View {
             .buildSDK()
     }
 
-    private fun topupButton() {
-        topup25k.setOnClickListener {
-            topupAmount = 25000
-            input_amount.setText(topupAmount.toString())
-            totalTopUp.text = moneyFormat.format(topupAmount)
-        }
-        topup50k.setOnClickListener {
-            topupAmount = 50000
-            input_amount.setText(topupAmount.toString())
-            totalTopUp.text = moneyFormat.format(topupAmount)
-        }
-        topup75k.setOnClickListener {
-            topupAmount = 75000
-            input_amount.setText(topupAmount.toString())
-            totalTopUp.text = moneyFormat.format(topupAmount)
-        }
-        topup100k.setOnClickListener {
-            topupAmount = 100000
-            input_amount.setText(topupAmount.toString())
-            totalTopUp.text = moneyFormat.format(topupAmount)
-        }
-        topup200k.setOnClickListener {
-            topupAmount = 200000
-            input_amount.setText(topupAmount.toString())
-            totalTopUp.text = moneyFormat.format(topupAmount)
-        }
-        topup300k.setOnClickListener {
-            topupAmount = 300000
-            input_amount.setText(topupAmount.toString())
-            totalTopUp.text = moneyFormat.format(topupAmount)
-        }
-        topup500k.setOnClickListener {
-            topupAmount = 500000
-            input_amount.setText(topupAmount.toString())
-            totalTopUp.text = moneyFormat.format(topupAmount)
-        }
-        topup750k.setOnClickListener {
-            topupAmount = 750000
-            input_amount.setText(topupAmount.toString())
-            totalTopUp.text = moneyFormat.format(topupAmount)
-        }
-        topup1000k.setOnClickListener {
-            topupAmount = 1000000
-            input_amount.setText(topupAmount.toString())
-            totalTopUp.text = moneyFormat.format(topupAmount)
-        }
+    override fun showTopupAmount(amount: List<TopUpItemData>) {
+        topupAmountList.addAll(amount)
+        adapter = TopupListAdapter(topupAmountList, this)
+        val layout = GridLayoutManager(this, 3)
+        rv_topup_amount.layoutManager = layout
+        rv_topup_amount.setHasFixedSize(true)
+        rv_topup_amount.adapter = adapter
+    }
+
+    override fun onClickListener(amount: Long?, label: String) {
+        topupAmount = amount
+        total_topup.text = label
     }
 
     override fun displayAmount(profileItem: DataUser) {

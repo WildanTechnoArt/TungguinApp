@@ -20,6 +20,8 @@
             android:theme="@style/AppTheme"
             tools:ignore="AllowBackup,GoogleAppIndexingWarning"
             tools:replace="android:allowBackup">
+        <activity android:name=".ui.activity.BannerContentActivity">
+        </activity>
         <activity android:name=".ui.activity.ChatListActivity">
         </activity>
         <activity android:name=".ui.activity.SearchProductActivity"/>
@@ -82,7 +84,7 @@
         <activity android:name=".ui.activity.OrderActivity"/>
         <activity android:name=".ui.activity.DetailProductActivity"/>
         <activity android:name=".ui.activity.OrderDesignActivity"/>
-        <activity android:name=".ui.activity.KatalogDesainActivity"/>
+        <activity android:name=".ui.activity.PromoDesainActivity"/>
         <activity android:name=".ui.activity.CartActivity"/>
 
         <meta-data

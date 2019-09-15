@@ -14,7 +14,7 @@ import com.hyperdev.tungguin.model.detailorder.DetailOrderResponse
 import com.hyperdev.tungguin.model.detailproduct.DetailProductResponse
 import com.hyperdev.tungguin.model.dashboard.FCMResponse
 import com.hyperdev.tungguin.model.historiorder.HistoriOrderResponse
-import com.hyperdev.tungguin.model.katalogdesain.KatalogDesainResponse
+import com.hyperdev.tungguin.model.promodesain.PromoResponse
 import com.hyperdev.tungguin.model.authentication.LoginResponse
 import com.hyperdev.tungguin.model.orderlandingpage.OrderLandingPageResponse
 import com.hyperdev.tungguin.model.profile.ProfileResponse
@@ -22,9 +22,11 @@ import com.hyperdev.tungguin.model.authentication.CityResponse
 import com.hyperdev.tungguin.model.authentication.ProvinceResponse
 import com.hyperdev.tungguin.model.authentication.RegisterResponse
 import com.hyperdev.tungguin.model.chat.ChatListResponse
+import com.hyperdev.tungguin.model.promodesain.BannerResponse
 import com.hyperdev.tungguin.model.searchproduct.SearchProductResponse
-import com.hyperdev.tungguin.model.transaction.TopUpResponse
-import com.hyperdev.tungguin.model.transaction.HistoriTopUpResponse
+import com.hyperdev.tungguin.model.topup.TopUpResponse
+import com.hyperdev.tungguin.model.topup.HistoriTopUpResponse
+import com.hyperdev.tungguin.model.topup.TopUpItemResponse
 import com.hyperdev.tungguin.model.transaction.TransactionResponse
 import io.reactivex.Flowable
 import io.reactivex.Observable
@@ -160,7 +162,7 @@ interface BaseApiService {
     fun getKatalogDesain(
         @Header("Authorization") token: String,
         @Header("Accept") accept: String
-    ): Flowable<KatalogDesainResponse>
+    ): Flowable<PromoResponse>
 
     @POST("cart/add")
     @Multipart
@@ -267,4 +269,16 @@ interface BaseApiService {
 
     @GET("customer-announcement")
     fun announcementDesigner(@Header("Authorization") token: String): Flowable<AnnouncementResponse>
+
+    @GET("banner-promotion")
+    fun getBannerPromotion(
+        @Header("Authorization") token: String,
+        @Header("Accept") accept: String
+    ): Flowable<BannerResponse>
+
+    @GET("wallet/topup-available")
+    fun getTopupAvailable(
+        @Header("Authorization") token: String,
+        @Header("Accept") accept: String
+    ): Flowable<TopUpItemResponse>
 }

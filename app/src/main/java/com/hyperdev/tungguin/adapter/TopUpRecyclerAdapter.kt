@@ -2,8 +2,11 @@ package com.hyperdev.tungguin.adapter
 
 import android.annotation.SuppressLint
 import android.app.Activity
+import android.content.ActivityNotFoundException
 import android.content.Context
+import android.content.Intent
 import android.graphics.Color
+import android.net.Uri
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,12 +14,13 @@ import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import com.hyperdev.tungguin.BuildConfig
 import com.hyperdev.tungguin.R
-import com.hyperdev.tungguin.model.transaction.ListTopUp
+import com.hyperdev.tungguin.model.topup.ListTopUp
 import com.midtrans.sdk.corekit.core.MidtransSDK
 import com.midtrans.sdk.corekit.core.UIKitCustomSetting
 import com.midtrans.sdk.corekit.core.themes.CustomColorTheme
 import com.midtrans.sdk.corekit.models.snap.TransactionResult
 import com.midtrans.sdk.uikit.SdkUIFlowBuilder
+import com.shashank.sony.fancytoastlib.FancyToast
 import kotlinx.android.synthetic.main.histori_topup_item.view.*
 
 class TopUpRecyclerAdapter(private var context: Context?, private var topupList: ArrayList<ListTopUp>) :
@@ -44,6 +48,7 @@ class TopUpRecyclerAdapter(private var context: Context?, private var topupList:
         val getColorHex = topupList[position].statusColorHex.toString()
         val getFormattedExpireAt = topupList[position].formattedExpireAt.toString()
         val getMidtransToken = topupList[position].midtransToken
+        val getPdfUrl = topupList[position].pdfUrl
 
         //set data dari ListTopUp pada View
         holder.itemView.listFormattedID.text = getFormattedID
@@ -56,15 +61,28 @@ class TopUpRecyclerAdapter(private var context: Context?, private var topupList:
 
             @Suppress("SENSELESS_COMPARISON")
             if (getMidtransToken != null) {
-
-                midtransInitialotation()
-
-                // Skip Customer Detail
-                val uiKitCustomSetting: UIKitCustomSetting = MidtransSDK.getInstance().uiKitCustomSetting
-                uiKitCustomSetting.isSkipCustomerDetailsPages = true
-                MidtransSDK.getInstance().uiKitCustomSetting = uiKitCustomSetting
-
-                MidtransSDK.getInstance().startPaymentUiFlow(context, getMidtransToken.toString())
+                if (getPdfUrl != null){
+                    try {
+                        val pdfUrl = Uri.parse(getPdfUrl)
+                        val intent = Intent(Intent.ACTION_VIEW, pdfUrl)
+                        context?.startActivity(intent)
+                    } catch (ex: ActivityNotFoundException) {
+                        FancyToast.makeText(
+                            context,
+                            "Tidak ada aplikasi yang dapat menangani permintaan ini. Silakan instal browser web",
+                            FancyToast.LENGTH_LONG,
+                            FancyToast.INFO,
+                            false
+                        ).show()
+                        ex.printStackTrace()
+                    }
+                }else{
+                    midtransInitialotation()
+                    val uiKitCustomSetting: UIKitCustomSetting = MidtransSDK.getInstance().uiKitCustomSetting
+                    uiKitCustomSetting.isSkipCustomerDetailsPages = true
+                    MidtransSDK.getInstance().uiKitCustomSetting = uiKitCustomSetting
+                    MidtransSDK.getInstance().startPaymentUiFlow(context, getMidtransToken.toString())
+                }
             }
 
         }

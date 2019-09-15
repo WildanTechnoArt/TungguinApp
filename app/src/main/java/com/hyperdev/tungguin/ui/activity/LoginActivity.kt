@@ -5,11 +5,9 @@ import android.content.pm.ActivityInfo
 import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
+import com.google.gson.Gson
 import com.hyperdev.tungguin.R
-import com.hyperdev.tungguin.network.BaseApiService
-import com.hyperdev.tungguin.network.ConnectivityStatus
-import com.hyperdev.tungguin.network.HandleError
-import com.hyperdev.tungguin.network.NetworkClient
+import com.hyperdev.tungguin.network.*
 import com.hyperdev.tungguin.presenter.LoginPresenter
 import com.hyperdev.tungguin.ui.view.LoginView
 import com.hyperdev.tungguin.utils.AppSchedulerProvider
@@ -94,8 +92,14 @@ class LoginActivity : AppCompatActivity(), LoginView.View {
     override fun handleError(e: Throwable) {
         if (ConnectivityStatus.isConnected(this)) {
             when (e) {
-                is HttpException -> // non 200 error codes
-                    HandleError.handleError(e, e.code(), this)
+                is HttpException -> {
+                    val gson = Gson()
+                    val response = gson.fromJson(e.response()?.errorBody()?.charStream(), Response::class.java)
+                    val message = response.meta?.message
+                    if(message != null){
+                        FancyToast.makeText(this, message, FancyToast.LENGTH_SHORT, FancyToast.WARNING, false).show()
+                    }
+                }
                 is SocketTimeoutException -> // connection errors
                     FancyToast.makeText(
                         this,
